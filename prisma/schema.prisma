@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         String   @default("ADMIN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model SiteSettings {
+  id                     String       @id @default(cuid())
+  companyName            String
+  brandName              String
+  tagline                String
+  operatingUnder         String
+  primaryPhone           String
+  whatsappNumber         String
+  email                  String
+  addressLine1           String
+  addressLine2           String
+  addressLine3           String
+  addressLine4           String?
+  businessHours          String
+  seoTitle               String
+  seoDescription         String
+  ogImage                String?
+  heroHeadline           String
+  heroSubheadline         String
+  heroBackgroundMode     String
+  heroBackgroundImage    String?
+  heroBackgroundVideo    String?
+  heroCtaPrimaryLabel    String
+  heroCtaPrimaryHref     String
+  heroCtaSecondaryLabel  String
+  heroCtaSecondaryHref   String
+  heroCtaTertiaryLabel   String
+  heroCtaTertiaryHref    String
+  ctaStripText           String
+  ctaStripButtonLabel    String
+  ctaStripButtonHref     String
+  socialLinks            SocialLink[]
+  trustBadges            TrustBadge[]
+  whyChooseItems         WhyChooseItem[]
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+}
+
+model SocialLink {
+  id          String       @id @default(cuid())
+  label       String
+  href        String
+  order       Int          @default(0)
+  visible     Boolean      @default(true)
+  settingsId  String
+  settings    SiteSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+}
+
+model NavItem {
+  id      String  @id @default(cuid())
+  label   String
+  href    String
+  order   Int     @default(0)
+  visible Boolean @default(true)
+}
+
+model FooterGroup {
+  id      String       @id @default(cuid())
+  title   String
+  order   Int          @default(0)
+  visible Boolean      @default(true)
+  links   FooterLink[]
+}
+
+model FooterLink {
+  id       String      @id @default(cuid())
+  label    String
+  href     String
+  order    Int         @default(0)
+  visible  Boolean     @default(true)
+  groupId  String
+  group    FooterGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+}
+
+model TrustBadge {
+  id         String       @id @default(cuid())
+  title      String
+  description String
+  icon       String?
+  order      Int          @default(0)
+  visible    Boolean      @default(true)
+  settingsId String
+  settings   SiteSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+}
+
+model WhyChooseItem {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  icon        String?
+  order       Int          @default(0)
+  visible     Boolean      @default(true)
+  settingsId  String
+  settings    SiteSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+}
+
+model Destination {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  image       String?
+  order       Int      @default(0)
+  visible     Boolean  @default(true)
+}
+
+model Service {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  shortDescription String
+  longDescription  String
+  icon           String?
+  featuredImage  String?
+  seoTitle       String?
+  seoDescription String?
+  published      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Tour {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  duration       String
+  priceFrom      Float
+  currency       String
+  highlights     String
+  itinerary      String
+  inclusions     String
+  exclusions     String
+  images         String[]
+  ctaLabel       String?
+  ctaHref        String?
+  seoTitle       String?
+  seoDescription String?
+  published      Boolean  @default(true)
+  featured       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model BlogPost {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  content        String
+  category       String?
+  tags           String[]
+  featuredImage  String?
+  seoTitle       String?
+  seoDescription String?
+  ogImage        String?
+  published      Boolean  @default(false)
+  publishAt      DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model InquiryLead {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  phone      String
+  service    String
+  message    String
+  pageSource String?
+  status     String   @default("new")
+  createdAt  DateTime @default(now())
+}
+
+model Invoice {
+  id                   String       @id @default(cuid())
+  invoiceNumber        String       @unique
+  invoiceNumberDisplay String
+  issueDate            String
+  paymentDueDate       String
+  sender               Json
+  receiver             Json
+  paymentInfo          Json
+  note                 String
+  customerEmail        String?
+  totals               Json
+  items                InvoiceItem[]
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  description String
+  unitPrice   Float
+  quantity    Float
+  lineTotal   Float
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  fileName  String
+  fileUrl   String
+  altText   String?
+  type      String
+  size      Int
+  createdAt DateTime @default(now())
+}

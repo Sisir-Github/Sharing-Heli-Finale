@@ -1,0 +1,284 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #050910;
+  --foreground: #f4f7fb;
+  --muted: #9baec5;
+  --card: rgba(14, 23, 36, 0.68);
+  --card-border: rgba(185, 201, 221, 0.26);
+  --gold: #b9c9dd;
+  --aurora: #7ea6d6;
+  --body-bg:
+    radial-gradient(circle at 14% 12%, rgba(126, 166, 214, 0.19), transparent 35%),
+    radial-gradient(circle at 86% 2%, rgba(215, 224, 236, 0.12), transparent 31%),
+    linear-gradient(180deg, #04070d 0%, #070d18 44%, #0a1422 100%);
+  --glass-bg: linear-gradient(135deg, rgba(17, 28, 44, 0.72), rgba(9, 14, 24, 0.62));
+  --glass-shadow: 0 20px 52px rgba(0, 0, 0, 0.42);
+  --outline-bg: rgba(255, 255, 255, 0.04);
+  --outline-border: rgba(155, 174, 197, 0.55);
+  --outline-hover-bg: rgba(255, 255, 255, 0.08);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --theme-toggle-bg: rgba(255, 255, 255, 0.08);
+  --theme-toggle-border: rgba(255, 255, 255, 0.26);
+  --theme-toggle-text: #f4f7fb;
+  --surface-1: #0b111c;
+  --surface-2: #03060d;
+  --surface-1-alpha: rgba(11, 17, 28, 0.85);
+  --font-display: "Didot", "Bodoni 72", "Times New Roman", serif;
+  --font-body: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --background: #f1f9ff;
+  --foreground: #123f67;
+  --muted: #44719a;
+  --card: rgba(255, 255, 255, 0.92);
+  --card-border: rgba(86, 153, 207, 0.3);
+  --gold: #87cbff;
+  --aurora: #3aa8ff;
+  --body-bg:
+    radial-gradient(circle at 12% 8%, rgba(129, 198, 255, 0.42), transparent 44%),
+    radial-gradient(circle at 86% 9%, rgba(201, 233, 255, 0.56), transparent 43%),
+    linear-gradient(180deg, #fbfeff 0%, #eef9ff 52%, #e3f3ff 100%);
+  --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(237, 247, 255, 0.9));
+  --glass-shadow: 0 18px 38px rgba(63, 131, 188, 0.16);
+  --outline-bg: rgba(99, 183, 255, 0.14);
+  --outline-border: rgba(74, 154, 214, 0.45);
+  --outline-hover-bg: rgba(99, 183, 255, 0.24);
+  --input-bg: rgba(255, 255, 255, 0.88);
+  --input-border: rgba(73, 147, 206, 0.35);
+  --theme-toggle-bg: rgba(255, 255, 255, 0.98);
+  --theme-toggle-border: rgba(58, 148, 213, 0.55);
+  --theme-toggle-text: #1a4f7e;
+  --surface-1: #ecf8ff;
+  --surface-2: #dff1ff;
+  --surface-1-alpha: rgba(236, 248, 255, 0.92);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--body-bg);
+  color: var(--foreground);
+  font-family: var(--font-body), sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hero-overlay {
+  background: linear-gradient(180deg, rgba(4, 9, 18, 0.45) 0%, rgba(7, 18, 36, 0.72) 52%, rgba(5, 9, 16, 0.93) 100%);
+}
+
+.helicopter-static-fallback {
+  background:
+    linear-gradient(180deg, rgba(6, 14, 25, 0.95) 0%, rgba(7, 16, 29, 0.95) 50%, rgba(5, 11, 20, 0.96) 100%),
+    url("/images/luxury-nepal-helicopter.svg") center / cover no-repeat;
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(14px);
+  }
+
+  .label {
+    @apply mb-3 inline-flex rounded-full border border-gold/45 bg-gold/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-gold;
+  }
+
+  .headline {
+    @apply font-display text-3xl leading-tight text-white sm:text-4xl lg:text-5xl;
+  }
+
+  .copy {
+    @apply text-base leading-relaxed;
+    color: var(--muted);
+  }
+
+  .section-space {
+    @apply py-16 sm:py-20 lg:py-24;
+  }
+
+  .inquiry-button {
+    @apply inline-flex items-center justify-center rounded-full bg-gradient-to-r from-aurora to-gold px-6 py-3 text-sm font-semibold tracking-[0.06em] text-slate-950 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aurora focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
+  }
+
+  .outline-button {
+    @apply inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold tracking-[0.06em] transition-all duration-300 hover:-translate-y-0.5 hover:border-aurora/65;
+    border: 1px solid var(--outline-border);
+    background: var(--outline-bg);
+    color: var(--foreground);
+  }
+
+  .outline-button:hover {
+    background: var(--outline-hover-bg);
+  }
+
+  .input {
+    @apply w-full rounded-xl px-4 py-3 text-sm outline-none transition focus:border-aurora/70;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--foreground);
+  }
+
+  .textarea {
+    @apply w-full rounded-xl px-4 py-3 text-sm outline-none transition focus:border-aurora/70;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--foreground);
+    min-height: 120px;
+  }
+
+  .section-shell {
+    @apply shell relative;
+  }
+
+  .shine-line {
+    @apply relative overflow-hidden;
+  }
+
+  .shine-line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 35%;
+    background: linear-gradient(90deg, transparent, rgba(215, 224, 236, 0.3), transparent);
+    animation: shimmer 2.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .theme-toggle {
+    border: 1px solid var(--theme-toggle-border);
+    background: var(--theme-toggle-bg);
+    color: var(--theme-toggle-text);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 24px rgba(7, 28, 50, 0.16);
+  }
+
+  .theme-toggle:hover {
+    transform: translateY(-1px) scale(1.03);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--aurora);
+    outline-offset: 2px;
+  }
+
+  .bg-footer {
+    background: var(--surface-2);
+  }
+
+  .admin-surface {
+    background: var(--surface-1);
+  }
+
+  .admin-surface-alpha {
+    background: var(--surface-1-alpha);
+  }
+}
+
+html[data-theme="light"] .site-header {
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.1);
+}
+
+html[data-theme="light"] .bg-midnight\/86,
+html[data-theme="light"] .bg-midnight\/90,
+html[data-theme="light"] .bg-storm\/95,
+html[data-theme="light"] .bg-storm\/90,
+html[data-theme="light"] .bg-storm\/80,
+html[data-theme="light"] .bg-storm\/70,
+html[data-theme="light"] .bg-black\/25,
+html[data-theme="light"] .bg-black\/20 {
+  background-color: rgba(236, 247, 255, 0.92) !important;
+}
+
+html[data-theme="light"] .border-white\/10,
+html[data-theme="light"] .border-white\/20,
+html[data-theme="light"] .border-white\/25,
+html[data-theme="light"] .border-white\/30 {
+  border-color: rgba(86, 153, 207, 0.3) !important;
+}
+
+html[data-theme="light"] .text-white {
+  color: #0f4370 !important;
+}
+
+html[data-theme="light"] .text-white\/90,
+html[data-theme="light"] .text-white\/75 {
+  color: rgba(15, 67, 112, 0.88) !important;
+}
+
+html[data-theme="light"] .text-haze,
+html[data-theme="light"] .text-haze\/90,
+html[data-theme="light"] .text-haze\/80 {
+  color: #2b5f8a !important;
+}
+
+html[data-theme="light"] .text-slate-100,
+html[data-theme="light"] .text-slate-100\/90,
+html[data-theme="light"] .text-slate-200 {
+  color: #245a86 !important;
+}
+
+html[data-theme="light"] .bg-white\/10,
+html[data-theme="light"] .bg-white\/5,
+html[data-theme="light"] .bg-white\/\[0\.04\],
+html[data-theme="light"] .bg-white\/\[0\.08\] {
+  background-color: rgba(99, 183, 255, 0.14) !important;
+}
+
+html[data-theme="light"] .hover\:text-white:hover {
+  color: #0f4370 !important;
+}
+
+html[data-theme="light"] .hero-overlay {
+  background: linear-gradient(180deg, rgba(235, 247, 255, 0.34) 0%, rgba(204, 230, 250, 0.5) 54%, rgba(170, 212, 243, 0.62) 100%);
+}
+
+html[data-theme="light"] .helicopter-static-fallback {
+  background:
+    linear-gradient(180deg, rgba(241, 250, 255, 0.9) 0%, rgba(218, 238, 253, 0.9) 50%, rgba(197, 227, 249, 0.92) 100%),
+    url("/images/luxury-nepal-helicopter.svg") center / cover no-repeat;
+}
+
+html[data-theme="light"] .floating-whatsapp {
+  color: #ffffff !important;
+}
+
+html[data-theme="light"] .theme-toggle {
+  box-shadow: 0 12px 22px rgba(59, 140, 197, 0.28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
