@@ -5,6 +5,7 @@ import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { Footer } from "@/components/layout/Footer";
 import { HeaderShell } from "@/components/layout/HeaderShell";
 import { MobileConversionBar } from "@/components/layout/MobileConversionBar";
+import { PublicSiteChrome } from "@/components/layout/PublicSiteChrome";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getSiteSettings } from "@/lib/cms";
 import { COMPANY, IS_PRODUCTION_SITE, SITE_URL } from "@/lib/constants";
@@ -102,11 +103,15 @@ export default async function RootLayout({
             buildWebSiteSchema(settings || undefined)
           ]}
         />
-        <HeaderShell />
+        <PublicSiteChrome>
+          <HeaderShell />
+        </PublicSiteChrome>
         <main>{children}</main>
-        <Footer />
-        <FloatingWhatsApp whatsappNumber={whatsappNumber} />
-        <MobileConversionBar phone={settings?.primaryPhone || COMPANY.primaryPhone} whatsapp={whatsappNumber} />
+        <PublicSiteChrome>
+          <Footer />
+          <FloatingWhatsApp whatsappNumber={whatsappNumber} />
+          <MobileConversionBar phone={settings?.primaryPhone || COMPANY.primaryPhone} whatsapp={whatsappNumber} />
+        </PublicSiteChrome>
         {ga4Id ? (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} strategy="afterInteractive" />

@@ -1,8 +1,21 @@
 import { prisma } from "@/lib/prisma";
 import { FALLBACK_BLOG_POSTS } from "@/lib/blog-fallbacks";
 import { FALLBACK_DESTINATIONS, FALLBACK_SERVICES, FALLBACK_TOURS } from "@/lib/home-fallbacks";
+import { asStringArray } from "@/lib/json-array";
 
 const hasDatabase = Boolean(process.env.DATABASE_URL);
+
+function normalizeTour<T extends { images: unknown }>(tour: T) {
+  return { ...tour, images: asStringArray(tour.images) };
+}
+
+function normalizeBlogPost<T extends { tags: unknown; relatedTourSlugs: unknown }>(post: T) {
+  return {
+    ...post,
+    tags: asStringArray(post.tags),
+    relatedTourSlugs: asStringArray(post.relatedTourSlugs)
+  };
+}
 
 export async function getSiteSettings() {
   if (!hasDatabase) return null;
@@ -62,7 +75,8 @@ export async function getServiceBySlug(slug: string) {
 export async function getPublishedTours() {
   if (!hasDatabase) return FALLBACK_TOURS;
   try {
-    return await prisma.tour.findMany({ where: { published: true }, orderBy: { createdAt: "desc" } });
+    const tours = await prisma.tour.findMany({ where: { published: true }, orderBy: { createdAt: "desc" } });
+    return tours.map(normalizeTour);
   } catch {
     return FALLBACK_TOURS;
   }
@@ -71,7 +85,8 @@ export async function getPublishedTours() {
 export async function getTourBySlug(slug: string) {
   if (!hasDatabase) return FALLBACK_TOURS.find((tour) => tour.slug === slug) || null;
   try {
-    return (await prisma.tour.findUnique({ where: { slug } })) || FALLBACK_TOURS.find((tour) => tour.slug === slug) || null;
+    const tour = await prisma.tour.findUnique({ where: { slug } });
+    return tour ? normalizeTour(tour) : FALLBACK_TOURS.find((item) => item.slug === slug) || null;
   } catch {
     return FALLBACK_TOURS.find((tour) => tour.slug === slug) || null;
   }
@@ -80,10 +95,11 @@ export async function getTourBySlug(slug: string) {
 export async function getFeaturedTours() {
   if (!hasDatabase) return FALLBACK_TOURS;
   try {
-    return await prisma.tour.findMany({
+    const tours = await prisma.tour.findMany({
       where: { published: true, featured: true },
       orderBy: { createdAt: "desc" }
     });
+    return tours.map(normalizeTour);
   } catch {
     return FALLBACK_TOURS;
   }
@@ -108,7 +124,7 @@ export async function getPublishedBlogPosts() {
       where: { published: true, OR: [{ publishAt: null }, { publishAt: { lte: new Date() } }] },
       orderBy: { publishAt: "desc" }
     });
-    return posts.length ? posts : FALLBACK_BLOG_POSTS;
+    return posts.length ? posts.map(normalizeBlogPost) : FALLBACK_BLOG_POSTS;
   } catch {
     return FALLBACK_BLOG_POSTS;
   }
@@ -118,13 +134,14 @@ export async function getBlogPostBySlug(slug: string) {
   const fallback = FALLBACK_BLOG_POSTS.find((post) => post.slug === slug) || null;
   if (!hasDatabase) return fallback;
   try {
-    return (await prisma.blogPost.findFirst({
+    const post = await prisma.blogPost.findFirst({
       where: {
         slug,
         published: true,
         OR: [{ publishAt: null }, { publishAt: { lte: new Date() } }]
       }
-    })) || fallback;
+    });
+    return post ? normalizeBlogPost(post) : fallback;
   } catch {
     return fallback;
   }
@@ -142,12 +159,14 @@ export async function getServicesAdmin() {
 
 export async function getToursAdmin() {
   if (!hasDatabase) return [];
-  return prisma.tour.findMany({ orderBy: { updatedAt: "desc" } });
+  const tours = await prisma.tour.findMany({ orderBy: { updatedAt: "desc" } });
+  return tours.map(normalizeTour);
 }
 
 export async function getBlogAdmin() {
   if (!hasDatabase) return [];
-  return prisma.blogPost.findMany({ orderBy: { updatedAt: "desc" } });
+  const posts = await prisma.blogPost.findMany({ orderBy: { updatedAt: "desc" } });
+  return posts.map(normalizeBlogPost);
 }
 
 export async function getInvoicesAdmin() {

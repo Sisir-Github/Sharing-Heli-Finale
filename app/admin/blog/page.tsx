@@ -1,4 +1,5 @@
 import { createBlogPost, deleteBlogPost, updateBlogPost } from "@/app/admin/blog/actions";
+import { asStringArray } from "@/lib/json-array";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -12,8 +13,8 @@ export default async function AdminBlogPage() {
     excerpt: string | null;
     author: string | null;
     category: string | null;
-    tags: string[];
-    relatedTourSlugs: string[];
+    tags: unknown;
+    relatedTourSlugs: unknown;
     featuredImage: string | null;
     seoTitle: string | null;
     seoDescription: string | null;
@@ -68,10 +69,10 @@ export default async function AdminBlogPage() {
               <input name="slug" defaultValue={post.slug} className="input" required />
               <textarea name="excerpt" defaultValue={post.excerpt || ""} className="textarea md:col-span-2" />
               <input name="author" defaultValue={post.author || ""} className="input" />
-              <input name="relatedTourSlugs" defaultValue={post.relatedTourSlugs.join(", ")} className="input" />
+              <input name="relatedTourSlugs" defaultValue={asStringArray(post.relatedTourSlugs).join(", ")} className="input" />
               <textarea name="content" defaultValue={post.content} className="textarea md:col-span-2" required />
               <input name="category" defaultValue={post.category || ""} className="input" />
-              <input name="tags" defaultValue={post.tags.join(", ")} className="input" />
+              <input name="tags" defaultValue={asStringArray(post.tags).join(", ")} className="input" />
               <input name="featuredImage" defaultValue={post.featuredImage || ""} className="input" />
               <input name="seoTitle" defaultValue={post.seoTitle || ""} className="input" />
               <input name="seoDescription" defaultValue={post.seoDescription || ""} className="input" />

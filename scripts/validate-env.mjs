@@ -23,15 +23,15 @@ for (const name of requiredRuntime) {
   if (!process.env[name]?.trim()) errors.push(`${name}: missing`);
 }
 
-function checkUrl(name, { postgres = false } = {}) {
+function checkUrl(name, { database = false } = {}) {
   const value = process.env[name];
   if (!value) return;
   try {
     const url = new URL(value);
-    if (postgres && url.protocol !== "postgresql:" && url.protocol !== "postgres:") {
-      errors.push(`${name}: must use a PostgreSQL URL`);
+    if (database && url.protocol !== "file:") {
+      errors.push(`${name}: must use a SQLite file URL`);
     }
-    if (!postgres && url.protocol !== "https:" && url.hostname !== "localhost" && url.hostname !== "127.0.0.1") {
+    if (!database && url.protocol !== "https:" && url.hostname !== "localhost" && url.hostname !== "127.0.0.1") {
       errors.push(`${name}: must use HTTPS outside local development`);
     }
   } catch {
@@ -39,7 +39,7 @@ function checkUrl(name, { postgres = false } = {}) {
   }
 }
 
-checkUrl("DATABASE_URL", { postgres: true });
+checkUrl("DATABASE_URL", { database: true });
 checkUrl("NEXTAUTH_URL");
 checkUrl("NEXT_PUBLIC_SITE_URL");
 

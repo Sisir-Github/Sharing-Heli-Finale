@@ -1,5 +1,6 @@
 import { createTour, deleteTour, updateTour } from "@/app/admin/tours/actions";
 import { prisma } from "@/lib/prisma";
+import { asStringArray } from "@/lib/json-array";
 import { getTourPricePresentation } from "@/lib/tours/pricing";
 
 export const dynamic = "force-dynamic";
@@ -160,7 +161,7 @@ export default async function AdminToursPage() {
                 <textarea name="itinerary" defaultValue={tour.itinerary} className="textarea md:col-span-2" required />
                 <textarea name="inclusions" defaultValue={tour.inclusions} className="textarea md:col-span-2" required />
                 <textarea name="exclusions" defaultValue={tour.exclusions} className="textarea md:col-span-2" required />
-                <input name="images" defaultValue={tour.images.join(", ")} className="input md:col-span-2" />
+                <input name="images" defaultValue={asStringArray(tour.images).join(", ")} className="input md:col-span-2" />
                 <input name="ctaLabel" defaultValue={tour.ctaLabel || ""} className="input" />
                 <input name="ctaHref" defaultValue={tour.ctaHref || ""} className="input" />
                 <input name="seoTitle" defaultValue={tour.seoTitle || ""} className="input" />

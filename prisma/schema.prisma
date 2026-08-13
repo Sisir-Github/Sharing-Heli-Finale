@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -179,7 +179,7 @@ model Tour {
   itinerary             String
   inclusions            String
   exclusions            String
-  images                String[]
+  images                Json
   ctaLabel              String?
   ctaHref               String?
   seoTitle              String?
@@ -235,8 +235,8 @@ model BlogPost {
   excerpt          String?
   author           String?
   category         String?
-  tags             String[]
-  relatedTourSlugs String[]  @default([])
+  tags             Json
+  relatedTourSlugs Json
   featuredImage    String?
   seoTitle         String?
   seoDescription   String?

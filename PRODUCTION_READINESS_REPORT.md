@@ -1,5 +1,7 @@
 # PRODUCTION READINESS REPORT
 
+> **Backend update, 14 August 2026:** The previously unconfigured PostgreSQL dependency has been replaced by a persistent SQLite backend for the intended single-instance cPanel deployment. Prisma was upgraded to 6.19.3, an initial SQLite migration was created, and local admin authentication was seeded and verified. Historical PostgreSQL findings below describe the state at the original audit and are superseded by this update.
+
 Audit date: 14 August 2026
 Repository: `/Users/sisir/Projects/Sharing-Heli`
 Audited runtime: Node.js `v24.13.0`, npm `11.6.2`

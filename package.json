@@ -21,10 +21,12 @@
     "security:audit": "npm audit --omit=dev",
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
     "prisma": "prisma",
+    "db:migrate": "node scripts/prepare-database.mjs",
+    "db:setup": "node scripts/prepare-database.mjs --seed",
     "db:seed": "prisma db seed"
   },
   "dependencies": {
-    "@prisma/client": "^5.20.0",
+    "@prisma/client": "^6.19.3",
     "bcrypt": "^6.0.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",
@@ -50,7 +52,7 @@
     "eslint-config-next": "16.3.0",
     "playwright-core": "^1.62.1",
     "postcss": "^8.4.49",
-    "prisma": "^5.20.0",
+    "prisma": "^6.19.3",
     "tailwindcss": "^3.4.16",
     "ts-node": "^10.9.2",
     "tsx": "^4.23.12",

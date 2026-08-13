@@ -6,7 +6,6 @@ This application is designed for cPanel Application Manager/Setup Node.js App wi
 
 - cPanel access with Application Manager or Setup Node.js App
 - Node.js 20.9 or newer; Node.js 22 LTS is recommended
-- PostgreSQL 13 or newer, either supplied by the host or from an external managed provider
 - SSH or cPanel Terminal access
 - npm and enough memory to run `next build`
 - SSL for `sharingheli.com`
@@ -26,19 +25,17 @@ Passenger connects the domain to this directory. Do not copy the full source tre
 
 The deployment package must exclude `.git`, `.next`, `node_modules`, local `.env` files, `.DS_Store`, editor settings, development logs, test artifacts, local uploads, and generated invoice data. Build `.next` on the server after upload.
 
-## 3. PostgreSQL
+## 3. SQLite Database
 
-Create a PostgreSQL database and a dedicated database user. Grant that user ownership or full schema privileges only for the Sharing Heli database.
+The CMS, reservations, pricing, inquiries, and invoices use one SQLite database stored at `prisma/sharing-heli.db`. This is appropriate for a single-instance cPanel deployment and avoids a separate database service.
 
-Use the connection format:
+Use this connection value:
 
 ```env
-DATABASE_URL="postgresql://DB_USER:URL_ENCODED_PASSWORD@DB_HOST:5432/DB_NAME?schema=public"
+DATABASE_URL="file:./sharing-heli.db"
 ```
 
-URL-encode special characters in the password. If cPanel does not provide PostgreSQL, use a managed PostgreSQL service that permits connections from the hosting server and requires TLS when available.
-
-Before launch, back up the production database. `prisma migrate deploy` applies committed migrations; it does not create an automatic rollback backup.
+The application directory and `prisma/` must be writable by the Node.js process. Keep Passenger on one application instance. Preserve the database across releases and copy it to secure off-server storage before every migration. Stop or restart the application around a raw file copy so the backup is consistent.
 
 ## 4. Environment Variables
 
@@ -47,7 +44,7 @@ Configure variables in cPanel Application Manager rather than committing a produ
 Required runtime variables:
 
 - `NODE_ENV=production`
-- `DATABASE_URL`: PostgreSQL connection string
+- `DATABASE_URL=file:./sharing-heli.db`: persistent SQLite file
 - `NEXTAUTH_URL=https://sharingheli.com`
 - `NEXTAUTH_SECRET`: long cryptographically random value
 - `NEXT_PUBLIC_SITE_URL=https://sharingheli.com`
@@ -89,13 +86,13 @@ cd ~/apps/sharingheli
 npm ci
 npm run check:env:seed
 npx prisma generate
-npx prisma migrate deploy
+npm run db:migrate
 ```
 
 Run the seed only for the initial setup or an intentional admin password rotation:
 
 ```bash
-npm run db:seed
+npm run db:setup
 ```
 
 The seed refuses missing credentials and passwords shorter than 14 characters. It updates the configured administrator's password hash when intentionally rerun.
@@ -151,7 +148,7 @@ Confirm that the proxy forwards `Host` and `X-Forwarded-Proto`. Incorrect proxy 
 
 ## 10. Persistent Files
 
-`public/uploads` and `data/invoices` use the local filesystem. On one persistent cPanel server this can work, but both directories must be writable and included in backups. They must not be replaced during deployment.
+`prisma/sharing-heli.db`, `public/uploads`, and `data/invoices` use the local filesystem. On one persistent cPanel server this can work, but these paths must be writable and included in backups. They must not be replaced during deployment.
 
 For multiple instances or ephemeral hosting, move uploads and generated invoice documents to private object storage before launch.
 

@@ -196,11 +196,11 @@ html[data-theme="dark"] .theme-switch-to-light { display: block; }
   }
 
   .admin-surface {
-    background: var(--surface-1);
+    background: #0a222d;
   }
 
   .admin-surface-alpha {
-    background: var(--surface-1-alpha);
+    background: rgba(10, 34, 45, 0.97);
   }
 }
 
@@ -291,6 +291,28 @@ html[data-theme="dark"] .theme-switch-to-light { display: block; }
 .brand-logo-inverse {
   filter: brightness(0) invert(1);
   opacity: 0.96;
+}
+
+.admin-shell {
+  --foreground: #ffffff;
+  --muted: #a8b8bd;
+  --card: #102832;
+  --card-border: rgba(255, 255, 255, 0.13);
+  --glass-bg: #102832;
+  --glass-shadow: none;
+  --input-bg: rgba(255, 255, 255, 0.07);
+  --input-border: rgba(255, 255, 255, 0.2);
+  color-scheme: dark;
+  background: #06121a;
+}
+
+.admin-shell .text-haze {
+  color: #a8b8bd !important;
+}
+
+.admin-shell .input,
+.admin-shell .textarea {
+  color: #ffffff;
 }
 
 .service-icon,

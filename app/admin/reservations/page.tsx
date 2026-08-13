@@ -28,11 +28,11 @@ export default async function AdminReservationsPage({ searchParams }: { searchPa
     ...(selectedStatus ? { status: selectedStatus } : {}),
     ...(query ? {
       OR: [
-        { bookingReference: { contains: query, mode: "insensitive" } },
-        { customerName: { contains: query, mode: "insensitive" } },
-        { customerEmail: { contains: query, mode: "insensitive" } },
-        { customerPhone: { contains: query, mode: "insensitive" } },
-        { routeName: { contains: query, mode: "insensitive" } }
+        { bookingReference: { contains: query } },
+        { customerName: { contains: query } },
+        { customerEmail: { contains: query } },
+        { customerPhone: { contains: query } },
+        { routeName: { contains: query } }
       ]
     } : {})
   };

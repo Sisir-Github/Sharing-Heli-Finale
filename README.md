@@ -5,7 +5,7 @@ Next.js App Router website, reservation desk, and CMS for Sharing Heli Nepal. Th
 ## Stack
 
 - Next.js 16 App Router, React 19, TypeScript, Tailwind CSS
-- Prisma 5 with PostgreSQL
+- Prisma 6 with a persistent SQLite database
 - NextAuth credentials sessions with bcrypt
 - Nodemailer SMTP reservation, inquiry, and invoice delivery
 - PDFKit invoice PDF rendering
@@ -29,12 +29,13 @@ cp .env.example .env.local
 
 3. Set a unique `ADMIN_EMAIL`, an `ADMIN_PASSWORD` of at least 14 characters, and a cryptographically random `NEXTAUTH_SECRET`. There are no default admin credentials.
 
+   Keep `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` at `http://127.0.0.1:3000` locally. Set both to `https://sharingheli.com` in cPanel.
+
 4. Apply the database and create the first administrator.
 
 ```bash
 npx prisma generate
-npx prisma migrate dev
-npm run db:seed
+npm run db:setup
 ```
 
 5. Run the site.
@@ -51,7 +52,7 @@ Do not deploy before exporting the live site's indexed URLs and completing the o
 npm ci
 npm run check:env:seed
 npx prisma generate
-npx prisma migrate deploy
+npm run db:migrate
 npm run build
 npm start
 ```
@@ -62,7 +63,7 @@ Run `npm run db:seed` only when intentionally creating the first admin/default r
 
 ## Required Environment
 
-- `DATABASE_URL`
+- `DATABASE_URL` (use `file:./sharing-heli.db`; Prisma resolves it inside `prisma/`)
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
 - `ADMIN_EMAIL`
@@ -83,7 +84,8 @@ Optional integrations:
 - `/admin/reservations` manages reservation status, payment state, confirmed date, quoted amount, deposit, aircraft, pickup point, and internal notes. It also supports manually entered phone or walk-in requests and CSV export.
 - `/admin/pricing` is the fast price desk. Fixed public prices require an amount and validity dates; saving records the verification date. Full route content remains in `/admin/tours`.
 - `/admin/settings`, `/admin/navigation`, `/admin/services`, `/admin/tours`, `/admin/blog`, and `/admin/media` control the corresponding customer-facing content and assets. The logo URL is managed in Site Content.
-- `/api/health` returns HTTP 200 only when the application can reach PostgreSQL; use it for deployment and uptime checks.
+- `/api/health` returns HTTP 200 only when the application can reach the SQLite database; use it for deployment and uptime checks.
+- `prisma/sharing-heli.db` is persistent business data. Keep the app on one server process, preserve the file between deployments, and include it in off-server backups.
 - A public reservation is saved before SMTP is attempted. Email delivery failure does not discard the reservation record.
 - Unverified or expired tour prices stay hidden. A public fare requires price mode, matching amount, validity dates, and `lastVerifiedAt`.
 - Invoice creation requires an admin session. Customer invoice and PDF links use a stored random public token, not the invoice number.

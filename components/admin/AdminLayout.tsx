@@ -9,7 +9,7 @@ export async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
 
   return (
-    <div className="min-h-screen bg-midnight text-white">
+    <div className="admin-shell min-h-screen bg-midnight text-white">
       <div className="flex min-h-screen">
         <aside className="admin-surface hidden w-64 shrink-0 flex-col border-r border-white/10 p-5 lg:flex xl:w-72 xl:p-6">
           <BrandLogo className="w-fit" imageClassName="brand-logo-inverse h-11" />
@@ -33,7 +33,7 @@ export async function AdminLayout({ children }: { children: React.ReactNode }) {
             </form>
           </header>
           <AdminNav mobile />
-          <main className="flex-1 px-4 py-7 sm:px-6 lg:px-8">{children}</main>
+          <div className="flex-1 px-4 py-7 sm:px-6 lg:px-8">{children}</div>
         </div>
       </div>
     </div>

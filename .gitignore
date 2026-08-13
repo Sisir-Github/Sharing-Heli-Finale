@@ -9,5 +9,7 @@ yarn-error.log*
 pnpm-debug.log*
 coverage
 data
+prisma/*.db
+prisma/*.db-journal
 *.tsbuildinfo
 public/uploads
