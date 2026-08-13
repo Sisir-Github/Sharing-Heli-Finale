@@ -176,7 +176,7 @@ Check these URLs and workflows after restart:
 - Main Annapurna, Everest, Muktinath, shared-flight, and charter pages
 - `/sitemap.xml` and `/robots.txt`
 - `/api/health` returns HTTP 200 and reports the database check as `ok`
-- One legacy redirect from `SEO_MIGRATION_MAP.md` returns 301
+- Legacy redirects configured in `next.config.mjs` return a single 301 hop to their canonical pages
 - Unknown URL returns the custom 404 with HTTP 404
 - `/admin` redirects to `/login` while signed out
 - Admin login and CMS update

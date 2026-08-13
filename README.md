@@ -46,7 +46,7 @@ npm run dev
 
 ## Production Deployment
 
-Do not deploy before exporting the live site's indexed URLs and completing the one-to-one migration map in `SEO_MIGRATION_MAP.md`.
+Before deployment, export indexed URLs from Search Console and server logs, then confirm the legacy redirects in `next.config.mjs` cover every established URL.
 
 ```bash
 npm ci
