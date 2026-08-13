@@ -78,7 +78,7 @@ export async function Footer() {
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-copper">Pokhara Operations</p>
             <address className="mt-6 space-y-4 text-sm not-italic text-white/52">
-              <p className="flex gap-3 leading-6"><MapPin size={17} className="mt-1 shrink-0 text-copper" /><span>{resolved.addressLine1}<br />{resolved.addressLine2}<br />{resolved.addressLine3}<br />{resolved.addressLine4}</span></p>
+              <a href={COMPANY.googleMapsUrl} target="_blank" rel="noreferrer" className="flex gap-3 leading-6 transition-colors hover:text-white"><MapPin size={17} className="mt-1 shrink-0 text-copper" /><span>{resolved.addressLine1}<br />{resolved.addressLine2}<br />{resolved.addressLine3}<br />{resolved.addressLine4}</span></a>
               <a href={`tel:${resolved.primaryPhone}`} className="flex items-center gap-3 transition-colors hover:text-white"><Phone size={17} className="text-copper" />{resolved.primaryPhone}</a>
               <a href={whatsappHref} target="_blank" rel="noreferrer" className="flex items-center gap-3 transition-colors hover:text-white"><MessageCircleMore size={17} className="text-copper" />{resolved.whatsappNumber}</a>
               <a href={`mailto:${resolved.email}`} className="flex items-center gap-3 break-all transition-colors hover:text-white"><Mail size={17} className="text-copper" />{resolved.email}</a>

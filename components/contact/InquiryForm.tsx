@@ -5,6 +5,7 @@ import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 
 import { Reveal } from "@/components/ui/Reveal";
 import { trackEvent } from "@/lib/analytics";
+import { COMPANY } from "@/lib/constants";
 
 type InquiryState = {
   name: string;
@@ -132,7 +133,15 @@ export function InquiryForm({
               <p className="inline-flex items-center gap-2"><Phone size={15} /> {contactSettings.primaryPhone}</p>
               <p className="inline-flex items-center gap-2"><Phone size={15} /> WhatsApp {contactSettings.whatsappNumber}</p>
               <p className="inline-flex items-center gap-2"><Mail size={15} /> {contactSettings.email}</p>
-              <p className="inline-flex items-start gap-2"><MapPin size={15} className="mt-0.5" /> {contactSettings.addressLine1}, {contactSettings.addressLine2}, {contactSettings.addressLine3}{contactSettings.addressLine4 ? `, ${contactSettings.addressLine4}` : ""}</p>
+              <a
+                href={COMPANY.googleMapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-start gap-2 transition-colors hover:text-aurora"
+              >
+                <MapPin size={15} className="mt-0.5 shrink-0" />
+                <span>{contactSettings.addressLine1}, {contactSettings.addressLine2}, {contactSettings.addressLine3}{contactSettings.addressLine4 ? `, ${contactSettings.addressLine4}` : ""}</span>
+              </a>
             </div>
 
             <a
@@ -159,12 +168,20 @@ export function InquiryForm({
           {showMap ? (
             <article className="surface-card p-2">
               <iframe
-                title="Sharing Heli Nepal Location"
-                src="https://www.google.com/maps?q=Lakeside-6%2C%2015%20Street%20No.%2C%20Pokhara%2033700%2C%20Kaski%2C%20Gandaki%20Province%2C%20Nepal&output=embed"
+                title="Pokhara Flight Centre Tours and Travel location"
+                src={COMPANY.googleMapsEmbedUrl}
                 className="h-64 w-full rounded-lg border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
+              <a
+                href={COMPANY.googleMapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center gap-2 px-3 py-2 text-sm font-semibold text-aurora transition-colors hover:text-ink"
+              >
+                <MapPin size={16} /> Open in Google Maps
+              </a>
             </article>
           ) : null}
         </aside>

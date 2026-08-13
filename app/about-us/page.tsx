@@ -28,7 +28,7 @@ export default function AboutPage() {
           </div>
           <div className="grid gap-4">
             {[
-              { icon: MapPin, title: "Office", text: `${COMPANY.address.line1}, ${COMPANY.address.line2}, ${COMPANY.address.line3}, ${COMPANY.address.country}` },
+              { icon: MapPin, title: "Office", text: <a href={COMPANY.googleMapsUrl} target="_blank" rel="noreferrer" className="font-semibold text-aurora underline decoration-aurora/30 underline-offset-4">{COMPANY.address.line1}, {COMPANY.address.line2}, {COMPANY.address.line3}, {COMPANY.address.country}</a> },
               { icon: Building2, title: "Business identity", text: <>{COMPANY.companyName}. Operated by <a href={COMPANY.operatorUrl} target="_blank" rel="noreferrer" className="font-semibold text-aurora underline decoration-aurora/30 underline-offset-4">{COMPANY.operator}</a>.</> },
               { icon: MessagesSquare, title: "Direct contact", text: <><a href={`tel:${COMPANY.primaryPhone}`} className="font-semibold text-aurora">{COMPANY.primaryPhone}</a> · <a href={COMPANY.whatsappLink} target="_blank" rel="noreferrer" className="font-semibold text-aurora">WhatsApp</a></> }
             ].map(({ icon: Icon, title, text }) => (

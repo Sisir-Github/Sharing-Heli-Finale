@@ -9,6 +9,8 @@ export const COMPANY = {
   primaryPhone: "+977-9856028155",
   whatsappNumber: "+977-9856028155",
   whatsappLink: "https://wa.me/9779856028155",
+  googleMapsUrl: "https://maps.app.goo.gl/16jqdvkPbzSqX3PC7",
+  googleMapsEmbedUrl: "https://www.google.com/maps?q=28.2103132%2C83.9570783&z=17&output=embed",
   address: {
     line1: "Lakeside-6, 15 Street No.",
     line2: "Pokhara 33700",
@@ -16,8 +18,8 @@ export const COMPANY = {
     country: "Nepal"
   },
   geo: {
-    latitude: 28.2096,
-    longitude: 83.9856
+    latitude: 28.2103132,
+    longitude: 83.9570783
   }
 } as const;
 

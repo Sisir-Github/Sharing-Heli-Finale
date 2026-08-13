@@ -77,6 +77,12 @@ export function buildLocalBusinessSchema(settings?: SchemaSettings) {
     url: SITE_URL,
     telephone: resolved.primaryPhone,
     email: resolved.email,
+    hasMap: COMPANY.googleMapsUrl,
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: COMPANY.geo.latitude,
+      longitude: COMPANY.geo.longitude
+    },
     address: {
       "@type": "PostalAddress",
       streetAddress: `${resolved.addressLine1}, ${resolved.addressLine2}, ${resolved.addressLine3}`,

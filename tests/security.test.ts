@@ -5,6 +5,8 @@ import { rowsToCsv } from "@/lib/csv";
 import { safeAdminCallback, safeLocalImageSource, safePublicHref } from "@/lib/safe-url";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getTourImage } from "@/lib/tours/images";
+import { COMPANY } from "@/lib/constants";
+import { buildLocalBusinessSchema } from "@/lib/seo/schema";
 
 test("CSV export neutralizes spreadsheet formulas and escapes quotes", () => {
   const csv = rowsToCsv([["name", "note"], ["=HYPERLINK(\"https://bad.example\")", "A \"quote\""]]);
@@ -43,6 +45,20 @@ test("tour image resolver replaces legacy illustrations and preserves uploaded p
     getTourImage("annapurna-base-camp-helicopter-tour-nepal", "/uploads/annapurna.webp"),
     "/uploads/annapurna.webp"
   );
+});
+
+test("company map details use the verified Pokhara Flight Centre listing", () => {
+  assert.equal(COMPANY.googleMapsUrl, "https://maps.app.goo.gl/16jqdvkPbzSqX3PC7");
+  assert.match(COMPANY.googleMapsEmbedUrl, /28\.2103132%2C83\.9570783/);
+  assert.deepEqual(COMPANY.geo, { latitude: 28.2103132, longitude: 83.9570783 });
+
+  const businessSchema = buildLocalBusinessSchema();
+  assert.equal(businessSchema.hasMap, COMPANY.googleMapsUrl);
+  assert.deepEqual(businessSchema.geo, {
+    "@type": "GeoCoordinates",
+    latitude: COMPANY.geo.latitude,
+    longitude: COMPANY.geo.longitude
+  });
 });
 
 test("rate limiter rejects the sixth request in a window", () => {
