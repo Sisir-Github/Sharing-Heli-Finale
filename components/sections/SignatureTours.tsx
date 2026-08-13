@@ -5,8 +5,8 @@ import { ArrowUpRight, Clock3, MapPin, Plane, Users } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getCanonicalTourPath } from "@/lib/seo/canonical";
+import { getTourImage } from "@/lib/tours/images";
 import { getTourPricePresentation, type TourPricing } from "@/lib/tours/pricing";
-import { safeLocalImageSource } from "@/lib/safe-url";
 
 type TourItem = TourPricing & {
   id: string;
@@ -19,12 +19,6 @@ type TourItem = TourPricing & {
   sharedAvailable?: boolean;
   privateAvailable?: boolean;
   departureCity?: string | null;
-};
-
-const campaignImages: Record<string, string> = {
-  "everest-base-camp-helicopter-tour-nepal": "/images/campaign/everest-helicopter.jpg",
-  "annapurna-base-camp-helicopter-tour-nepal": "/images/campaign/annapurna-helicopter.jpg",
-  "muktinath-helicopter-tour-nepal": "/images/campaign/muktinath-helicopter.jpg"
 };
 
 export function SignatureTours({ tours }: { tours: TourItem[] }) {
@@ -49,7 +43,7 @@ export function SignatureTours({ tours }: { tours: TourItem[] }) {
             const price = getTourPricePresentation(tour);
             const href = getCanonicalTourPath(tour.slug);
             const isFeature = index === 0;
-            const image = safeLocalImageSource(campaignImages[tour.slug] || tour.images?.[0], "/images/tours-overview.svg");
+            const image = getTourImage(tour.slug, tour.images?.[0]);
 
             return (
               <article

@@ -249,7 +249,7 @@ async function main() {
           itinerary: "Morning departure, Everest region flight, operationally permitted viewing or landing points, and return.",
           inclusions: "Flight coordination, mountain briefing, route planning, and operational support.",
           exclusions: "Personal expenses, travel insurance, and optional upgrades.",
-          images: ["/images/everest-tour.svg"],
+          images: ["/images/campaign/everest-helicopter.jpg"],
           published: true,
           featured: true
         },
@@ -282,7 +282,7 @@ async function main() {
           itinerary: "Depart Pokhara, Annapurna flyover, base camp view stop, return.",
           inclusions: "Flight coordination, weather checks, and route planning support.",
           exclusions: "Personal expenses and insurance.",
-          images: ["/images/annapurna-tour.svg"],
+          images: ["/images/campaign/annapurna-helicopter.jpg"],
           published: true,
           featured: true
         },
@@ -315,7 +315,7 @@ async function main() {
           itinerary: "Departure, Muktinath landing, pilgrimage time, return.",
           inclusions: "Operations support, flight planning, and route coordination.",
           exclusions: "Personal expenses and insurance.",
-          images: ["/images/muktinath-tour.svg"],
+          images: ["/images/campaign/muktinath-helicopter.jpg"],
           published: true,
           featured: true
         }

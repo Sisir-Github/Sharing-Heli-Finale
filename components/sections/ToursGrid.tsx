@@ -4,20 +4,8 @@ import { ArrowUpRight, Clock3, MountainSnow } from "lucide-react";
 
 import { Reveal } from "@/components/ui/Reveal";
 import { getCanonicalTourPath } from "@/lib/seo/canonical";
+import { getTourImage } from "@/lib/tours/images";
 import { getTourPricePresentation, type TourPricing } from "@/lib/tours/pricing";
-import { safeLocalImageSource } from "@/lib/safe-url";
-
-const imageMap: Record<string, string> = {
-  "Everest Base Camp Helicopter Tour": "/images/everest-tour.svg",
-  "Annapurna Base Camp Tour": "/images/annapurna-tour.svg",
-  "Muktinath Pilgrimage Tour": "/images/muktinath-tour.svg"
-};
-
-const campaignImages: Record<string, string> = {
-  "everest-base-camp-helicopter-tour-nepal": "/images/campaign/everest-helicopter.jpg",
-  "annapurna-base-camp-helicopter-tour-nepal": "/images/campaign/annapurna-helicopter.jpg",
-  "muktinath-helicopter-tour-nepal": "/images/campaign/muktinath-helicopter.jpg"
-};
 
 type TourItem = TourPricing & {
   id: string;
@@ -36,7 +24,7 @@ export function ToursGrid({ tours }: { tours: TourItem[] }) {
         {tours.map((tour) => {
           const price = getTourPricePresentation(tour);
           const href = getCanonicalTourPath(tour.slug);
-          const image = safeLocalImageSource(campaignImages[tour.slug] || tour.images?.[0] || imageMap[tour.title], "/images/tours-overview.svg");
+          const image = getTourImage(tour.slug, tour.images?.[0]);
           return (
           <article
             key={tour.id}

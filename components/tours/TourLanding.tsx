@@ -6,8 +6,8 @@ import { FaqSection } from "@/components/seo/FaqSection";
 import { TourDetail } from "@/components/tours/TourDetail";
 import { ReservationButton } from "@/components/ui/ReservationButton";
 import { buildBreadcrumbSchema, buildFaqSchema, buildProductSchema } from "@/lib/seo/schema";
+import { getTourImage } from "@/lib/tours/images";
 import { getTourPricePresentation, type TourPricing } from "@/lib/tours/pricing";
-import { safeLocalImageSource } from "@/lib/safe-url";
 
 type ContactSettings = {
   primaryPhone: string;
@@ -72,15 +72,9 @@ export function TourLanding({
     : tour;
   const price = getTourPricePresentation(displayTour);
   const faqs = resolveFaqs(displayTour.faqs);
-  const fallbackHeroImage = (
-    path.includes("everest")
-      ? "/images/campaign/everest-helicopter.jpg"
-      : path.includes("muktinath")
-        ? "/images/campaign/muktinath-helicopter.jpg"
-        : "/images/campaign/annapurna-helicopter.jpg"
-  );
-  const heroImage = safeLocalImageSource(displayTour.images?.[0], fallbackHeroImage);
-  const reservationHref = `/check-availability?tour=${encodeURIComponent(path.split("/").filter(Boolean).pop() || "")}`;
+  const slug = path.split("/").filter(Boolean).pop() || "";
+  const heroImage = getTourImage(slug, displayTour.images?.[0]);
+  const reservationHref = `/check-availability?tour=${encodeURIComponent(slug)}`;
   const schemaPrice =
     price.isVerified && tour.priceMode === "SHARED_PER_PERSON"
       ? tour.sharedPriceFrom
@@ -120,7 +114,7 @@ export function TourLanding({
           sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-ink/70" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,24,33,0.82)_0%,rgba(7,24,33,0.58)_52%,rgba(7,24,33,0.2)_100%)]" aria-hidden="true" />
         <div className="shell relative z-10 flex min-h-[470px] items-end py-12 sm:min-h-[520px] sm:py-16">
           <div className="max-w-3xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-copper">Signature tour</p>
