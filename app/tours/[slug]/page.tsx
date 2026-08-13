@@ -2,39 +2,28 @@ import { notFound } from "next/navigation";
 
 import { TourLanding } from "@/components/tours/TourLanding";
 import { getSiteSettings, getTourBySlug } from "@/lib/cms";
+import { resolveContactSettings } from "@/lib/constants";
+import { getCanonicalTourPath } from "@/lib/seo/canonical";
+import { buildTourMetadata } from "@/lib/seo/tour-metadata";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const tour = await getTourBySlug(params.slug);
-  if (!tour) {
-    return {};
-  }
-  return {
-    title: tour.seoTitle || tour.title,
-    description: tour.seoDescription || tour.highlights
-  };
+type TourPageProps = { params: Promise<{ slug: string }> };
+
+export async function generateMetadata({ params }: TourPageProps) {
+  const { slug } = await params;
+  const tour = await getTourBySlug(slug);
+  return buildTourMetadata(tour, getCanonicalTourPath(slug));
 }
 
-export default async function TourSlugPage({ params }: { params: { slug: string } }) {
-  const [tour, settings] = await Promise.all([getTourBySlug(params.slug), getSiteSettings()]);
+export default async function TourSlugPage({ params }: TourPageProps) {
+  const { slug } = await params;
+  const [tour, settings] = await Promise.all([getTourBySlug(slug), getSiteSettings()]);
   if (!tour) {
     notFound();
   }
 
-  const contactSettings = settings
-    ? {
-        primaryPhone: settings.primaryPhone,
-        whatsappNumber: settings.whatsappNumber,
-        email: settings.email,
-        operatingUnder: settings.operatingUnder
-      }
-    : {
-        primaryPhone: "+977-9802855690",
-        whatsappNumber: "+977-9856028155",
-        email: "rishi8848@gmail.com",
-        operatingUnder: "Operating under Pokhara Flight Centre Tours & Travel Pvt. Ltd."
-      };
+  const contactSettings = resolveContactSettings(settings);
 
-  return <TourLanding tour={tour} path={`/tours/${params.slug}`} contactSettings={contactSettings} />;
+  return <TourLanding tour={tour} path={`/tours/${slug}`} contactSettings={contactSettings} />;
 }

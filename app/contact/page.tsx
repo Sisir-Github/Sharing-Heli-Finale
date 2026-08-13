@@ -4,6 +4,7 @@ import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { PageIntro } from "@/components/layout/PageIntro";
 import { InquiryForm } from "@/components/contact/InquiryForm";
 import { getPublishedServices, getSiteSettings } from "@/lib/cms";
+import { resolveContactSettings } from "@/lib/constants";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 import { buildBreadcrumbSchema } from "@/lib/seo/schema";
 
@@ -14,31 +15,13 @@ const breadcrumbs = [
   { name: "Contact", path: "/contact" }
 ];
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
 
 export default async function ContactPage() {
   type ServiceItem = { title: string };
   const [services, settings] = (await Promise.all([getPublishedServices(), getSiteSettings()])) as [ServiceItem[], Awaited<ReturnType<typeof getSiteSettings>>];
   const serviceNames = services.map((service) => service.title);
-  const contactSettings = settings
-    ? {
-        primaryPhone: settings.primaryPhone,
-        whatsappNumber: settings.whatsappNumber,
-        email: settings.email,
-        addressLine1: settings.addressLine1,
-        addressLine2: settings.addressLine2,
-        addressLine3: settings.addressLine3,
-        addressLine4: settings.addressLine4
-      }
-    : {
-        primaryPhone: "+977-9802855690",
-        whatsappNumber: "+977-9856028155",
-        email: "rishi8848@gmail.com",
-        addressLine1: "Lakeside-6, 15 Street No.",
-        addressLine2: "Pokhara 33700",
-        addressLine3: "Kaski, Gandaki Province",
-        addressLine4: "Nepal"
-      };
+  const contactSettings = resolveContactSettings(settings);
 
   return (
     <>
@@ -47,7 +30,7 @@ export default async function ContactPage() {
       <PageIntro
         eyebrow="Contact"
         title="Contact Sharing Heli Nepal"
-        description="Send your travel plans or mission details and receive tailored support from our 24/7 operations desk."
+        description="Send your travel plans or mission details to our Pokhara operations desk for current availability and planning support."
         headingLevel={1}
       />
       <InquiryForm showMap services={serviceNames} contactSettings={contactSettings} />
@@ -56,7 +39,7 @@ export default async function ContactPage() {
         items={[
           {
             title: "Charter Inquiry",
-            description: "Request private charter scheduling, route planning, and premium ground support.",
+            description: "Request private charter scheduling, route planning, and ground support details.",
             href: "/contact/charter"
           },
           {

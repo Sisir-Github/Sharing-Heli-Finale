@@ -1,16 +1,24 @@
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
+import { COMPANY } from "../lib/constants";
+
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminEmail = process.env.ADMIN_EMAIL || "admin@sharingheli.com";
-  const adminPassword = process.env.ADMIN_PASSWORD || "ChangeMe123!";
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword || adminPassword.length < 14) {
+    throw new Error("Set ADMIN_EMAIL and a unique ADMIN_PASSWORD of at least 14 characters before seeding.");
+  }
   const hashed = await bcrypt.hash(adminPassword, 12);
 
   await prisma.adminUser.upsert({
     where: { email: adminEmail },
-    update: {},
+    update: {
+      passwordHash: hashed,
+      role: "ADMIN"
+    },
     create: {
       email: adminEmail,
       name: "Sharing Heli Admin",
@@ -23,37 +31,38 @@ async function main() {
   if (!existingSettings) {
     const settings = await prisma.siteSettings.create({
       data: {
-        companyName: "Sharing Heli Nepal Pvt. Ltd.",
-        brandName: "Sharing Heli",
-        tagline: "Elevate Your Journey Above the Himalayas",
-        operatingUnder: "Operating under Pokhara Flight Centre Tours & Travel Pvt. Ltd.",
-        primaryPhone: "+977-9802855690",
-        whatsappNumber: "+977-9856028155",
-        email: "rishi8848@gmail.com",
-        addressLine1: "Lakeside-6, 15 Street No.",
-        addressLine2: "Pokhara 33700",
-        addressLine3: "Kaski, Gandaki Province",
-        addressLine4: "Nepal",
-        businessHours: "24/7 Availability",
-        seoTitle: "Luxury Helicopter Tours & Charter in Nepal | Sharing Heli",
+        companyName: COMPANY.companyName,
+        brandName: COMPANY.brandName,
+        logoImage: "/images/sharing-heli-logo.png",
+        tagline: COMPANY.tagline,
+        operatingUnder: COMPANY.operatingLine,
+        primaryPhone: COMPANY.primaryPhone,
+        whatsappNumber: COMPANY.whatsappNumber,
+        email: COMPANY.inquiryEmail,
+        addressLine1: COMPANY.address.line1,
+        addressLine2: COMPANY.address.line2,
+        addressLine3: COMPANY.address.line3,
+        addressLine4: COMPANY.address.country,
+        businessHours: "Daily flight coordination by request",
+        seoTitle: "Helicopter Tours & Charter in Nepal | Sharing Heli",
         seoDescription:
-          "Experience luxury helicopter tours, private charter, pilgrimage flights, rescue support, and aerial services in Nepal with experienced mountain pilots at Sharing Heli.",
-        ogImage: "/images/og-sharing-heli.jpg",
-        heroHeadline: "Elevate Your Journey Above the Himalayas",
+          "Plan shared helicopter flights and private charters in Nepal with Pokhara-based support, clear operational guidance, and current fare confirmation.",
+        ogImage: "/images/campaign/sharing-heli-hero.jpg",
+        heroHeadline: "Helicopter tours and charters in Nepal.",
         heroSubheadline:
-          "Premium helicopter tours, private charter, and emergency services across Nepal with safety-first crews and cinematic Himalayan views.",
-        heroBackgroundMode: "3d",
-        heroBackgroundImage: "/images/hero-fallback.jpg",
+          "Shared helicopter flights and private charters coordinated from Pokhara, with clear planning around weather, routing, and passenger needs.",
+        heroBackgroundMode: "image",
+        heroBackgroundImage: null,
         heroBackgroundVideo: "",
-        heroCtaPrimaryLabel: "Inquiry Now",
-        heroCtaPrimaryHref: "/contact",
-        heroCtaSecondaryLabel: "WhatsApp",
-        heroCtaSecondaryHref: "https://wa.me/9779856028155",
+        heroCtaPrimaryLabel: "Reserve a flight",
+        heroCtaPrimaryHref: "/check-availability",
+        heroCtaSecondaryLabel: "View routes",
+        heroCtaSecondaryHref: "/tours",
         heroCtaTertiaryLabel: "Call Now",
-        heroCtaTertiaryHref: "tel:+977-9802855690",
+        heroCtaTertiaryHref: `tel:${COMPANY.primaryPhone.replace(/\s/g, "")}`,
         ctaStripText: "Plan your Himalayan flight in minutes with our operations desk.",
-        ctaStripButtonLabel: "Start Inquiry",
-        ctaStripButtonHref: "/contact"
+        ctaStripButtonLabel: "Reserve a flight",
+        ctaStripButtonHref: "/check-availability"
       }
     });
 
@@ -68,22 +77,22 @@ async function main() {
       data: [
         {
           settingsId: settings.id,
-          title: "Government-Regulated Operations",
-          description: "Compliance-led flight operations aligned with Nepal aviation regulations.",
+          title: "Pokhara-Based Coordination",
+          description: "Direct support from our Lakeside team before and after your flight.",
           order: 1,
           visible: true
         },
         {
           settingsId: settings.id,
-          title: "Experienced Mountain Pilots",
-          description: "High-altitude crews with deep local terrain knowledge and safety training.",
+          title: "Weather-Led Planning",
+          description: "Schedules and routes are confirmed against current operating conditions.",
           order: 2,
           visible: true
         },
         {
           settingsId: settings.id,
-          title: "24/7 Emergency Response",
-          description: "Rapid coordination for rescue and mission-critical charter requirements.",
+          title: "Direct Desk Support",
+          description: "Contact the operations desk by phone or WhatsApp for current information.",
           order: 3,
           visible: true
         }
@@ -94,15 +103,15 @@ async function main() {
       data: [
         {
           settingsId: settings.id,
-          title: "Safety-First Flight Planning",
-          description: "Structured pre-flight checks, weather intelligence, and certified crew readiness.",
+          title: "Operational Clarity",
+          description: "We explain routing, passenger requirements, timing, and known limitations before confirmation.",
           order: 1,
           visible: true
         },
         {
           settingsId: settings.id,
-          title: "Luxury Cabin Experience",
-          description: "Comfortable, premium interiors for discerning international travelers.",
+          title: "Shared And Private Options",
+          description: "Compare per-seat shared departures with a private aircraft arranged around your group.",
           order: 2,
           visible: true
         },
@@ -122,9 +131,12 @@ async function main() {
     await prisma.navItem.createMany({
       data: [
         { label: "Home", href: "/", order: 1, visible: true },
-        { label: "Services", href: "/services", order: 2, visible: true },
-        { label: "Tours", href: "/tours", order: 3, visible: true },
-        { label: "Contact", href: "/contact", order: 4, visible: true }
+        { label: "Tours", href: "/tours", order: 2, visible: true },
+        { label: "Charter", href: "/helicopter-charter-nepal", order: 3, visible: true },
+        { label: "Destinations", href: "/destinations", order: 4, visible: true },
+        { label: "Blog", href: "/blog", order: 5, visible: true },
+        { label: "About", href: "/about-us", order: 6, visible: true },
+        { label: "Contact", href: "/contact", order: 7, visible: true }
       ]
     });
   }
@@ -180,13 +192,13 @@ async function main() {
           title: "Charter",
           slug: "helicopter-charter-nepal",
           shortDescription: "Private charter missions tailored to schedule, route, and passenger needs.",
-          longDescription: "Premium helicopter charter services for business, leisure, and custom routing across Nepal. Our operations desk coordinates aircraft availability, routing, and ground support for efficient mission execution."
+          longDescription: "Private helicopter charter for business, travel, pilgrimage, and custom routing across Nepal. Our operations desk coordinates aircraft availability, routing, and ground support for efficient mission execution."
         },
         {
-          title: "Emergency Rescue",
+          title: "Emergency Flight Coordination",
           slug: "emergency-helicopter-rescue-nepal",
-          shortDescription: "Rapid-response helicopter rescue coordination for urgent missions.",
-          longDescription: "Emergency rescue coordination with high-altitude expertise. We align dispatch, flight planning, and medical transfer support with safety-first execution."
+          shortDescription: "Time-sensitive helicopter coordination for urgent transport requests.",
+          longDescription: "We help relay urgent flight requirements to available operators. Dispatch depends on weather, aircraft availability, permissions, and the operating crew's assessment; no flight is guaranteed until confirmed."
         },
         {
           title: "Pokhara Helicopter Service",
@@ -195,10 +207,10 @@ async function main() {
           longDescription: "Pokhara-based helicopter services for tours, charter, and emergency missions. Local coordination ensures fast turnaround and reliable support."
         },
         {
-          title: "Luxury Helicopter Tours",
+          title: "Custom Helicopter Experiences",
           slug: "luxury-helicopter-tour-nepal",
-          shortDescription: "High-comfort helicopter tours curated for premium travelers.",
-          longDescription: "Luxury helicopter tours designed for discerning international guests, with refined routing, premium cabin comfort, and concierge-style coordination."
+          shortDescription: "Private helicopter routes for travelers who need a tailored schedule or special-purpose flight.",
+          longDescription: "Custom helicopter experiences for private travel, filming, photography, corporate movement, proposals, and special occasions, planned around route feasibility and current operating conditions."
         }
       ]
     });
@@ -209,13 +221,32 @@ async function main() {
     await prisma.tour.createMany({
       data: [
         {
-          title: "Everest Base Camp Helicopter Tour",
+          title: "Everest Region Helicopter Tour",
           slug: "everest-base-camp-helicopter-tour-nepal",
           duration: "4.5 Hours",
-          priceFrom: 1250,
+          priceFrom: null,
           currency: "USD",
-          highlights: "Everest region aerial access with iconic Himalayan views and expert mountain pilots.",
-          itinerary: "Morning departure, Everest region flyover, scenic viewing stops, and return to base.",
+          priceMode: "LIVE_QUOTE",
+          departureCity: "Kathmandu",
+          excerpt: "A weather-led Everest region flight request with the final route and any landing option confirmed for the operating day.",
+          overview: "Everest region helicopter flights require careful review of weather, aircraft performance, fuel planning, permissions, and passenger loading. The operations desk confirms the practical route before payment.",
+          route: "Departure and return points are confirmed with the quote. The operating crew selects the practical Everest-region routing and any permitted stop for current conditions.",
+          altitude: "High-altitude route; landing and ground-time decisions remain operational.",
+          bestTime: "Autumn and spring are commonly requested, with every date subject to current mountain weather.",
+          weatherNotes: "Cloud, wind, visibility, and rapidly changing conditions can delay, reroute, or cancel the flight.",
+          cancellationPolicy: "Weather and operator decisions may require rescheduling or cancellation. Written terms are supplied with the current quote.",
+          passengerRequirements: "Provide names, individual weights, baggage estimates, and any medical or mobility considerations before confirmation.",
+          weightSeating: "Seating and loading are assigned after the operator reviews the complete passenger manifest.",
+          whatToBring: "Bring identification and follow the clothing, baggage, and equipment guidance supplied with the confirmed flight plan.",
+          photographyInfo: "Specific views are weather-dependent. Follow crew instructions for safe camera and phone use.",
+          safetyNotes: "The operating pilot has final authority over departure, routing, landing, payload, and cancellation decisions.",
+          faqs: [
+            { question: "Is an Everest Base Camp or Kala Patthar landing guaranteed?", answer: "No. Any landing option depends on current weather, permissions, passenger loading, aircraft performance, and the operating pilot's decision." },
+            { question: "Can the flight be confirmed without passenger weights?", answer: "No. Individual passenger weights and baggage estimates are required for operational review." }
+          ],
+          operationalNotice: "Landing points and routing vary with weather, weight, permissions, and the operating pilot's decision.",
+          highlights: "Everest region aerial views with routing confirmed for the day's operating conditions.",
+          itinerary: "Morning departure, Everest region flight, operationally permitted viewing or landing points, and return.",
           inclusions: "Flight coordination, mountain briefing, route planning, and operational support.",
           exclusions: "Personal expenses, travel insurance, and optional upgrades.",
           images: ["/images/everest-tour.svg"],
@@ -226,11 +257,30 @@ async function main() {
           title: "Annapurna Base Camp Tour",
           slug: "annapurna-base-camp-helicopter-tour-nepal",
           duration: "4 Hours",
-          priceFrom: 1150,
+          priceFrom: null,
           currency: "USD",
+          priceMode: "LIVE_QUOTE",
+          departureCity: "Pokhara",
+          excerpt: "An Annapurna region helicopter request from Pokhara with route, landing conditions, and current commercial details checked before booking.",
+          overview: "Annapurna flights from Pokhara move quickly from valley terrain toward high mountains. Visibility, wind, passenger loading, and landing conditions are reviewed before the route is confirmed.",
+          route: "Pokhara departure with the final Annapurna-region circuit and any ground stop selected for current conditions and operator approval.",
+          altitude: "High-altitude route; passenger comfort and landing feasibility require review.",
+          bestTime: "Autumn and spring are popular planning periods, while every departure depends on current weather.",
+          weatherNotes: "Valley cloud, mountain visibility, wind, and conditions near the intended stop can change the flight plan.",
+          cancellationPolicy: "Weather-led changes are handled under the written rescheduling and cancellation terms supplied with the quote.",
+          passengerRequirements: "Provide names, individual weights, baggage estimates, travel date, and medical or mobility considerations.",
+          weightSeating: "The aircraft operator confirms seating and allowable baggage after reviewing the full manifest.",
+          whatToBring: "Bring identification and use the clothing and baggage guidance supplied for the confirmed route and season.",
+          photographyInfo: "Annapurna views depend on visibility. Camera use must follow the operating crew's safety instructions.",
+          safetyNotes: "Departure, routing, landing, payload, and cancellation remain subject to the operating pilot's final decision.",
+          faqs: [
+            { question: "Are shared seats always available for Annapurna?", answer: "No. Shared seats require compatible passengers, timing, aircraft availability, and a confirmed operating departure." },
+            { question: "What details are needed for a current quote?", answer: "Send the travel date, passenger count and weights, baggage estimate, and whether the group can accept a flexible time window." }
+          ],
+          operationalNotice: "Route, landing, and departure time remain subject to weather, passenger weight, and operator approval.",
           highlights: "Annapurna amphitheater aerial circuit with glacier, ridge, and basin panoramas.",
           itinerary: "Depart Pokhara, Annapurna flyover, base camp view stop, return.",
-          inclusions: "Flight coordination, weather checks, and premium routing support.",
+          inclusions: "Flight coordination, weather checks, and route planning support.",
           exclusions: "Personal expenses and insurance.",
           images: ["/images/annapurna-tour.svg"],
           published: true,
@@ -240,9 +290,28 @@ async function main() {
           title: "Muktinath Pilgrimage Tour",
           slug: "muktinath-helicopter-tour-nepal",
           duration: "3.5 Hours",
-          priceFrom: 980,
+          priceFrom: null,
           currency: "USD",
-          highlights: "Sacred pilgrimage access with smooth scheduling and experienced crew.",
+          priceMode: "LIVE_QUOTE",
+          departureCity: "Pokhara",
+          excerpt: "A Muktinath pilgrimage flight request planned around weather, landing access, passenger needs, and current availability.",
+          overview: "Muktinath flights are coordinated around pilgrimage timing, high-altitude access, weather in western Nepal, and the support needs of the traveling group.",
+          route: "Pokhara departure toward the Muktinath area, with landing access, ground time, and return timing confirmed in the operating plan.",
+          altitude: "High-altitude pilgrimage route; disclose acclimatization, medical, and mobility concerns before booking.",
+          bestTime: "Spring and autumn are commonly requested, with the practical window determined by current route weather.",
+          weatherNotes: "Wind and visibility in the Kali Gandaki corridor can affect departure, landing access, and return timing.",
+          cancellationPolicy: "Weather or landing conditions may require delay, rescheduling, or cancellation under the written quote terms.",
+          passengerRequirements: "Provide names, weights, baggage estimates, mobility needs, and the amount of pilgrimage ground time requested.",
+          weightSeating: "Passenger seating and baggage limits are confirmed after the operator reviews the group manifest.",
+          whatToBring: "Carry identification and follow the confirmed clothing and baggage guidance for high-altitude pilgrimage travel.",
+          photographyInfo: "Photography opportunities vary with visibility and ground access. Follow temple-area and crew instructions.",
+          safetyNotes: "The operating pilot has final authority over departure, route, payload, landing, and return timing.",
+          faqs: [
+            { question: "Is temple ground time included automatically?", answer: "No. Requested ground time and local access arrangements must be agreed before confirmation." },
+            { question: "Can elderly travelers request assistance?", answer: "Yes. Share mobility and medical needs early so the desk can assess practical support and route suitability." }
+          ],
+          operationalNotice: "Flights operate only when weather, aircraft availability, and landing conditions permit.",
+          highlights: "Muktinath pilgrimage access with timing and landing conditions reviewed before confirmation.",
           itinerary: "Departure, Muktinath landing, pilgrimage time, return.",
           inclusions: "Operations support, flight planning, and route coordination.",
           exclusions: "Personal expenses and insurance.",

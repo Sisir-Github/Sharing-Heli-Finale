@@ -2,6 +2,7 @@ import { COMPANY, SITE_URL } from "@/lib/constants";
 import type { BreadcrumbItem, FaqItem, ReviewInput, TourProductSchemaInput } from "@/lib/seo/types";
 
 function absoluteUrl(path: string) {
+  if (/^https?:\/\//i.test(path)) return path;
   const base = SITE_URL.replace(/\/$/, "");
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   return `${base}${normalizedPath}`;
@@ -48,11 +49,6 @@ export function buildOrganizationSchema(settings?: SchemaSettings) {
     email: resolved.email,
     telephone: resolved.primaryPhone,
     slogan: resolved.tagline,
-    sameAs: [`https://wa.me/${resolved.whatsappNumber.replace(/[^\d]/g, "")}`],
-    parentOrganization: {
-      "@type": "Organization",
-      name: resolved.operatingUnder
-    },
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -78,7 +74,6 @@ export function buildLocalBusinessSchema(settings?: SchemaSettings) {
     "@context": "https://schema.org",
     "@type": ["TravelAgency", "LocalBusiness"],
     name: resolved.companyName,
-    image: absoluteUrl("/images/luxury-nepal-helicopter.svg"),
     url: SITE_URL,
     telephone: resolved.primaryPhone,
     email: resolved.email,
@@ -90,31 +85,10 @@ export function buildLocalBusinessSchema(settings?: SchemaSettings) {
       addressRegion: "Gandaki Province",
       addressCountry: resolved.addressLine4 || "Nepal"
     },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: COMPANY.geo.latitude,
-      longitude: COMPANY.geo.longitude
-    },
     areaServed: [
       {
         "@type": "Country",
         name: "Nepal"
-      }
-    ],
-    openingHoursSpecification: [
-      {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday"
-        ],
-        opens: "00:00",
-        closes: "23:59"
       }
     ]
   };
@@ -127,6 +101,39 @@ export function buildWebSiteSchema(settings?: SchemaSettings) {
     "@type": "WebSite",
     name: resolved.brandName,
     url: SITE_URL,
+    inLanguage: "en-NP"
+  };
+}
+
+export function buildArticleSchema(input: {
+  title: string;
+  description: string;
+  path: string;
+  image?: string | null;
+  author?: string | null;
+  publishedAt?: Date | string | null;
+  updatedAt?: Date | string | null;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: input.title,
+    description: input.description,
+    url: absoluteUrl(input.path),
+    mainEntityOfPage: absoluteUrl(input.path),
+    ...(input.image ? { image: absoluteUrl(input.image) } : {}),
+    ...(input.publishedAt ? { datePublished: new Date(input.publishedAt).toISOString() } : {}),
+    ...(input.updatedAt ? { dateModified: new Date(input.updatedAt).toISOString() } : {}),
+    author: {
+      "@type": "Organization",
+      name: input.author || COMPANY.brandName,
+      url: SITE_URL
+    },
+    publisher: {
+      "@type": "Organization",
+      name: COMPANY.companyName,
+      url: SITE_URL
+    },
     inLanguage: "en-NP"
   };
 }
@@ -160,7 +167,7 @@ export function buildFaqSchema(items: FaqItem[]) {
 }
 
 export function buildProductSchema(input: TourProductSchemaInput) {
-  return {
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: input.name,
@@ -177,19 +184,24 @@ export function buildProductSchema(input: TourProductSchemaInput) {
         name: "Duration",
         value: input.duration
       }
-    ],
-    offers: {
+    ]
+  };
+
+  if (input.price != null) {
+    schema.offers = {
       "@type": "Offer",
-      priceCurrency: "USD",
-      price: input.fromPriceUsd,
-      availability: "https://schema.org/InStock",
+      priceCurrency: input.currency || "USD",
+      price: input.price,
+      ...(input.priceValidUntil ? { priceValidUntil: new Date(input.priceValidUntil).toISOString().slice(0, 10) } : {}),
       url: absoluteUrl(input.path),
       seller: {
         "@type": "Organization",
         name: COMPANY.companyName
       }
-    }
-  };
+    };
+  }
+
+  return schema;
 }
 
 export function buildReviewSchema(review: ReviewInput) {

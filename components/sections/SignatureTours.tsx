@@ -1,73 +1,99 @@
-import { MountainSnow, Timer } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight, Clock3, MapPin, Plane, Users } from "lucide-react";
 
-import { InquiryButton } from "@/components/ui/InquiryButton";
 import { Reveal } from "@/components/ui/Reveal";
-import { getInquiryPath } from "@/lib/inquiry";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { getCanonicalTourPath } from "@/lib/seo/canonical";
+import { getTourPricePresentation, type TourPricing } from "@/lib/tours/pricing";
+import { safeLocalImageSource } from "@/lib/safe-url";
 
-type TourItem = {
+type TourItem = TourPricing & {
   id: string;
   title: string;
   duration: string;
-  priceFrom: number;
   currency: string;
   slug: string;
   images: string[];
   seoDescription?: string | null;
+  sharedAvailable?: boolean;
+  privateAvailable?: boolean;
+  departureCity?: string | null;
+};
+
+const campaignImages: Record<string, string> = {
+  "everest-base-camp-helicopter-tour-nepal": "/images/campaign/everest-helicopter.jpg",
+  "annapurna-base-camp-helicopter-tour-nepal": "/images/campaign/annapurna-helicopter.jpg",
+  "muktinath-helicopter-tour-nepal": "/images/campaign/muktinath-helicopter.jpg"
 };
 
 export function SignatureTours({ tours }: { tours: TourItem[] }) {
-  const imageMap: Record<string, string> = {
-    "Everest Base Camp Helicopter Tour": "/images/everest-tour.svg",
-    "Annapurna Base Camp Tour": "/images/annapurna-tour.svg",
-    "Muktinath Pilgrimage Tour": "/images/muktinath-tour.svg"
-  };
+  const featuredTours = tours.slice(0, 3);
 
   return (
-    <section className="section-space bg-gradient-to-b from-transparent to-[#05080f]" id="signature-tours">
-      <Reveal className="shell space-y-10">
-        <SectionHeading
-          eyebrow="Signature Tours"
-          title="Helicopter Journeys Crafted For The World’s Most Iconic Peaks"
-          description="Luxury Himalayan circuits designed for travelers seeking maximum views, comfort, and time efficiency."
-        />
-
-        <div className="grid gap-5 lg:grid-cols-3">
-          {tours.map((tour) => (
-            <article key={tour.id} className="glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-aurora/40 hover:shadow-luxe">
-              <div className="overflow-hidden rounded-2xl border border-white/10">
-                <Image
-                  src={tour.images?.[0] || imageMap[tour.title] || "/images/tours-overview.svg"}
-                  alt={`${tour.title} helicopter package in Nepal`}
-                  width={1600}
-                  height={900}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="h-44 w-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-              </div>
-              <div className="mt-4 flex items-center justify-between gap-4">
-                <div className="inline-flex rounded-xl border border-gold/35 bg-gold/10 p-3 text-gold">
-                  <MountainSnow size={18} />
-                </div>
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.12em] text-haze">
-                  <Timer size={14} /> {tour.duration}
-                </span>
-              </div>
-
-              <h3 className="mt-5 font-display text-2xl text-white">{tour.title}</h3>
-              <p className="copy mt-3">{tour.seoDescription || "Premium Himalayan helicopter circuit tailored to your schedule."}</p>
-              <p className="mt-5 text-sm uppercase tracking-[0.15em] text-gold">
-                From {tour.currency} {tour.priceFrom.toFixed(0)}
-              </p>
-              <Link href={`/tours/${tour.slug}`} className="mt-4 inline-flex text-sm font-medium text-gold transition-colors hover:text-amber-200">
-                Tour details
-              </Link>
-              <InquiryButton href={getInquiryPath(tour.title)} className="mt-5" />
-            </article>
-          ))}
+    <section className="home-tours section-space bg-canvas" id="signature-tours">
+      <Reveal className="shell">
+        <div className="flex flex-col gap-7 border-b border-ink/[0.12] pb-9 lg:flex-row lg:items-end lg:justify-between">
+          <SectionHeading
+            eyebrow="Popular routes"
+            title="Choose the route you want to check."
+            description="Everest, Annapurna, and Muktinath are the most requested routes. Each still needs current weather, aircraft, and passenger review."
+          />
+          <Link href="/tours" className="editorial-link-dark shrink-0">
+            Explore every route <ArrowUpRight size={16} />
+          </Link>
         </div>
+
+        <div className="mt-8 grid gap-5 lg:grid-cols-12 lg:grid-rows-2">
+          {featuredTours.map((tour, index) => {
+            const price = getTourPricePresentation(tour);
+            const href = getCanonicalTourPath(tour.slug);
+            const isFeature = index === 0;
+            const image = safeLocalImageSource(campaignImages[tour.slug] || tour.images?.[0], "/images/tours-overview.svg");
+
+            return (
+              <article
+                key={tour.id}
+                className={isFeature ? "group relative min-h-[520px] overflow-hidden rounded-lg lg:col-span-7 lg:row-span-2" : "group relative min-h-[260px] overflow-hidden rounded-lg lg:col-span-5"}
+              >
+                <Link href={href} className="absolute inset-0">
+                  <Image
+                    src={image}
+                    alt={`${tour.title} helicopter journey in Nepal`}
+                    fill
+                    sizes={isFeature ? "(max-width: 1024px) 100vw, 58vw" : "(max-width: 1024px) 100vw, 42vw"}
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,13,18,0.02)_20%,rgba(4,13,18,0.2)_50%,rgba(4,13,18,0.9)_100%)]" />
+                </Link>
+
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-5 sm:p-7">
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {tour.sharedAvailable ? <span className="route-chip"><Users size={12} /> Shared request</span> : null}
+                    {tour.privateAvailable !== false ? <span className="route-chip"><Plane size={12} /> Private charter</span> : null}
+                  </div>
+                  <div className="flex items-end justify-between gap-5">
+                    <div>
+                      <p className="mb-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-medium uppercase tracking-[0.12em] text-white/[0.58]">
+                        <span className="inline-flex items-center gap-1.5"><Clock3 size={13} />{tour.duration}</span>
+                        {tour.departureCity ? <span className="inline-flex items-center gap-1.5"><MapPin size={13} />{tour.departureCity}</span> : null}
+                      </p>
+                      <h3 className={isFeature ? "max-w-xl font-display text-3xl font-semibold leading-tight tracking-normal text-white sm:text-5xl" : "font-display text-2xl font-semibold leading-tight tracking-normal text-white sm:text-3xl"}>
+                        {tour.title}
+                      </h3>
+                      {isFeature ? <p className="mt-3 max-w-xl text-sm leading-6 text-white/[0.62]">{tour.seoDescription}</p> : null}
+                      {price.label ? <p className="mt-4 text-xs font-semibold uppercase tracking-[0.14em] text-copper">{price.label}</p> : null}
+                    </div>
+                    <Link href={href} className="pointer-events-auto grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-white/25 bg-white/10 text-white transition-all hover:bg-copper hover:text-ink" aria-label={`View ${tour.title}`}>
+                      <ArrowUpRight size={18} />
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
       </Reveal>
     </section>
   );

@@ -1,27 +1,27 @@
 import type { Metadata } from "next";
 
-import { COMPANY, SITE_URL } from "@/lib/constants";
+import { COMPANY, IS_PRODUCTION_SITE, SITE_URL } from "@/lib/constants";
 import type { SeoPageConfig } from "@/lib/seo/types";
 
 const seoPages: Record<string, SeoPageConfig> = {
   "/": {
     path: "/",
-    title: "Luxury Helicopter Tours & Charter in Nepal | Sharing Heli",
+    title: "Helicopter Tours & Charter Nepal | Sharing Heli",
     description:
-      "Experience luxury helicopter tours, private charter, pilgrimage flights, rescue support, and aerial services in Nepal with experienced mountain pilots at Sharing Heli.",
+      "Plan shared helicopter flights and private charters in Nepal with Pokhara-based support, clear operational guidance, and current fare confirmation.",
     keywords: [
-      "luxury helicopter tour Nepal",
+      "helicopter tours Nepal",
       "helicopter tours in Nepal",
       "helicopter charter Nepal",
       "Sharing Heli"
     ],
-    primaryKeyword: "luxury helicopter tour Nepal"
+    primaryKeyword: "helicopter tours Nepal"
   },
   "/services": {
     path: "/services",
-    title: "Helicopter Services in Nepal | Charter, Rescue, Cargo",
+    title: "Helicopter Services Nepal | Charter & Flight Support",
     description:
-      "Explore premium helicopter services in Nepal including charter, emergency rescue, aerial photography, pilgrimage flights, and cargo transport by Sharing Heli.",
+      "Explore helicopter charter, shared tours, pilgrimage flight planning, urgent flight coordination, aerial photography, and cargo support in Nepal.",
     keywords: [
       "helicopter services Nepal",
       "emergency helicopter rescue Nepal",
@@ -34,7 +34,7 @@ const seoPages: Record<string, SeoPageConfig> = {
     path: "/tours",
     title: "Nepal Helicopter Tours | Everest, Annapurna, Muktinath",
     description:
-      "Discover signature Nepal helicopter tours to Everest Base Camp, Annapurna Base Camp, and Muktinath with luxury comfort, safety-first planning, and direct support.",
+      "Explore helicopter tours for the Everest and Annapurna regions and Muktinath, with current availability and operational details confirmed directly.",
     keywords: [
       "Nepal helicopter tours",
       "Everest Base Camp helicopter tour",
@@ -46,8 +46,7 @@ const seoPages: Record<string, SeoPageConfig> = {
   "/contact": {
     path: "/contact",
     title: "Contact Sharing Heli Nepal | Book Helicopter Service",
-    description:
-      "Contact Sharing Heli Nepal Pvt. Ltd. for charter, tours, rescue, and pilgrimage flights. Call +977-9802855690 or WhatsApp +977-9856028155 for 24/7 support.",
+    description: `Contact Sharing Heli Nepal for tours and charter planning. Call ${COMPANY.primaryPhone} or WhatsApp ${COMPANY.whatsappNumber} for current availability.`,
     keywords: [
       "contact helicopter Nepal",
       "book helicopter Nepal",
@@ -69,15 +68,86 @@ const seoPages: Record<string, SeoPageConfig> = {
     ],
     primaryKeyword: "Nepal helicopter guide"
   },
+  "/safety-flight-information": {
+    path: "/safety-flight-information",
+    title: "Nepal Helicopter Safety & Flight Information Guide",
+    description:
+      "Review weather, passenger weight, baggage, operator disclosure, cancellation, and confirmation questions for helicopter flights in Nepal.",
+    keywords: ["Nepal helicopter safety", "helicopter baggage Nepal", "helicopter weather policy Nepal"],
+    primaryKeyword: "Nepal helicopter safety"
+  },
+  "/faq": {
+    path: "/faq",
+    title: "Nepal Helicopter Flight FAQs | Sharing Heli",
+    description:
+      "Read practical answers about helicopter availability, shared seats, private charter, weather, quotes, passenger details, and flight confirmation in Nepal.",
+    keywords: ["Nepal helicopter flight FAQ", "helicopter booking questions Nepal"],
+    primaryKeyword: "Nepal helicopter flight FAQ"
+  },
+  "/about-us": {
+    path: "/about-us",
+    title: "About Sharing Heli Nepal | Pokhara Flight Support",
+    description:
+      "Learn about Sharing Heli Nepal, its Lakeside Pokhara office, relationship with Pokhara Flight Centre, and flight coordination process.",
+    keywords: ["Sharing Heli Nepal", "Pokhara helicopter flight support", "Sharing Heli Pokhara"],
+    primaryKeyword: "Sharing Heli Nepal"
+  },
+  "/blog": {
+    path: "/blog",
+    title: "Nepal Helicopter Travel Articles | Sharing Heli",
+    description:
+      "Read practical Nepal helicopter travel articles covering weather, route planning, shared flights, passenger preparation, and charter decisions.",
+    keywords: ["Nepal helicopter travel blog", "helicopter tour planning Nepal"],
+    primaryKeyword: "Nepal helicopter travel blog"
+  },
+  "/destinations": {
+    path: "/destinations",
+    title: "Nepal Helicopter Destinations | Sharing Heli",
+    description:
+      "Review practical helicopter destination information for Annapurna, Everest, Muktinath, Pokhara, and custom route requests in Nepal.",
+    keywords: ["Nepal helicopter destinations", "Annapurna helicopter route", "Everest helicopter route"],
+    primaryKeyword: "Nepal helicopter destinations"
+  },
+  "/privacy-policy": {
+    path: "/privacy-policy",
+    title: "Privacy Policy | Sharing Heli Nepal",
+    description: "Read how Sharing Heli Nepal handles inquiry, booking, invoice, and website information.",
+    keywords: ["Sharing Heli privacy policy"],
+    primaryKeyword: "Sharing Heli privacy policy"
+  },
+  "/terms-and-conditions": {
+    path: "/terms-and-conditions",
+    title: "Terms And Conditions | Sharing Heli Nepal",
+    description:
+      "Review general conditions for helicopter inquiries, quotes, bookings, payments, and weather-dependent flight planning in Nepal.",
+    keywords: ["Sharing Heli terms and conditions"],
+    primaryKeyword: "Sharing Heli terms and conditions"
+  },
+  "/helicopter-tours/shared-helicopter-flights": {
+    path: "/helicopter-tours/shared-helicopter-flights",
+    title: "Shared Helicopter Flights Nepal | Sharing Heli",
+    description:
+      "Learn how shared helicopter flights in Nepal work, request current seat availability, and compare per-person departures with private charter options.",
+    keywords: ["shared helicopter flights Nepal", "helicopter seat sharing Nepal", "group joining helicopter Nepal"],
+    primaryKeyword: "shared helicopter flights Nepal"
+  },
+  "/check-availability": {
+    path: "/check-availability",
+    title: "Reserve a Helicopter Flight | Sharing Heli Nepal",
+    description: "Submit a helicopter reservation request for a preferred Nepal route and date, then receive current availability, pricing, and confirmation steps.",
+    keywords: ["helicopter reservation Nepal"],
+    primaryKeyword: "helicopter reservation Nepal",
+    noindex: true
+  },
   "/everest-base-camp-helicopter-tour-nepal": {
     path: "/everest-base-camp-helicopter-tour-nepal",
-    title: "Everest Base Camp Helicopter Tour Nepal | Sharing Heli",
+    title: "Everest Region Helicopter Tour Nepal | Sharing Heli",
     description:
-      "Book an Everest Base Camp helicopter tour in Nepal with expert mountain pilots, safety-focused operations, and premium aerial views from Sharing Heli.",
+      "Request an Everest region helicopter tour with routing, landing options, availability, and current fare confirmed for the day's operating conditions.",
     keywords: [
       "Everest Base Camp helicopter tour Nepal",
       "Everest helicopter tour",
-      "luxury Everest helicopter flight",
+      "Everest region helicopter flight",
       "EBC heli tour Nepal"
     ],
     primaryKeyword: "Everest Base Camp helicopter tour Nepal"
@@ -86,7 +156,7 @@ const seoPages: Record<string, SeoPageConfig> = {
     path: "/annapurna-base-camp-helicopter-tour-nepal",
     title: "Annapurna Base Camp Helicopter Tour Nepal | Sharing Heli",
     description:
-      "Fly to Annapurna Base Camp by helicopter with premium comfort, scenic high-altitude routing, and trusted operations from Sharing Heli Nepal.",
+      "Request an Annapurna region helicopter flight from Pokhara with routing, landing conditions, and current quote details confirmed before booking.",
     keywords: [
       "Annapurna Base Camp helicopter tour Nepal",
       "Annapurna helicopter tour",
@@ -99,7 +169,7 @@ const seoPages: Record<string, SeoPageConfig> = {
     path: "/muktinath-helicopter-tour-nepal",
     title: "Muktinath Helicopter Tour Nepal | Pilgrimage Flights",
     description:
-      "Plan a Muktinath helicopter pilgrimage tour in Nepal with reliable scheduling, experienced crew, and smooth charter support from Sharing Heli.",
+      "Plan a Muktinath helicopter pilgrimage request from Pokhara with timing, landing access, weather, and current quote details reviewed first.",
     keywords: [
       "Muktinath helicopter tour Nepal",
       "Muktinath pilgrimage helicopter",
@@ -112,7 +182,7 @@ const seoPages: Record<string, SeoPageConfig> = {
     path: "/helicopter-charter-nepal",
     title: "Private Helicopter Charter Nepal | Sharing Heli",
     description:
-      "Arrange private helicopter charter in Nepal for business, travel, pilgrimage, or custom routes with fast coordination and premium service standards.",
+      "Arrange private helicopter charter in Nepal for business, travel, pilgrimage, or custom routes with direct route and availability coordination.",
     keywords: [
       "private helicopter charter Nepal",
       "helicopter charter Nepal",
@@ -123,9 +193,9 @@ const seoPages: Record<string, SeoPageConfig> = {
   },
   "/emergency-helicopter-rescue-nepal": {
     path: "/emergency-helicopter-rescue-nepal",
-    title: "Emergency Helicopter Rescue Nepal | Rapid Air Support",
+    title: "Emergency Helicopter Flight Coordination Nepal",
     description:
-      "Access rapid emergency helicopter rescue support in Nepal through experienced dispatch coordination and mountain flight expertise from Sharing Heli.",
+      "Request urgent helicopter flight coordination in Nepal. Dispatch remains subject to weather, aircraft, permissions, and operator confirmation.",
     keywords: [
       "emergency helicopter rescue Nepal",
       "mountain rescue helicopter Nepal",
@@ -149,16 +219,16 @@ const seoPages: Record<string, SeoPageConfig> = {
   },
   "/luxury-helicopter-tour-nepal": {
     path: "/luxury-helicopter-tour-nepal",
-    title: "Luxury Helicopter Tour Nepal | Premium Himalayan Flights",
+    title: "Custom Helicopter Tour Nepal | Private Himalayan Flights",
     description:
-      "Choose luxury helicopter tours in Nepal with curated itineraries, high-comfort cabin experience, and elite operational planning by Sharing Heli.",
+      "Request a tailored Nepal helicopter tour with private routing, direct Pokhara coordination, and current operating details confirmed before booking.",
     keywords: [
-      "luxury helicopter tour Nepal",
-      "premium helicopter Nepal",
+      "custom helicopter tour Nepal",
+      "private helicopter Nepal",
       "VIP helicopter tour Nepal",
-      "Himalayan luxury helicopter"
+      "Himalayan helicopter charter"
     ],
-    primaryKeyword: "luxury helicopter tour Nepal"
+    primaryKeyword: "custom helicopter tour Nepal"
   },
   "/guides/best-time-helicopter-tours-nepal": {
     path: "/guides/best-time-helicopter-tours-nepal",
@@ -239,9 +309,9 @@ const seoPages: Record<string, SeoPageConfig> = {
 
 const fallbackSeo: SeoPageConfig = {
   path: "/",
-  title: `${COMPANY.brandName} | Luxury Helicopter Service in Nepal`,
+  title: `${COMPANY.brandName} | Helicopter Service in Nepal`,
   description:
-    "Premium helicopter charters, Himalayan tours, pilgrimage missions, emergency rescue, and aerial operations by Sharing Heli Nepal Pvt. Ltd.",
+    "Shared helicopter flights, private charters, Himalayan tours, and flight coordination by Sharing Heli Nepal.",
   keywords: ["Sharing Heli", "helicopter Nepal"],
   primaryKeyword: "helicopter Nepal"
 };
@@ -268,7 +338,7 @@ export function buildPageMetadata(pathname: string): Metadata {
   const canonicalPath = config.canonicalPath || config.path;
   const canonicalUrl = toAbsoluteUrl(canonicalPath);
 
-  const robots = config.noindex
+  const robots = config.noindex || !IS_PRODUCTION_SITE
     ? {
         index: false,
         follow: true,
@@ -291,7 +361,6 @@ export function buildPageMetadata(pathname: string): Metadata {
   return {
     title: config.title,
     description: config.description,
-    keywords: config.keywords,
     alternates: {
       canonical: canonicalUrl,
       languages: {
@@ -305,12 +374,21 @@ export function buildPageMetadata(pathname: string): Metadata {
       title: config.title,
       description: config.description,
       siteName: COMPANY.brandName,
-      url: canonicalUrl
+      url: canonicalUrl,
+      images: [
+        {
+          url: "/images/campaign/sharing-heli-hero.jpg",
+          width: 1200,
+          height: 630,
+          alt: "Sharing Heli Nepal helicopter flight planning"
+        }
+      ]
     },
     twitter: {
       card: "summary_large_image",
       title: config.title,
-      description: config.description
+      description: config.description,
+      images: ["/images/campaign/sharing-heli-hero.jpg"]
     },
     robots
   };

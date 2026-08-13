@@ -1,10 +1,9 @@
+import Image from "next/image";
+
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { RelatedLinks } from "@/components/seo/RelatedLinks";
-import { PageIntro } from "@/components/layout/PageIntro";
-import { ContactPreview } from "@/components/sections/ContactPreview";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
-import { getPublishedServices, getSiteSettings } from "@/lib/cms";
+import { getPublishedServices } from "@/lib/cms";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 import { buildBreadcrumbSchema } from "@/lib/seo/schema";
 
@@ -15,56 +14,34 @@ const breadcrumbs = [
   { name: "Services", path: "/services" }
 ];
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
 
 export default async function ServicesPage() {
-  const [services, settings] = await Promise.all([getPublishedServices(), getSiteSettings()]);
-  const contactSettings = settings
-    ? {
-        primaryPhone: settings.primaryPhone,
-        whatsappNumber: settings.whatsappNumber,
-        email: settings.email,
-        operatingUnder: settings.operatingUnder
-      }
-    : {
-        primaryPhone: "+977-9802855690",
-        whatsappNumber: "+977-9856028155",
-        email: "rishi8848@gmail.com",
-        operatingUnder: "Operating under Pokhara Flight Centre Tours & Travel Pvt. Ltd."
-      };
+  const services = await getPublishedServices();
 
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
       <Breadcrumbs items={breadcrumbs} />
-      <PageIntro
-        eyebrow="Our Services"
-        title="Helicopter Services in Nepal"
-        description="Purpose-built flight solutions across Nepal with luxury execution and high-altitude operational discipline."
-        headingLevel={1}
-      />
+      <section className="relative isolate min-h-[440px] overflow-hidden bg-ink text-white sm:min-h-[500px]">
+        <Image
+          src="/images/campaign/sharing-heli-hero.jpg"
+          alt="Helicopter flying near the Himalayas in Nepal"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-ink/65" aria-hidden="true" />
+        <div className="shell relative z-10 flex min-h-[440px] items-end py-12 sm:min-h-[500px] sm:py-16">
+          <div className="max-w-3xl">
+            <p className="text-[11px] font-semibold uppercase text-sky-300">Our services</p>
+            <h1 className="mt-4 font-display text-4xl font-semibold leading-tight tracking-normal text-white sm:text-6xl">Helicopter services in Nepal</h1>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">Choose the service that matches your route, group, and travel date. Each request is reviewed for aircraft, weather, permissions, and passenger requirements.</p>
+          </div>
+        </div>
+      </section>
       <ServicesGrid services={services} />
-      <RelatedLinks
-        heading="Explore Related Journeys"
-        items={[
-          {
-            title: "Private Helicopter Charter",
-            description: "Flexible charter missions with dedicated dispatch support and premium aircraft planning.",
-            href: "/helicopter-charter-nepal"
-          },
-          {
-            title: "Emergency Helicopter Rescue",
-            description: "Rapid coordination for high-priority rescue logistics in mountain environments.",
-            href: "/emergency-helicopter-rescue-nepal"
-          },
-          {
-            title: "Signature Nepal Tours",
-            description: "Everest, Annapurna, and Muktinath helicopter circuits with expert mountain pilots.",
-            href: "/tours"
-          }
-        ]}
-      />
-      <ContactPreview settings={contactSettings} />
     </>
   );
 }

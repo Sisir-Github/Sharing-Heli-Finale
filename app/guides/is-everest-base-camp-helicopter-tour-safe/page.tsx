@@ -1,13 +1,11 @@
 import { PageEngagementTracker } from "@/components/analytics/PageEngagementTracker";
 import { PageIntro } from "@/components/layout/PageIntro";
-import { ContactPreview } from "@/components/sections/ContactPreview";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ContentSections } from "@/components/seo/ContentSections";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PageVisualIntro } from "@/components/seo/PageVisualIntro";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
-import { getSiteSettings } from "@/lib/cms";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/seo/schema";
 
@@ -24,8 +22,8 @@ const sections = [
     title: "What Safety Means in Everest Helicopter Operations",
     paragraphs: [
       "When travelers ask whether an Everest Base Camp helicopter tour is safe, the most accurate answer is that safety depends on planning quality, weather discipline, aircraft standards, and pilot decision-making. In mountain aviation, safety is not a single feature; it is a process repeated before every mission. Good operators treat safety as a constant workflow, not a marketing statement.",
-      "Everest flights involve high-altitude terrain, changing wind profiles, and visibility sensitivity. These factors are manageable when teams apply strong operational controls: route viability checks, payload management, weather re-validation, and flexible timing. Unsafe outcomes are more likely when missions are forced through poor conditions or when schedule pressure overrides aviation judgment.",
-      "For travelers, the practical takeaway is clear: choose operators with experienced mountain pilots, transparent communication, and regulation-compliant standards. Ask how decisions are made on weather days and whether postponements are treated as safety actions rather than service failures."
+      "Everest flights involve high-altitude terrain, changing wind profiles, and visibility sensitivity. Operators use route viability checks, payload management, weather re-validation, and flexible timing to manage these risks, but mountain aviation is never risk-free.",
+      "For travelers, the practical takeaway is to verify the operating company's licence and insurance, ask who will operate the aircraft, and request clear answers about weather decisions, payload limits, and postponements."
     ]
   },
   {
@@ -49,7 +47,7 @@ const sections = [
     paragraphs: [
       "Before booking, ask direct operational questions: how weather go/no-go decisions are made, how schedule flexibility is handled, and how route planning is adapted when conditions change. High-quality operators answer clearly and prioritize realistic planning over guaranteed promises.",
       "Check whether communication is structured and responsive. Safety-led operations usually involve clear pre-flight updates, transparent expectations, and practical alternatives when conditions are not suitable.",
-      "Everest helicopter tours can be a safe and exceptional experience when executed by disciplined teams. The strongest booking strategy is to prioritize operational quality over aggressive claims, then align your own schedule with mountain realities."
+      "No responsible source can promise that an Everest helicopter flight is risk-free. The strongest booking strategy is to verify the operator, prioritize operational quality over aggressive claims, and keep your own schedule flexible."
     ]
   }
 ];
@@ -58,7 +56,7 @@ const faqs = [
   {
     question: "Is Everest Base Camp helicopter tour generally safe?",
     answer:
-      "With proper weather discipline, experienced mountain pilots, and regulation-compliant operations, it is widely considered a manageable and safe premium aerial experience."
+      "Helicopter travel carries inherent risk, and Everest adds altitude and weather complexity. Ask for the actual operator's licence and insurance, keep dates flexible, and treat weather or payload changes as normal safety decisions."
   },
   {
     question: "What is the biggest safety factor on Everest flights?",
@@ -87,23 +85,9 @@ const faqs = [
   }
 ];
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
 
-export default async function EverestSafetyGuidePage() {
-  const settings = await getSiteSettings();
-  const contactSettings = settings
-    ? {
-        primaryPhone: settings.primaryPhone,
-        whatsappNumber: settings.whatsappNumber,
-        email: settings.email,
-        operatingUnder: settings.operatingUnder
-      }
-    : {
-        primaryPhone: "+977-9802855690",
-        whatsappNumber: "+977-9856028155",
-        email: "rishi8848@gmail.com",
-        operatingUnder: "Operating under Pokhara Flight Centre Tours & Travel Pvt. Ltd."
-      };
+export default function EverestSafetyGuidePage() {
 
   return (
     <>
@@ -119,7 +103,7 @@ export default async function EverestSafetyGuidePage() {
       <PageVisualIntro
         imageSrc="/images/guide-safety.svg"
         imageAlt="Safety planning for Everest Base Camp helicopter tour in Nepal"
-        note="Safety outcomes come from disciplined weather decisions, experienced mountain pilots, and realistic itinerary planning."
+        note="This guide explains risk-management questions to ask; it does not certify an operator or promise a risk-free flight."
       />
       <ContentSections sections={sections} />
       <FaqSection items={faqs} />
@@ -128,7 +112,7 @@ export default async function EverestSafetyGuidePage() {
         items={[
           {
             title: "Everest Base Camp Helicopter Tour",
-            description: "Review tour details, duration, pricing, and mission flow.",
+            description: "Review route details, operational limitations, and how to request a current fare.",
             href: "/everest-base-camp-helicopter-tour-nepal"
           },
           {
@@ -143,7 +127,6 @@ export default async function EverestSafetyGuidePage() {
           }
         ]}
       />
-      <ContactPreview settings={contactSettings} />
     </>
   );
 }

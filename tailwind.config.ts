@@ -9,23 +9,30 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        midnight: "#05080f",
-        storm: "#0e1724",
-        haze: "#9baec5",
-        gold: "#b9c9dd",
-        aurora: "#7ea6d6",
-        steel: "#d7e0ec"
+        midnight: "#06121a",
+        storm: "#0b1f2a",
+        haze: "#5d6d78",
+        gold: "#38b7e6",
+        aurora: "#38b7e6",
+        steel: "#e5f5fb",
+        ink: "#0b1f2a",
+        ivory: "#ffffff",
+        glacier: "#dff5fc",
+        brass: "#38b7e6",
+        rhododendron: "#38b7e6",
+        copper: "#38b7e6",
+        canvas: "#f7fbff"
       },
       fontFamily: {
         display: ["var(--font-display)"],
         body: ["var(--font-body)"]
       },
       boxShadow: {
-        luxe: "0 20px 45px rgba(2, 8, 16, 0.55)",
-        glow: "0 0 34px rgba(126, 166, 214, 0.38)"
+        luxe: "0 20px 45px rgba(2, 8, 16, 0.28)",
+        glow: "0 0 34px rgba(56, 183, 230, 0.28)"
       },
       backgroundImage: {
-        "radial-fog": "radial-gradient(circle at 20% 20%, rgba(126, 166, 214, 0.2), transparent 52%)"
+        "radial-fog": "radial-gradient(circle at 20% 20%, rgba(56, 183, 230, 0.18), transparent 52%)"
       },
       keyframes: {
         float: {

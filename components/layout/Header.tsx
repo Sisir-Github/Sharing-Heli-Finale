@@ -3,15 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { InquiryButton } from "@/components/ui/InquiryButton";
+import { ReservationButton } from "@/components/ui/ReservationButton";
 import { cn } from "@/lib/utils";
-
-type HeaderSettings = {
-  brandName: string;
-};
 
 type NavItem = { id: string; label: string; href: string };
 
@@ -19,109 +16,50 @@ export function Header({
   settings,
   navItems
 }: {
-  settings: HeaderSettings | null;
+  settings: { brandName: string; logoImage?: string | null } | null;
   navItems: NavItem[];
 }) {
   const pathname = usePathname();
+  const [menuState, setMenuState] = useState({ open: false, pathname });
+  const menuOpen = menuState.open && menuState.pathname === pathname;
   const isHome = pathname === "/";
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  const fallbackSettings = useMemo(
-    () => ({
-      brandName: "Sharing Heli"
-    }),
-    []
-  );
-
-  const resolvedSettings = settings ?? fallbackSettings;
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
-  const isTransparent = isHome && !scrolled;
 
   return (
-    <header
-      className={cn(
-        "site-header sticky top-0 z-50 transition-all duration-500",
-        isTransparent ? "border-transparent bg-transparent" : "border-b border-white/10 bg-midnight/86 shadow-luxe backdrop-blur-xl"
-      )}
-    >
-      <div className="shell flex h-20 items-center justify-between gap-4">
-        <Link href="/" className="group flex items-center gap-3" aria-label={resolvedSettings.brandName}>
-          <div className="grid h-10 w-10 place-items-center rounded-full border border-gold/40 bg-gold/10 text-sm font-semibold text-gold transition-colors group-hover:bg-gold/20">
-            SH
-          </div>
-          <div className="leading-tight">
-            <p className="font-display text-lg text-white">{resolvedSettings.brandName}</p>
-            <p className="text-xs uppercase tracking-[0.14em] text-haze/90">Luxury Helicopter Services</p>
-          </div>
+    <header className={cn("site-header z-50 border-b border-ink/10 text-ink backdrop-blur-xl transition-colors duration-300", isHome ? "site-header-home fixed inset-x-0 top-0" : "sticky top-0")}>
+      <div className="shell flex h-[76px] items-center justify-between gap-4">
+        <Link href="/" className="group flex shrink-0 items-center" aria-label={`${settings?.brandName || "Sharing Heli"} home`}>
+          <BrandLogo src={settings?.logoImage} imageClassName="h-12 sm:h-[52px]" />
         </Link>
 
-        <nav className="hidden items-center gap-7 md:flex" aria-label="Primary navigation">
+        <nav className="hidden items-center gap-4 xl:flex" aria-label="Primary navigation">
           {navItems.map((item) => (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={cn(
-                "text-sm font-medium tracking-wide text-haze transition-colors hover:text-white",
-                pathname === item.href && "text-gold"
-              )}
-            >
-              {item.label}
-            </Link>
+            <Link key={item.id} href={item.href} className={cn("border-b border-transparent py-2 text-[12px] font-semibold text-slate-700 transition-colors hover:text-aurora", pathname === item.href && "border-aurora text-ink")}>{item.label}</Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <InquiryButton />
-          <ThemeToggle className="h-12 w-12 p-0" />
+        <div className="hidden items-center gap-2 md:flex">
+          <ReservationButton className={cn("min-h-11 px-5", isHome && "home-header-cta")} />
+          <ThemeToggle className="h-11 w-11 p-0" />
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
-          <ThemeToggle className="h-11 w-11 p-0" />
           <button
             type="button"
-            className="rounded-full border border-white/25 bg-white/10 p-2 text-white"
-            onClick={() => setMenuOpen((prev) => !prev)}
+            className="grid h-11 w-11 place-items-center rounded-lg border border-ink/20 text-ink"
+            onClick={() => setMenuState({ open: !menuOpen, pathname })}
             aria-expanded={menuOpen}
             aria-label="Toggle menu"
           >
-            <span className="sr-only">Toggle menu</span>
-            {menuOpen ? <X size={18} /> : <Menu size={18} />}
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
+          <ThemeToggle className="h-11 w-11 p-0" />
         </div>
       </div>
 
-      <div
-        className={cn(
-          "overflow-hidden border-t border-white/10 bg-storm/95 px-4 transition-all duration-300 md:hidden",
-          menuOpen ? "max-h-96 py-4 opacity-100" : "max-h-0 py-0 opacity-0"
-        )}
-      >
-        <nav className="shell grid gap-3" aria-label="Mobile navigation">
-          {navItems.map((item) => (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={cn(
-                "rounded-xl px-3 py-2 text-sm font-medium text-haze transition-colors hover:bg-white/10 hover:text-white",
-                pathname === item.href && "bg-gold/10 text-gold"
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <InquiryButton className="w-full" />
+      <div className={cn("site-mobile-menu overflow-hidden border-t border-ink/10 transition-all duration-300 xl:hidden", menuOpen ? "max-h-[560px] opacity-100" : "max-h-0 opacity-0")}>
+        <nav className="shell grid gap-1 py-4" aria-label="Mobile navigation">
+          {navItems.map((item) => <Link key={item.id} href={item.href} onClick={() => setMenuState({ open: false, pathname })} className={cn("rounded-lg px-3 py-3 text-sm font-semibold text-slate-700 hover:bg-ink/5", pathname === item.href && "bg-ink/5 text-aurora")}>{item.label}</Link>)}
+          <ReservationButton className="mt-3 w-full" />
         </nav>
       </div>
     </header>

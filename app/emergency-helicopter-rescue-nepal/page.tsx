@@ -2,10 +2,15 @@ import { notFound } from "next/navigation";
 
 import { ServiceLanding } from "@/components/services/ServiceLanding";
 import { getServiceBySlug, getSiteSettings } from "@/lib/cms";
-import { buildPageMetadata } from "@/lib/seo/page-seo";
+import { resolveContactSettings } from "@/lib/constants";
+import { buildServiceMetadata } from "@/lib/seo/service-metadata";
 
-export const metadata = buildPageMetadata("/emergency-helicopter-rescue-nepal");
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
+
+export async function generateMetadata() {
+  const service = await getServiceBySlug("emergency-helicopter-rescue-nepal");
+  return buildServiceMetadata(service, "/emergency-helicopter-rescue-nepal");
+}
 
 export default async function RescuePage() {
   const [service, settings] = await Promise.all([
@@ -17,19 +22,7 @@ export default async function RescuePage() {
     notFound();
   }
 
-  const contactSettings = settings
-    ? {
-        primaryPhone: settings.primaryPhone,
-        whatsappNumber: settings.whatsappNumber,
-        email: settings.email,
-        operatingUnder: settings.operatingUnder
-      }
-    : {
-        primaryPhone: "+977-9802855690",
-        whatsappNumber: "+977-9856028155",
-        email: "rishi8848@gmail.com",
-        operatingUnder: "Operating under Pokhara Flight Centre Tours & Travel Pvt. Ltd."
-      };
+  const contactSettings = resolveContactSettings(settings);
 
   return (
     <ServiceLanding service={service} path="/emergency-helicopter-rescue-nepal" contactSettings={contactSettings} />

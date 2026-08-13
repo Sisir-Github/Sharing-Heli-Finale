@@ -1,10 +1,12 @@
 export const COMPANY = {
-  companyName: "Sharing Heli Nepal Pvt. Ltd.",
-  brandName: "Sharing Heli",
-  tagline: "Elevate Your Journey Above the Himalayas",
+  companyName: "Sharing Heli Nepal",
+  brandName: "Sharing Heli Nepal",
+  tagline: "Helicopter tours and charter support in Nepal",
   operator: "Pokhara Flight Centre Tours & Travel Pvt. Ltd.",
-  inquiryEmail: "rishi8848@gmail.com",
-  primaryPhone: "+977-9802855690",
+  operatorUrl: "https://www.pokharaflightcentre.com/",
+  operatingLine: "Operated by Pokhara Flight Centre Tours & Travel Pvt. Ltd.",
+  inquiryEmail: "info@pokharaflightcentre.com",
+  primaryPhone: "+977-9856028155",
   whatsappNumber: "+977-9856028155",
   whatsappLink: "https://wa.me/9779856028155",
   address: {
@@ -19,11 +21,37 @@ export const COMPANY = {
   }
 } as const;
 
+type ContactSource = Partial<{
+  primaryPhone: string | null;
+  whatsappNumber: string | null;
+  email: string | null;
+  operatingUnder: string | null;
+  addressLine1: string | null;
+  addressLine2: string | null;
+  addressLine3: string | null;
+  addressLine4: string | null;
+}>;
+
+export function resolveContactSettings(settings?: ContactSource | null) {
+  return {
+    primaryPhone: settings?.primaryPhone || COMPANY.primaryPhone,
+    whatsappNumber: settings?.whatsappNumber || COMPANY.whatsappNumber,
+    email: settings?.email || COMPANY.inquiryEmail,
+    operatingUnder: settings?.operatingUnder || COMPANY.operatingLine,
+    addressLine1: settings?.addressLine1 || COMPANY.address.line1,
+    addressLine2: settings?.addressLine2 || COMPANY.address.line2,
+    addressLine3: settings?.addressLine3 || COMPANY.address.line3,
+    addressLine4: settings?.addressLine4 || COMPANY.address.country
+  };
+}
+
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "Services", href: "/services" },
   { label: "Tours", href: "/tours" },
-  { label: "Guides", href: "/guides" },
+  { label: "Charter", href: "/helicopter-charter-nepal" },
+  { label: "Destinations", href: "/destinations" },
+  { label: "Blog", href: "/blog" },
+  { label: "About", href: "/about-us" },
   { label: "Contact", href: "/contact" }
 ] as const;
 
@@ -31,10 +59,10 @@ export const INQUIRY_SERVICES = [
   "Charter",
   "Heli Tours",
   "Pilgrimage Tours",
-  "Emergency Rescue",
+  "Emergency Flight Coordination",
   "Aerial Photography",
   "Cargo Transport",
-  "Everest Base Camp Helicopter Tour",
+  "Everest Region Helicopter Tour",
   "Annapurna Base Camp Tour",
   "Muktinath Pilgrimage Tour",
   "General Inquiry"
@@ -43,6 +71,14 @@ export const INQUIRY_SERVICES = [
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sharingheli.com";
 
 export const CANONICAL_HOST = "sharingheli.com";
+
+export const IS_PRODUCTION_SITE = (() => {
+  try {
+    return new URL(SITE_URL).hostname === CANONICAL_HOST;
+  } catch {
+    return false;
+  }
+})();
 
 export const CONTACT_SERVICE_PATHS = {
   charter: "/contact/charter",

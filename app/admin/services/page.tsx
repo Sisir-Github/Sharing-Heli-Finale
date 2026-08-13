@@ -14,6 +14,8 @@ export default async function AdminServicesPage() {
     featuredImage: string | null;
     seoTitle: string | null;
     seoDescription: string | null;
+    ogImage: string | null;
+    noindex: boolean;
     published: boolean;
   };
 
@@ -37,9 +39,13 @@ export default async function AdminServicesPage() {
           <input name="featuredImage" placeholder="Featured image URL" className="input" />
           <input name="seoTitle" placeholder="SEO title" className="input" />
           <input name="seoDescription" placeholder="SEO description" className="input" />
+          <input name="ogImage" placeholder="Social sharing image URL" className="input" />
           <label className="flex items-center gap-2 text-sm text-haze">
             <input type="checkbox" name="published" defaultChecked />
             Published
+          </label>
+          <label className="flex items-center gap-2 text-sm text-haze">
+            <input type="checkbox" name="noindex" /> Exclude from search engines
           </label>
         </div>
         <button className="w-fit rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black">Create</button>
@@ -58,9 +64,13 @@ export default async function AdminServicesPage() {
               <input name="featuredImage" defaultValue={service.featuredImage || ""} className="input" />
               <input name="seoTitle" defaultValue={service.seoTitle || ""} className="input" />
               <input name="seoDescription" defaultValue={service.seoDescription || ""} className="input" />
+              <input name="ogImage" defaultValue={service.ogImage || ""} className="input" />
               <label className="flex items-center gap-2 text-sm text-haze">
                 <input type="checkbox" name="published" defaultChecked={service.published} />
                 Published
+              </label>
+              <label className="flex items-center gap-2 text-sm text-haze">
+                <input type="checkbox" name="noindex" defaultChecked={service.noindex} /> Exclude from search engines
               </label>
             </div>
             <div className="flex gap-2">

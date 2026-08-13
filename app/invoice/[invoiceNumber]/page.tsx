@@ -1,15 +1,19 @@
 import { notFound } from "next/navigation";
 
 import { safeInvoiceId } from "@/lib/invoice/store";
-import { getInvoiceRecord } from "@/lib/invoice/db";
+import { getInvoiceRecordForAccess } from "@/lib/invoice/db";
 import { renderInvoiceMarkup } from "@/lib/invoice/template";
+import { getAdminSession } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: { invoiceNumber: string } }) {
-  const invoiceNumber = safeInvoiceId(params.invoiceNumber);
-  const invoice = invoiceNumber ? await getInvoiceRecord(invoiceNumber) : null;
-  const titleNumber = invoice?.invoiceNumberDisplay ?? invoiceNumber ?? "Invoice";
+type InvoicePageProps = { params: Promise<{ invoiceNumber: string }> };
+
+export async function generateMetadata({ params }: InvoicePageProps) {
+  const { invoiceNumber } = await params;
+  const invoiceRef = safeInvoiceId(invoiceNumber);
+  const invoice = invoiceRef ? await getInvoiceRecordForAccess(invoiceRef, false) : null;
+  const titleNumber = invoice?.invoiceNumberDisplay ?? "Invoice";
 
   return {
     title: `Invoice ${titleNumber}`,
@@ -20,13 +24,16 @@ export async function generateMetadata({ params }: { params: { invoiceNumber: st
   };
 }
 
-export default async function InvoicePage({ params }: { params: { invoiceNumber: string } }) {
-  const invoiceNumber = safeInvoiceId(params.invoiceNumber);
-  if (!invoiceNumber) {
+export default async function InvoicePage({ params }: InvoicePageProps) {
+  const { invoiceNumber } = await params;
+  const invoiceRef = safeInvoiceId(invoiceNumber);
+  if (!invoiceRef) {
     notFound();
   }
 
-  const invoice = await getInvoiceRecord(invoiceNumber);
+  const session = await getAdminSession();
+  const isAdmin = Boolean(session);
+  const invoice = await getInvoiceRecordForAccess(invoiceRef, isAdmin);
   if (!invoice) {
     notFound();
   }

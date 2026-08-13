@@ -1,19 +1,16 @@
 import Image from "next/image";
 
-import { InquiryButton } from "@/components/ui/InquiryButton";
-
 type PageVisualIntroProps = {
   imageSrc: string;
   imageAlt: string;
   note: string;
-  inquiryHref?: string;
 };
 
-export function PageVisualIntro({ imageSrc, imageAlt, note, inquiryHref = "/contact" }: PageVisualIntroProps) {
+export function PageVisualIntro({ imageSrc, imageAlt, note }: PageVisualIntroProps) {
   return (
-    <section className="section-space pt-4">
+    <section className="section-space bg-canvas pt-4">
       <div className="shell grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-        <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5">
+        <div className="surface-card overflow-hidden">
           <Image
             src={imageSrc}
             alt={imageAlt}
@@ -25,10 +22,9 @@ export function PageVisualIntro({ imageSrc, imageAlt, note, inquiryHref = "/cont
           />
         </div>
 
-        <div className="glass rounded-3xl p-6 sm:p-8">
-          <h2 className="font-display text-3xl text-white">Operational Brief</h2>
+        <div className="surface-card p-6 sm:p-8">
+          <h2 className="font-display text-3xl font-semibold tracking-normal text-ink">Operational brief</h2>
           <p className="copy mt-4">{note}</p>
-          <InquiryButton href={inquiryHref} className="mt-6" />
         </div>
       </div>
     </section>

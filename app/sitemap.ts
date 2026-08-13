@@ -1,64 +1,69 @@
 import type { MetadataRoute } from "next";
 
+import { FALLBACK_BLOG_POSTS } from "@/lib/blog-fallbacks";
 import { SITE_URL } from "@/lib/constants";
-import { INDEXABLE_PATHS } from "@/lib/seo/page-seo";
+import { DESTINATION_GUIDES } from "@/lib/destinations";
 import { prisma } from "@/lib/prisma";
+import { getCanonicalServicePath, getCanonicalTourPath } from "@/lib/seo/canonical";
+import { INDEXABLE_PATHS } from "@/lib/seo/page-seo";
 
-function getPriority(path: string) {
-  if (path === "/") {
-    return 1;
-  }
-  if (path === "/contact") {
-    return 0.95;
-  }
-  if (path.startsWith("/guides")) {
-    return 0.78;
-  }
-  if (path.startsWith("/everest") || path.startsWith("/annapurna") || path.startsWith("/muktinath")) {
-    return 0.9;
-  }
-  return 0.85;
-}
+const baseUrl = SITE_URL.replace(/\/$/, "");
+const staticContentUpdatedAt = new Date("2026-08-09T00:00:00.000Z");
 
-function getFrequency(path: string): MetadataRoute.Sitemap[number]["changeFrequency"] {
-  if (path.startsWith("/guides")) {
-    return "monthly";
+function addPage(pages: Map<string, Date | undefined>, path: string, updatedAt?: Date) {
+  const existing = pages.get(path);
+  if (!existing || (updatedAt && updatedAt > existing)) {
+    pages.set(path, updatedAt);
   }
-  return "weekly";
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
-  if (!process.env.DATABASE_URL) {
-    return INDEXABLE_PATHS.map((path) => ({
-      url: `${SITE_URL.replace(/\/$/, "")}${path}`,
-      lastModified: now,
-      changeFrequency: getFrequency(path),
-      priority: getPriority(path)
+  const pages = new Map<string, Date | undefined>();
+
+  INDEXABLE_PATHS.forEach((path) => addPage(pages, path));
+  DESTINATION_GUIDES.forEach((destination) => {
+    addPage(pages, `/destinations/${destination.slug}`, staticContentUpdatedAt);
+  });
+  FALLBACK_BLOG_POSTS.filter((post) => !post.noindex).forEach((post) => {
+    addPage(pages, `/blog/${post.slug}`, post.updatedAt);
+  });
+
+  if (process.env.DATABASE_URL) {
+    try {
+      type SlugItem = { slug: string; updatedAt: Date; noindex?: boolean };
+      const [services, tours, posts] = (await Promise.all([
+        prisma.service.findMany({ where: { published: true }, select: { slug: true, updatedAt: true, noindex: true } }),
+        prisma.tour.findMany({ where: { published: true }, select: { slug: true, updatedAt: true, noindex: true } }),
+        prisma.blogPost.findMany({
+          where: { published: true, OR: [{ publishAt: null }, { publishAt: { lte: new Date() } }] },
+          select: { slug: true, updatedAt: true, noindex: true }
+        })
+      ])) as [SlugItem[], SlugItem[], SlugItem[]];
+
+      services.forEach((service) => {
+        const path = getCanonicalServicePath(service.slug);
+        if (service.noindex) pages.delete(path);
+        else addPage(pages, path, service.updatedAt);
+      });
+      tours.forEach((tour) => {
+        const path = getCanonicalTourPath(tour.slug);
+        if (tour.noindex) pages.delete(path);
+        else addPage(pages, path, tour.updatedAt);
+      });
+      posts.forEach((post) => {
+        const path = `/blog/${post.slug}`;
+        if (post.noindex) pages.delete(path);
+        else addPage(pages, path, post.updatedAt);
+      });
+    } catch {
+      // Keep the stable static sitemap when the database is temporarily unavailable.
+    }
+  }
+
+  return Array.from(pages.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([path, lastModified]) => ({
+      url: `${baseUrl}${path}`,
+      ...(lastModified ? { lastModified } : {})
     }));
-  }
-  let dynamicPaths: string[] = [];
-  try {
-    type SlugItem = { slug: string };
-    const [services, tours] = (await Promise.all([
-      prisma.service.findMany({ where: { published: true }, select: { slug: true } }),
-      prisma.tour.findMany({ where: { published: true }, select: { slug: true } })
-    ])) as [SlugItem[], SlugItem[]];
-
-    dynamicPaths = [
-      ...services.map((service) => `/services/${service.slug}`),
-      ...tours.map((tour) => `/tours/${tour.slug}`)
-    ];
-  } catch {
-    dynamicPaths = [];
-  }
-
-  const paths = [...new Set([...INDEXABLE_PATHS, ...dynamicPaths])];
-
-  return paths.map((path) => ({
-    url: `${SITE_URL.replace(/\/$/, "")}${path}`,
-    lastModified: now,
-    changeFrequency: getFrequency(path),
-    priority: getPriority(path)
-  }));
 }

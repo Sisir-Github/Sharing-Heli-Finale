@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { normalizeMessage, normalizeSingleLine } from "@/lib/utils";
+import { isValidDateInput } from "@/lib/date";
 
 const numberField = (label: string) =>
   z.preprocess(
@@ -15,6 +16,14 @@ const optionalNumberField = (label: string) =>
       z.number({ invalid_type_error: `${label} must be a number` }).finite().nonnegative()
     )
     .optional();
+
+const positiveNumberField = (label: string) =>
+  z.preprocess(
+    (value) => (typeof value === "string" && value.trim() !== "" ? Number(value) : value),
+    z.number({ invalid_type_error: `${label} must be a number` }).finite().positive()
+  );
+
+const invoiceDateField = z.string().trim().refine(isValidDateInput, "Use a valid date in YYYY-MM-DD format");
 
 const addressLinesSchema = z
   .array(z.string().trim().min(1).max(120))
@@ -33,7 +42,7 @@ const partySchema = z.object({
 const itemSchema = z.object({
   description: z.string().trim().min(1).max(200),
   unitPrice: numberField("Unit price"),
-  quantity: numberField("Quantity"),
+  quantity: positiveNumberField("Quantity"),
   lineTotal: optionalNumberField("Line total")
 });
 
@@ -52,18 +61,28 @@ const paymentInfoSchema = z.object({
   instructions: z.string().trim().min(1).max(240)
 });
 
-export const invoiceSchema = z.object({
-  invoiceNumber: z.string().trim().min(1).max(40).optional(),
-  issueDate: z.string().trim().min(1).max(40),
-  paymentDueDate: z.string().trim().min(1).max(40),
-  sender: partySchema,
-  receiver: partySchema,
-  items: z.array(itemSchema).min(1, "At least one item is required"),
-  totals: totalsSchema.optional(),
-  paymentInfo: paymentInfoSchema,
-  note: z.string().trim().max(200).optional(),
-  customerEmail: z.string().trim().email().max(120).optional()
-});
+export const invoiceSchema = z
+  .object({
+    invoiceNumber: z.string().trim().min(1).max(40).optional(),
+    issueDate: invoiceDateField,
+    paymentDueDate: invoiceDateField,
+    sender: partySchema,
+    receiver: partySchema,
+    items: z.array(itemSchema).min(1, "At least one item is required").max(100, "Too many invoice items"),
+    totals: totalsSchema.optional(),
+    paymentInfo: paymentInfoSchema,
+    note: z.string().trim().max(200).optional(),
+    customerEmail: z.string().trim().email().max(120).optional()
+  })
+  .superRefine((value, context) => {
+    if (value.paymentDueDate < value.issueDate) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["paymentDueDate"],
+        message: "Payment due date cannot be before the issue date"
+      });
+    }
+  });
 
 export type InvoicePayload = z.infer<typeof invoiceSchema>;
 

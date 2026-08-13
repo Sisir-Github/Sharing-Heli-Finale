@@ -57,7 +57,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
       <button
         type="submit"
         disabled={loading}
-        className="rounded-xl bg-gold px-4 py-3 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-60"
+        className="rounded-lg bg-gold px-4 py-3 text-sm font-semibold text-white transition hover:brightness-110 disabled:opacity-60"
       >
         {loading ? "Signing in..." : "Sign In"}
       </button>

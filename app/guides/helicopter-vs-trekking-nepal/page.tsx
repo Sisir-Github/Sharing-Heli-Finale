@@ -1,13 +1,11 @@
 import { PageEngagementTracker } from "@/components/analytics/PageEngagementTracker";
 import { PageIntro } from "@/components/layout/PageIntro";
-import { ContactPreview } from "@/components/sections/ContactPreview";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ContentSections } from "@/components/seo/ContentSections";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PageVisualIntro } from "@/components/seo/PageVisualIntro";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
-import { getSiteSettings } from "@/lib/cms";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/seo/schema";
 
@@ -24,7 +22,7 @@ const sections = [
     title: "Time, Access, and Travel Style Differences",
     paragraphs: [
       "Choosing between helicopter travel and trekking in Nepal depends on your goals, timeline, and physical preferences. Trekking offers deep ground immersion over multiple days, while helicopter travel compresses major mountain access into a short, high-impact itinerary. Neither option is universally better; they serve different travel outcomes.",
-      "If your schedule is limited, helicopter routes provide unmatched time efficiency. You can reach high-altitude visual zones in hours instead of days, making this option ideal for short Nepal visits, premium travelers, or guests combining multiple destinations in one trip.",
+      "If your schedule is limited, helicopter routes provide strong time efficiency. You can reach high-altitude visual zones in hours instead of days, making this option practical for short Nepal visits or guests combining multiple destinations in one trip.",
       "Trekking remains the stronger choice for travelers who prioritize gradual landscape engagement, local trail rhythm, and multi-day adventure pacing. The right decision starts with clarity about what kind of experience you actually value most."
     ]
   },
@@ -41,14 +39,14 @@ const sections = [
     paragraphs: [
       "Both options involve mountain risk, but risk type differs. Helicopter travel concentrates risk management into aviation operations, weather judgment, and professional pilot decisions. Trekking distributes risk over longer exposure: terrain fatigue, altitude progression, weather changes, and trail logistics.",
       "A well-managed helicopter operator can reduce uncertainty through structured dispatch, high-altitude planning, and strict go/no-go discipline. A well-managed trekking plan reduces risk through acclimatization schedules, guide support, and conservative pacing.",
-      "The practical choice depends on whether you prefer professionally controlled short-duration exposure or self-paced, extended exposure with physical commitment."
+      "The practical choice depends on whether you prefer professionally controlled short-duration exposure or self-paced, extended exposure with sustained physical effort."
     ]
   },
   {
     title: "Cost, Value, and Decision Framework",
     paragraphs: [
       "At first glance, helicopter tours often appear more expensive per day, but they can deliver higher time efficiency and faster mission completion. Trekking can be less expensive daily, yet total cost can increase with longer itineraries, accommodation, guides, permits, and contingency days.",
-      "Value should be measured by experience outcome, not just base price. If your goal is maximum mountain access in minimum time with premium comfort, helicopter travel often delivers stronger value. If your goal is immersive trail progression and physical achievement, trekking can offer better emotional value.",
+      "Value should be measured by experience outcome, not just base price. If your goal is maximum mountain access in minimum time with less sustained physical effort, helicopter travel can deliver stronger value. If your goal is immersive trail progression and physical achievement, trekking can offer better emotional value.",
       "Many travelers combine both approaches: helicopter on one segment and trekking on another. This hybrid strategy can balance comfort, access, and adventure while respecting your schedule and priorities."
     ]
   }
@@ -85,23 +83,9 @@ const faqs = [
   }
 ];
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
 
-export default async function HelicopterVsTrekkingGuidePage() {
-  const settings = await getSiteSettings();
-  const contactSettings = settings
-    ? {
-        primaryPhone: settings.primaryPhone,
-        whatsappNumber: settings.whatsappNumber,
-        email: settings.email,
-        operatingUnder: settings.operatingUnder
-      }
-    : {
-        primaryPhone: "+977-9802855690",
-        whatsappNumber: "+977-9856028155",
-        email: "rishi8848@gmail.com",
-        operatingUnder: "Operating under Pokhara Flight Centre Tours & Travel Pvt. Ltd."
-      };
+export default function HelicopterVsTrekkingGuidePage() {
 
   return (
     <>
@@ -125,8 +109,8 @@ export default async function HelicopterVsTrekkingGuidePage() {
         heading="Choose Your Next Step"
         items={[
           {
-            title: "Luxury Helicopter Tour Nepal",
-            description: "Explore premium aerial itineraries for high-comfort Himalayan access.",
+            title: "Custom Helicopter Tour Nepal",
+            description: "Explore private aerial itineraries for time-sensitive Himalayan access.",
             href: "/luxury-helicopter-tour-nepal"
           },
           {
@@ -141,7 +125,6 @@ export default async function HelicopterVsTrekkingGuidePage() {
           }
         ]}
       />
-      <ContactPreview settings={contactSettings} />
     </>
   );
 }

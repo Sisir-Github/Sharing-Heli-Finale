@@ -7,6 +7,7 @@ export default async function AdminInvoicesPage() {
   type InvoiceItem = {
     id: string;
     invoiceNumber: string;
+    publicToken: string;
     invoiceNumberDisplay: string;
     issueDate: string;
     paymentDueDate: string;
@@ -78,10 +79,10 @@ export default async function AdminInvoicesPage() {
                 </p>
               </div>
               <div className="flex gap-2">
-                <a href={`/invoice/${invoice.invoiceNumber}`} className="rounded-xl border border-white/10 px-4 py-2 text-xs text-white">
+                <a href={`/invoice/${invoice.publicToken}`} className="rounded-xl border border-white/10 px-4 py-2 text-xs text-white">
                   View
                 </a>
-                <a href={`/api/invoice/${invoice.invoiceNumber}/pdf`} className="rounded-xl border border-white/10 px-4 py-2 text-xs text-white">
+                <a href={`/api/invoice/${invoice.publicToken}/pdf`} className="rounded-xl border border-white/10 px-4 py-2 text-xs text-white">
                   PDF
                 </a>
                 <form action={deleteInvoice}>

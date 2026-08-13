@@ -4,9 +4,10 @@ import "@/app/globals.css";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { Footer } from "@/components/layout/Footer";
 import { HeaderShell } from "@/components/layout/HeaderShell";
+import { MobileConversionBar } from "@/components/layout/MobileConversionBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getSiteSettings } from "@/lib/cms";
-import { COMPANY, SITE_URL } from "@/lib/constants";
+import { COMPANY, IS_PRODUCTION_SITE, SITE_URL } from "@/lib/constants";
 import { buildLocalBusinessSchema, buildOrganizationSchema, buildWebSiteSchema } from "@/lib/seo/schema";
 
 const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
@@ -15,10 +16,10 @@ const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
 
 export async function generateMetadata() {
   const settings = await getSiteSettings();
-  const title = settings?.seoTitle || "Luxury Helicopter Tours & Charter in Nepal | Sharing Heli";
+  const title = settings?.seoTitle || "Helicopter Tours & Charter Nepal | Sharing Heli";
   const description =
     settings?.seoDescription ||
-    "Experience luxury helicopter tours, private charter, pilgrimage flights, rescue support, and aerial services in Nepal with experienced mountain pilots at Sharing Heli.";
+    "Plan shared helicopter flights and private charters in Nepal with Pokhara-based support, clear operational guidance, and current fare confirmation.";
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -41,12 +42,21 @@ export async function generateMetadata() {
       siteName: settings?.brandName || COMPANY.brandName,
       type: "website",
       locale: "en_NP",
-      url: SITE_URL
+      url: SITE_URL,
+      images: [
+        {
+          url: "/images/campaign/sharing-heli-hero.jpg",
+          width: 1200,
+          height: 630,
+          alt: "Sharing Heli Nepal helicopter flight planning"
+        }
+      ]
     },
     twitter: {
       card: "summary_large_image",
       title,
-      description
+      description,
+      images: ["/images/campaign/sharing-heli-hero.jpg"]
     },
     verification: {
       google: googleVerification,
@@ -57,11 +67,11 @@ export async function generateMetadata() {
         : undefined
     },
     robots: {
-      index: true,
-      follow: true,
+      index: IS_PRODUCTION_SITE,
+      follow: IS_PRODUCTION_SITE,
       googleBot: {
-        index: true,
-        follow: true,
+        index: IS_PRODUCTION_SITE,
+        follow: IS_PRODUCTION_SITE,
         "max-image-preview": "large"
       }
     }
@@ -77,7 +87,14 @@ export default async function RootLayout({
   const whatsappNumber = settings?.whatsappNumber || COMPANY.whatsappNumber;
   return (
     <html lang="en-NP" suppressHydrationWarning>
-      <body className="bg-midnight text-white antialiased">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var saved=localStorage.getItem('sharing-heli-theme');var theme=saved==='dark'||saved==='light'?saved:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',theme);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();`
+          }}
+        />
+      </head>
+      <body className="antialiased">
         <JsonLd
           data={[
             buildOrganizationSchema(settings || undefined),
@@ -89,6 +106,7 @@ export default async function RootLayout({
         <main>{children}</main>
         <Footer />
         <FloatingWhatsApp whatsappNumber={whatsappNumber} />
+        <MobileConversionBar phone={settings?.primaryPhone || COMPANY.primaryPhone} whatsapp={whatsappNumber} />
         {ga4Id ? (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} strategy="afterInteractive" />

@@ -9,12 +9,16 @@ export default async function AdminBlogPage() {
     title: string;
     slug: string;
     content: string;
+    excerpt: string | null;
+    author: string | null;
     category: string | null;
     tags: string[];
+    relatedTourSlugs: string[];
     featuredImage: string | null;
     seoTitle: string | null;
     seoDescription: string | null;
     ogImage: string | null;
+    noindex: boolean;
     published: boolean;
     publishAt: Date | null;
   };
@@ -33,6 +37,9 @@ export default async function AdminBlogPage() {
         <div className="grid gap-4 md:grid-cols-2">
           <input name="title" placeholder="Title" className="input" required />
           <input name="slug" placeholder="slug" className="input" required />
+          <textarea name="excerpt" placeholder="Short excerpt" className="textarea md:col-span-2" />
+          <input name="author" placeholder="Author or organization" className="input" />
+          <input name="relatedTourSlugs" placeholder="Related tour slugs, comma separated" className="input" />
           <textarea name="content" placeholder="Content (Markdown supported)" className="textarea md:col-span-2" required />
           <input name="category" placeholder="Category" className="input" />
           <input name="tags" placeholder="Tags (comma separated)" className="input" />
@@ -45,6 +52,9 @@ export default async function AdminBlogPage() {
             <input type="checkbox" name="published" />
             Published
           </label>
+          <label className="flex items-center gap-2 text-sm text-haze">
+            <input type="checkbox" name="noindex" /> Exclude from search engines
+          </label>
         </div>
         <button className="w-fit rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black">Create</button>
       </form>
@@ -56,6 +66,9 @@ export default async function AdminBlogPage() {
             <div className="grid gap-4 md:grid-cols-2">
               <input name="title" defaultValue={post.title} className="input" required />
               <input name="slug" defaultValue={post.slug} className="input" required />
+              <textarea name="excerpt" defaultValue={post.excerpt || ""} className="textarea md:col-span-2" />
+              <input name="author" defaultValue={post.author || ""} className="input" />
+              <input name="relatedTourSlugs" defaultValue={post.relatedTourSlugs.join(", ")} className="input" />
               <textarea name="content" defaultValue={post.content} className="textarea md:col-span-2" required />
               <input name="category" defaultValue={post.category || ""} className="input" />
               <input name="tags" defaultValue={post.tags.join(", ")} className="input" />
@@ -67,6 +80,9 @@ export default async function AdminBlogPage() {
               <label className="flex items-center gap-2 text-sm text-haze">
                 <input type="checkbox" name="published" defaultChecked={post.published} />
                 Published
+              </label>
+              <label className="flex items-center gap-2 text-sm text-haze">
+                <input type="checkbox" name="noindex" defaultChecked={post.noindex} /> Exclude from search engines
               </label>
             </div>
             <div className="flex gap-2">

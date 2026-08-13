@@ -8,5 +8,5 @@ type GlassCardProps = {
 };
 
 export function GlassCard({ className, children }: GlassCardProps) {
-  return <article className={cn("glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1", className)}>{children}</article>;
+  return <article className={cn("surface-card surface-card-hover p-6", className)}>{children}</article>;
 }

@@ -1,0 +1,61 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+import { computeItems, computeTotals } from "@/lib/invoice/utils";
+import { invoiceSchema } from "@/lib/invoice/validation";
+import { getTourPricePresentation } from "@/lib/tours/pricing";
+
+const invoicePayload = {
+  issueDate: "2026-08-13",
+  paymentDueDate: "2026-08-20",
+  sender: { name: "Sharing Heli", addressLines: ["Pokhara, Nepal"] },
+  receiver: { name: "Customer", addressLines: ["Kathmandu, Nepal"] },
+  items: [{ description: "Private charter", unitPrice: 1250.125, quantity: 2 }],
+  paymentInfo: {
+    bankName: "Example Bank",
+    accountName: "Sharing Heli",
+    accountNumber: "123",
+    swiftBic: "EXAMPLENP",
+    instructions: "Use the invoice number as the payment reference."
+  }
+};
+
+test("invoice dates and quantities are validated", () => {
+  assert.equal(invoiceSchema.safeParse(invoicePayload).success, true);
+  assert.equal(invoiceSchema.safeParse({ ...invoicePayload, paymentDueDate: "2026-08-12" }).success, false);
+  assert.equal(invoiceSchema.safeParse({ ...invoicePayload, issueDate: "2026-02-31" }).success, false);
+  assert.equal(invoiceSchema.safeParse({ ...invoicePayload, items: [{ description: "Flight", unitPrice: 100, quantity: 0 }] }).success, false);
+});
+
+test("invoice totals are calculated from unit prices and quantities", () => {
+  const items = computeItems([{ description: "Flight", unitPrice: 1250.125, quantity: 2, lineTotal: 1 }]);
+  const totals = computeTotals(items, { tax: 100, discount: 50 });
+
+  assert.equal(items[0].unitPrice, 1250.13);
+  assert.equal(items[0].lineTotal, 2500.26);
+  assert.deepEqual(totals, { subtotal: 2500.26, tax: 100, discount: 50, grandTotal: 2550.26 });
+});
+
+test("tour pricing is shown only inside a verified validity window", () => {
+  const active = getTourPricePresentation({
+    currency: "USD",
+    priceMode: "SHARED_PER_PERSON",
+    sharedPriceFrom: 500,
+    lastVerifiedAt: "2026-08-01",
+    priceValidFrom: "2026-08-01",
+    priceValidUntil: "2999-08-31"
+  });
+  const expired = getTourPricePresentation({
+    currency: "USD",
+    priceMode: "SHARED_PER_PERSON",
+    sharedPriceFrom: 500,
+    lastVerifiedAt: "2020-01-01",
+    priceValidFrom: "2020-01-01",
+    priceValidUntil: "2020-01-02"
+  });
+
+  assert.equal(active.isVerified, true);
+  assert.match(active.label, /\$500/);
+  assert.equal(expired.isVerified, false);
+  assert.equal(expired.label, "");
+});

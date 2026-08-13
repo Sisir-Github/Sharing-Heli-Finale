@@ -5,26 +5,29 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { PageIntro } from "@/components/layout/PageIntro";
 import { InquiryForm } from "@/components/contact/InquiryForm";
 import { getPublishedServices, getSiteSettings } from "@/lib/cms";
+import { resolveContactSettings } from "@/lib/constants";
 import { getServiceForSlug } from "@/lib/inquiry";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 import { buildBreadcrumbSchema } from "@/lib/seo/schema";
 
 type InquiryServicePageProps = {
-  params: {
+  params: Promise<{
     service: string;
-  };
+  }>;
 };
 
-export function generateMetadata({ params }: InquiryServicePageProps) {
-  return buildPageMetadata(`/contact/${params.service}`);
+export async function generateMetadata({ params }: InquiryServicePageProps) {
+  const { service } = await params;
+  return buildPageMetadata(`/contact/${service}`);
 }
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
 
 export default async function InquiryServicePage({ params }: InquiryServicePageProps) {
+  const { service } = await params;
   type ServiceItem = { title: string };
   const [services, settings] = (await Promise.all([getPublishedServices(), getSiteSettings()])) as [ServiceItem[], Awaited<ReturnType<typeof getSiteSettings>>];
-  const serviceName = getServiceForSlug(params.service);
+  const serviceName = getServiceForSlug(service);
 
   if (!serviceName) {
     notFound();
@@ -33,7 +36,7 @@ export default async function InquiryServicePage({ params }: InquiryServicePageP
   const breadcrumbs = [
     { name: "Home", path: "/" },
     { name: "Contact", path: "/contact" },
-    { name: serviceName, path: `/contact/${params.service}` }
+    { name: serviceName, path: `/contact/${service}` }
   ];
 
   return (
@@ -43,22 +46,14 @@ export default async function InquiryServicePage({ params }: InquiryServicePageP
       <PageIntro
         eyebrow="Service Inquiry"
         title={`${serviceName} Inquiry`}
-        description="You are submitting a focused inquiry route. This page is optimized for form completion and routes directly to our operations desk."
+        description="Share your route, preferred date, passenger details, and timing so the Pokhara team can review the current options."
         headingLevel={1}
       />
       <InquiryForm
         defaultService={serviceName}
         showMap
         services={services.map((item) => item.title)}
-        contactSettings={{
-          primaryPhone: settings?.primaryPhone || "+977-9802855690",
-          whatsappNumber: settings?.whatsappNumber || "+977-9856028155",
-          email: settings?.email || "rishi8848@gmail.com",
-          addressLine1: settings?.addressLine1 || "Lakeside-6, 15 Street No.",
-          addressLine2: settings?.addressLine2 || "Pokhara 33700",
-          addressLine3: settings?.addressLine3 || "Kaski, Gandaki Province",
-          addressLine4: settings?.addressLine4 || "Nepal"
-        }}
+        contactSettings={resolveContactSettings(settings)}
       />
     </>
   );

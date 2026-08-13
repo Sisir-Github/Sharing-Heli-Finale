@@ -261,20 +261,3 @@ export function renderInvoiceBody(invoice: InvoiceRecord) {
 export function renderInvoiceMarkup(invoice: InvoiceRecord) {
   return `<style>${invoiceStyles}</style>${renderInvoiceBody(invoice)}`;
 }
-
-export function renderInvoiceHtml(invoice: InvoiceRecord) {
-  return `
-    <!doctype html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Invoice ${escapeHtml(invoice.invoiceNumberDisplay)}</title>
-        <style>${invoiceStyles}</style>
-      </head>
-      <body>
-        ${renderInvoiceBody(invoice)}
-      </body>
-    </html>
-  `;
-}

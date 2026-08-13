@@ -1,13 +1,11 @@
 import { PageEngagementTracker } from "@/components/analytics/PageEngagementTracker";
 import { PageIntro } from "@/components/layout/PageIntro";
-import { ContactPreview } from "@/components/sections/ContactPreview";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ContentSections } from "@/components/seo/ContentSections";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PageVisualIntro } from "@/components/seo/PageVisualIntro";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
-import { getSiteSettings } from "@/lib/cms";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/seo/schema";
 
@@ -39,17 +37,17 @@ const sections = [
   {
     title: "Daily Timing Strategy: Why Morning Flights Usually Win",
     paragraphs: [
-      "In mountain aviation, time of day matters almost as much as season. Early departures are generally preferred because winds are often calmer and visibility is less affected by midday cloud development. Sharing Heli plans many high-altitude missions around these early windows to maximize scenic quality while maintaining safer and more predictable operating conditions.",
-      "Travelers sometimes ask whether afternoon flights are possible. They can be, but mission quality and route flexibility may be lower if weather is unstable. The best practice is to keep your itinerary aligned with operations advice instead of forcing a fixed clock target. This gives pilots room to choose the safest and most visually rewarding timing option.",
+      "In mountain aviation, time of day matters almost as much as season. Early departures are often preferred because winds can be calmer and visibility may be less affected by midday cloud development. The operating team must still assess actual conditions for the specific route.",
+      "Travelers sometimes ask whether afternoon flights are possible. They can be, but route flexibility may be lower if weather is unstable. Keep your itinerary aligned with the operating crew's advice instead of forcing a fixed clock target.",
       "If your trip includes only one flight window, prioritize mission-critical routes first and keep secondary activities flexible. If you have two or more days, place your preferred mission early and retain backup options. This approach reduces stress and gives dispatch teams better tools to deliver a successful high-altitude flight."
     ]
   },
   {
     title: "Practical Booking Framework for Reliable Outcomes",
     paragraphs: [
-      "A strong booking plan starts with clear details: preferred route, passenger count, travel date range, and schedule flexibility. This allows operations teams to match mission goals with realistic weather strategy from the beginning. For premium travelers, adding one buffer day often improves outcomes more than any other planning choice.",
+      "A strong booking plan starts with clear details: preferred route, passenger count, travel date range, and schedule flexibility. This allows operations teams to match mission goals with realistic weather strategy from the beginning. For travelers with fixed international schedules, adding one buffer day often improves outcomes more than any other planning choice.",
       "Before departure, review altitude comfort expectations, clothing layers, and weight-related guidance provided by the operator. These factors are not administrative details; they directly support mission quality and operational safety. Travelers who prepare well usually experience smoother boarding, better timing efficiency, and stronger overall comfort at altitude.",
-      "The most reliable helicopter tours in Nepal come from disciplined coordination between traveler expectations and mountain aviation realities. If you want top-tier results, choose an operator that combines local terrain expertise, regulation-compliant procedures, experienced mountain pilots, and transparent communication. That combination consistently improves both safety and experience quality."
+      "Good planning comes from disciplined coordination between traveler expectations and mountain aviation realities. Verify the actual operator's credentials, ask direct questions about weather and payload decisions, and prefer transparent communication over promotional guarantees."
     ]
   }
 ];
@@ -87,23 +85,9 @@ const faqs = [
   }
 ];
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
 
-export default async function BestTimeGuidePage() {
-  const settings = await getSiteSettings();
-  const contactSettings = settings
-    ? {
-        primaryPhone: settings.primaryPhone,
-        whatsappNumber: settings.whatsappNumber,
-        email: settings.email,
-        operatingUnder: settings.operatingUnder
-      }
-    : {
-        primaryPhone: "+977-9802855690",
-        whatsappNumber: "+977-9856028155",
-        email: "rishi8848@gmail.com",
-        operatingUnder: "Operating under Pokhara Flight Centre Tours & Travel Pvt. Ltd."
-      };
+export default function BestTimeGuidePage() {
 
   return (
     <>
@@ -143,7 +127,6 @@ export default async function BestTimeGuidePage() {
           }
         ]}
       />
-      <ContactPreview settings={contactSettings} />
     </>
   );
 }

@@ -12,7 +12,7 @@ export function FaqSection({
   items
 }: FaqSectionProps) {
   return (
-    <section className="section-space pt-8" id="faq">
+    <section className="section-space bg-canvas pt-8" id="faq">
       <div className="shell">
         <div className="max-w-3xl">
           <h2 className="headline text-balance">{title}</h2>
@@ -21,8 +21,8 @@ export function FaqSection({
 
         <div className="mt-8 grid gap-4">
           {items.map((item) => (
-            <details key={item.question} className="glass rounded-2xl p-5">
-              <summary className="cursor-pointer list-none pr-4 text-lg font-semibold text-white">{item.question}</summary>
+            <details key={item.question} className="surface-card p-5">
+              <summary className="cursor-pointer list-none pr-4 text-lg font-semibold text-ink">{item.question}</summary>
               <p className="copy mt-3 text-sm">{item.answer}</p>
             </details>
           ))}

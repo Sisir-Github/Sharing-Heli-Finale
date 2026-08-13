@@ -18,51 +18,52 @@ model AdminUser {
 }
 
 model SiteSettings {
-  id                     String       @id @default(cuid())
-  companyName            String
-  brandName              String
-  tagline                String
-  operatingUnder         String
-  primaryPhone           String
-  whatsappNumber         String
-  email                  String
-  addressLine1           String
-  addressLine2           String
-  addressLine3           String
-  addressLine4           String?
-  businessHours          String
-  seoTitle               String
-  seoDescription         String
-  ogImage                String?
-  heroHeadline           String
-  heroSubheadline         String
-  heroBackgroundMode     String
-  heroBackgroundImage    String?
-  heroBackgroundVideo    String?
-  heroCtaPrimaryLabel    String
-  heroCtaPrimaryHref     String
-  heroCtaSecondaryLabel  String
-  heroCtaSecondaryHref   String
-  heroCtaTertiaryLabel   String
-  heroCtaTertiaryHref    String
-  ctaStripText           String
-  ctaStripButtonLabel    String
-  ctaStripButtonHref     String
-  socialLinks            SocialLink[]
-  trustBadges            TrustBadge[]
-  whyChooseItems         WhyChooseItem[]
-  createdAt              DateTime     @default(now())
-  updatedAt              DateTime     @updatedAt
+  id                    String          @id @default(cuid())
+  companyName           String
+  brandName             String
+  logoImage             String?
+  tagline               String
+  operatingUnder        String
+  primaryPhone          String
+  whatsappNumber        String
+  email                 String
+  addressLine1          String
+  addressLine2          String
+  addressLine3          String
+  addressLine4          String?
+  businessHours         String
+  seoTitle              String
+  seoDescription        String
+  ogImage               String?
+  heroHeadline          String
+  heroSubheadline       String
+  heroBackgroundMode    String
+  heroBackgroundImage   String?
+  heroBackgroundVideo   String?
+  heroCtaPrimaryLabel   String
+  heroCtaPrimaryHref    String
+  heroCtaSecondaryLabel String
+  heroCtaSecondaryHref  String
+  heroCtaTertiaryLabel  String
+  heroCtaTertiaryHref   String
+  ctaStripText          String
+  ctaStripButtonLabel   String
+  ctaStripButtonHref    String
+  socialLinks           SocialLink[]
+  trustBadges           TrustBadge[]
+  whyChooseItems        WhyChooseItem[]
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
 }
 
 model SocialLink {
-  id          String       @id @default(cuid())
-  label       String
-  href        String
-  order       Int          @default(0)
-  visible     Boolean      @default(true)
-  settingsId  String
-  settings    SiteSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  id         String       @id @default(cuid())
+  label      String
+  href       String
+  order      Int          @default(0)
+  visible    Boolean      @default(true)
+  settingsId String
+  settings   SiteSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
 }
 
 model NavItem {
@@ -82,24 +83,24 @@ model FooterGroup {
 }
 
 model FooterLink {
-  id       String      @id @default(cuid())
-  label    String
-  href     String
-  order    Int         @default(0)
-  visible  Boolean     @default(true)
-  groupId  String
-  group    FooterGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  id      String      @id @default(cuid())
+  label   String
+  href    String
+  order   Int         @default(0)
+  visible Boolean     @default(true)
+  groupId String
+  group   FooterGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 
 model TrustBadge {
-  id         String       @id @default(cuid())
-  title      String
+  id          String       @id @default(cuid())
+  title       String
   description String
-  icon       String?
-  order      Int          @default(0)
-  visible    Boolean      @default(true)
-  settingsId String
-  settings   SiteSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  icon        String?
+  order       Int          @default(0)
+  visible     Boolean      @default(true)
+  settingsId  String
+  settings    SiteSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
 }
 
 model WhyChooseItem {
@@ -114,66 +115,139 @@ model WhyChooseItem {
 }
 
 model Destination {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
   description String
   image       String?
-  order       Int      @default(0)
-  visible     Boolean  @default(true)
+  order       Int     @default(0)
+  visible     Boolean @default(true)
+
+  @@index([visible, order])
 }
 
 model Service {
-  id             String   @id @default(cuid())
-  title          String
-  slug           String   @unique
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
   shortDescription String
   longDescription  String
-  icon           String?
-  featuredImage  String?
-  seoTitle       String?
-  seoDescription String?
-  published      Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  icon             String?
+  featuredImage    String?
+  seoTitle         String?
+  seoDescription   String?
+  ogImage          String?
+  noindex          Boolean  @default(false)
+  published        Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([published])
 }
 
 model Tour {
-  id             String   @id @default(cuid())
-  title          String
-  slug           String   @unique
-  duration       String
-  priceFrom      Float
-  currency       String
-  highlights     String
-  itinerary      String
-  inclusions     String
-  exclusions     String
-  images         String[]
-  ctaLabel       String?
-  ctaHref        String?
-  seoTitle       String?
-  seoDescription String?
-  published      Boolean  @default(true)
-  featured       Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                    String        @id @default(cuid())
+  title                 String
+  slug                  String        @unique
+  duration              String
+  priceFrom             Float?
+  currency              String
+  priceMode             String        @default("LIVE_QUOTE")
+  sharedPriceFrom       Float?
+  privateCharterPrice   Float?
+  sharedAvailable       Boolean       @default(false)
+  privateAvailable      Boolean       @default(true)
+  departureCity         String?
+  excerpt               String?
+  overview              String?
+  route                 String?
+  altitude              String?
+  bestTime              String?
+  weatherNotes          String?
+  cancellationPolicy    String?
+  passengerRequirements String?
+  weightSeating         String?
+  whatToBring           String?
+  photographyInfo       String?
+  safetyNotes           String?
+  faqs                  Json?
+  operationalNotice     String?
+  pricingNote           String?
+  priceValidFrom        DateTime?
+  priceValidUntil       DateTime?
+  lastVerifiedAt        DateTime?
+  highlights            String
+  itinerary             String
+  inclusions            String
+  exclusions            String
+  images                String[]
+  ctaLabel              String?
+  ctaHref               String?
+  seoTitle              String?
+  seoDescription        String?
+  ogImage               String?
+  noindex               Boolean       @default(false)
+  published             Boolean       @default(true)
+  featured              Boolean       @default(false)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  reservations          Reservation[]
+
+  @@index([published, featured])
+}
+
+model Reservation {
+  id               String    @id @default(cuid())
+  bookingReference String    @unique
+  status           String    @default("PENDING")
+  paymentStatus    String    @default("UNPAID")
+  customerName     String
+  customerEmail    String
+  customerPhone    String
+  tourId           String?
+  tour             Tour?     @relation(fields: [tourId], references: [id], onDelete: SetNull)
+  routeName        String
+  flightType       String
+  preferredDate    DateTime
+  alternateDate    DateTime?
+  confirmedDate    DateTime?
+  passengers       Int
+  quotedAmount     Float?
+  depositAmount    Float?
+  currency         String    @default("USD")
+  assignedAircraft String?
+  pickupPoint      String?
+  customerNotes    String?
+  adminNotes       String?
+  source           String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([status, preferredDate])
+  @@index([customerEmail])
+  @@index([createdAt])
 }
 
 model BlogPost {
-  id             String   @id @default(cuid())
-  title          String
-  slug           String   @unique
-  content        String
-  category       String?
-  tags           String[]
-  featuredImage  String?
-  seoTitle       String?
-  seoDescription String?
-  ogImage        String?
-  published      Boolean  @default(false)
-  publishAt      DateTime?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id               String    @id @default(cuid())
+  title            String
+  slug             String    @unique
+  content          String
+  excerpt          String?
+  author           String?
+  category         String?
+  tags             String[]
+  relatedTourSlugs String[]  @default([])
+  featuredImage    String?
+  seoTitle         String?
+  seoDescription   String?
+  ogImage          String?
+  noindex          Boolean   @default(false)
+  published        Boolean   @default(false)
+  publishAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([published, publishAt])
 }
 
 model InquiryLead {
@@ -186,11 +260,14 @@ model InquiryLead {
   pageSource String?
   status     String   @default("new")
   createdAt  DateTime @default(now())
+
+  @@index([createdAt])
 }
 
 model Invoice {
-  id                   String       @id @default(cuid())
-  invoiceNumber        String       @unique
+  id                   String        @id @default(cuid())
+  invoiceNumber        String        @unique
+  publicToken          String        @unique @default(uuid())
   invoiceNumberDisplay String
   issueDate            String
   paymentDueDate       String
@@ -201,12 +278,14 @@ model Invoice {
   customerEmail        String?
   totals               Json
   items                InvoiceItem[]
-  createdAt            DateTime     @default(now())
-  updatedAt            DateTime     @updatedAt
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  @@index([createdAt])
 }
 
 model InvoiceItem {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   invoiceId   String
   description String
   unitPrice   Float
@@ -223,4 +302,6 @@ model MediaAsset {
   type      String
   size      Int
   createdAt DateTime @default(now())
+
+  @@index([createdAt])
 }

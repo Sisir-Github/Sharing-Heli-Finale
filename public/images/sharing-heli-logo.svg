@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" role="img" aria-labelledby="title desc">
+  <title id="title">Sharing Heli Nepal</title>
+  <desc id="desc">Himalayan mountain and helicopter wordmark</desc>
+  <rect width="600" height="160" fill="#FFFFFF"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 74 76 29l26 28 35-42 54 59" stroke="#0B1F33" stroke-width="8"/>
+    <path d="m76 29 11 28 15-18 14 19 21-43 22 43" stroke="#42B8E6" stroke-width="7"/>
+    <path d="M170 55h72l19 12h34" stroke="#0B1F33" stroke-width="7"/>
+    <path d="M201 55c10-16 31-16 41 0l19 12h-81c3-6 10-10 21-12Z" fill="#42B8E6" stroke="#0B1F33" stroke-width="5"/>
+    <path d="M198 77h45M207 77l-8 10M235 77l8 10M177 47h91M221 36v11M174 61l-18-13" stroke="#0B1F33" stroke-width="5"/>
+  </g>
+  <text x="18" y="126" fill="#0B1F33" font-family="Arial, Helvetica, sans-serif" font-size="43" font-weight="700">SHARING</text>
+  <text x="226" y="126" fill="#42B8E6" font-family="Arial, Helvetica, sans-serif" font-size="43" font-weight="700">HELI</text>
+  <text x="350" y="126" fill="#0B1F33" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">NEPAL</text>
+</svg>

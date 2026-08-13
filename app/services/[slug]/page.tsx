@@ -2,39 +2,28 @@ import { notFound } from "next/navigation";
 
 import { ServiceLanding } from "@/components/services/ServiceLanding";
 import { getServiceBySlug, getSiteSettings } from "@/lib/cms";
+import { resolveContactSettings } from "@/lib/constants";
+import { getCanonicalServicePath } from "@/lib/seo/canonical";
+import { buildServiceMetadata } from "@/lib/seo/service-metadata";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const service = await getServiceBySlug(params.slug);
-  if (!service) {
-    return {};
-  }
-  return {
-    title: service.seoTitle || service.title,
-    description: service.seoDescription || service.shortDescription
-  };
+type ServicePageProps = { params: Promise<{ slug: string }> };
+
+export async function generateMetadata({ params }: ServicePageProps) {
+  const { slug } = await params;
+  const service = await getServiceBySlug(slug);
+  return buildServiceMetadata(service, getCanonicalServicePath(slug));
 }
 
-export default async function ServiceSlugPage({ params }: { params: { slug: string } }) {
-  const [service, settings] = await Promise.all([getServiceBySlug(params.slug), getSiteSettings()]);
+export default async function ServiceSlugPage({ params }: ServicePageProps) {
+  const { slug } = await params;
+  const [service, settings] = await Promise.all([getServiceBySlug(slug), getSiteSettings()]);
   if (!service) {
     notFound();
   }
 
-  const contactSettings = settings
-    ? {
-        primaryPhone: settings.primaryPhone,
-        whatsappNumber: settings.whatsappNumber,
-        email: settings.email,
-        operatingUnder: settings.operatingUnder
-      }
-    : {
-        primaryPhone: "+977-9802855690",
-        whatsappNumber: "+977-9856028155",
-        email: "rishi8848@gmail.com",
-        operatingUnder: "Operating under Pokhara Flight Centre Tours & Travel Pvt. Ltd."
-      };
+  const contactSettings = resolveContactSettings(settings);
 
-  return <ServiceLanding service={service} path={`/services/${params.slug}`} contactSettings={contactSettings} />;
+  return <ServiceLanding service={service} path={`/services/${slug}`} contactSettings={contactSettings} />;
 }

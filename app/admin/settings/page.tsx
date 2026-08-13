@@ -11,6 +11,7 @@ export default async function AdminSettingsPage() {
     id: string;
     companyName: string;
     brandName: string;
+    logoImage: string | null;
     tagline: string;
     operatingUnder: string;
     primaryPhone: string;
@@ -33,11 +34,6 @@ export default async function AdminSettingsPage() {
     heroCtaPrimaryHref: string;
     heroCtaSecondaryLabel: string;
     heroCtaSecondaryHref: string;
-    heroCtaTertiaryLabel: string;
-    heroCtaTertiaryHref: string;
-    ctaStripText: string;
-    ctaStripButtonLabel: string;
-    ctaStripButtonHref: string;
     trustBadges: TrustBadgeItem[];
     whyChooseItems: WhyChooseItem[];
     socialLinks: SocialLinkItem[];
@@ -71,6 +67,10 @@ export default async function AdminSettingsPage() {
             <label className="grid gap-2 text-sm text-haze">
               Brand Name
               <input name="brandName" defaultValue={settings?.brandName || ""} className="input" required />
+            </label>
+            <label className="grid gap-2 text-sm text-haze md:col-span-2">
+              Logo Image URL
+              <input name="logoImage" defaultValue={settings?.logoImage || "/images/sharing-heli-logo.png"} className="input" placeholder="/images/sharing-heli-logo.png" />
             </label>
             <label className="grid gap-2 text-sm text-haze md:col-span-2">
               Tagline
@@ -177,32 +177,6 @@ export default async function AdminSettingsPage() {
             <label className="grid gap-2 text-sm text-haze">
               Secondary CTA Link
               <input name="heroCtaSecondaryHref" defaultValue={settings?.heroCtaSecondaryHref || ""} className="input" required />
-            </label>
-            <label className="grid gap-2 text-sm text-haze">
-              Tertiary CTA Label
-              <input name="heroCtaTertiaryLabel" defaultValue={settings?.heroCtaTertiaryLabel || ""} className="input" required />
-            </label>
-            <label className="grid gap-2 text-sm text-haze">
-              Tertiary CTA Link
-              <input name="heroCtaTertiaryHref" defaultValue={settings?.heroCtaTertiaryHref || ""} className="input" required />
-            </label>
-          </div>
-        </div>
-
-        <div className="glass rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-white">CTA Strip</h2>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <label className="grid gap-2 text-sm text-haze md:col-span-2">
-              CTA Text
-              <textarea name="ctaStripText" defaultValue={settings?.ctaStripText || ""} className="textarea" required />
-            </label>
-            <label className="grid gap-2 text-sm text-haze">
-              Button Label
-              <input name="ctaStripButtonLabel" defaultValue={settings?.ctaStripButtonLabel || ""} className="input" required />
-            </label>
-            <label className="grid gap-2 text-sm text-haze">
-              Button Link
-              <input name="ctaStripButtonHref" defaultValue={settings?.ctaStripButtonHref || ""} className="input" required />
             </label>
           </div>
         </div>

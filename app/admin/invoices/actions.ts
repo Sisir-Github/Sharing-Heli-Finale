@@ -1,5 +1,6 @@
 "use server";
 
+import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -7,29 +8,63 @@ import { prisma } from "@/lib/prisma";
 import { computeItems, computeTotals } from "@/lib/invoice/utils";
 import { generateInvoicePdf } from "@/lib/invoice/pdf";
 import { saveInvoicePdf } from "@/lib/invoice/store";
+import { requireAdminSession } from "@/lib/admin-auth";
+import { dateInputSchema } from "@/lib/admin-validation";
+
+const optionalEmail = z.string().trim().max(120).optional().refine(
+  (value) => !value || z.string().email().safeParse(value).success,
+  "Use a valid email"
+);
+
+const optionalNonnegativeNumber = z.string().trim().optional().refine(
+  (value) => !value || (Number.isFinite(Number(value)) && Number(value) >= 0),
+  "Use a nonnegative number"
+);
+
+function hasValidInvoiceLines(value: string) {
+  const lines = value.split("\n").map((line) => line.trim()).filter(Boolean);
+  if (!lines.length || lines.length > 100) return false;
+  return lines.every((line) => {
+    const [description, unitPrice, quantity, extra] = line.split("|").map((part) => part.trim());
+    return !extra
+      && Boolean(description)
+      && Number.isFinite(Number(unitPrice))
+      && Number(unitPrice) >= 0
+      && Number.isFinite(Number(quantity))
+      && Number(quantity) > 0;
+  });
+}
 
 const invoiceAdminSchema = z.object({
-  invoiceNumber: z.string().min(1),
-  issueDate: z.string().min(1),
-  paymentDueDate: z.string().min(1),
+  invoiceNumber: z.string().trim().min(1).max(40).regex(/^[A-Za-z0-9_-]+$/),
+  issueDate: dateInputSchema,
+  paymentDueDate: dateInputSchema,
   senderName: z.string().min(1),
   senderAddress: z.string().min(1),
   senderPhone: z.string().optional(),
-  senderEmail: z.string().optional(),
+  senderEmail: optionalEmail,
   receiverName: z.string().min(1),
   receiverCompany: z.string().optional(),
   receiverAddress: z.string().min(1),
   receiverCountry: z.string().optional(),
-  itemsText: z.string().min(1),
-  tax: z.string().optional(),
-  discount: z.string().optional(),
+  itemsText: z.string().min(1).refine(hasValidInvoiceLines, "Use Description | UnitPrice | Quantity for each line"),
+  tax: optionalNonnegativeNumber,
+  discount: optionalNonnegativeNumber,
   bankName: z.string().min(1),
   accountName: z.string().min(1),
   accountNumber: z.string().min(1),
   swiftBic: z.string().min(1),
   instructions: z.string().min(1),
   note: z.string().optional(),
-  customerEmail: z.string().optional()
+  customerEmail: optionalEmail
+}).superRefine((value, context) => {
+  if (value.paymentDueDate < value.issueDate) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["paymentDueDate"],
+      message: "Payment due date cannot be before the issue date"
+    });
+  }
 });
 
 function parseLines(text: string) {
@@ -48,6 +83,7 @@ function parseLines(text: string) {
 }
 
 export async function createInvoice(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = invoiceAdminSchema.safeParse(data);
   if (!parsed.success) return;
@@ -57,6 +93,7 @@ export async function createInvoice(formData: FormData) {
     tax: parsed.data.tax ? Number(parsed.data.tax) : 0,
     discount: parsed.data.discount ? Number(parsed.data.discount) : 0
   });
+  if (totals.grandTotal < 0) return;
 
   const sender = {
     name: parsed.data.senderName,
@@ -104,6 +141,7 @@ export async function createInvoice(formData: FormData) {
     },
     create: {
       invoiceNumber: parsed.data.invoiceNumber,
+      publicToken: randomUUID(),
       invoiceNumberDisplay: parsed.data.invoiceNumber,
       issueDate: parsed.data.issueDate,
       paymentDueDate: parsed.data.paymentDueDate,
@@ -145,6 +183,7 @@ export async function createInvoice(formData: FormData) {
 }
 
 export async function deleteInvoice(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id") || "");
   if (!id) return;
   await prisma.invoice.delete({ where: { id } });

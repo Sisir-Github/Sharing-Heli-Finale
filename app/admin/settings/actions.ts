@@ -4,10 +4,13 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
+import { requireAdminSession } from "@/lib/admin-auth";
+import { optionalLocalImageSourceSchema, safePublicHrefSchema } from "@/lib/safe-url";
 
 const settingsSchema = z.object({
   companyName: z.string().min(1),
   brandName: z.string().min(1),
+  logoImage: optionalLocalImageSourceSchema,
   tagline: z.string().min(1),
   operatingUnder: z.string().min(1),
   primaryPhone: z.string().min(1),
@@ -20,24 +23,20 @@ const settingsSchema = z.object({
   businessHours: z.string().min(1),
   seoTitle: z.string().min(1),
   seoDescription: z.string().min(1),
-  ogImage: z.string().optional().or(z.literal("")),
+  ogImage: optionalLocalImageSourceSchema,
   heroHeadline: z.string().min(1),
   heroSubheadline: z.string().min(1),
   heroBackgroundMode: z.string().min(1),
-  heroBackgroundImage: z.string().optional().or(z.literal("")),
-  heroBackgroundVideo: z.string().optional().or(z.literal("")),
+  heroBackgroundImage: optionalLocalImageSourceSchema,
+  heroBackgroundVideo: optionalLocalImageSourceSchema,
   heroCtaPrimaryLabel: z.string().min(1),
-  heroCtaPrimaryHref: z.string().min(1),
+  heroCtaPrimaryHref: safePublicHrefSchema,
   heroCtaSecondaryLabel: z.string().min(1),
-  heroCtaSecondaryHref: z.string().min(1),
-  heroCtaTertiaryLabel: z.string().min(1),
-  heroCtaTertiaryHref: z.string().min(1),
-  ctaStripText: z.string().min(1),
-  ctaStripButtonLabel: z.string().min(1),
-  ctaStripButtonHref: z.string().min(1)
+  heroCtaSecondaryHref: safePublicHrefSchema
 });
 
 export async function saveSettings(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = settingsSchema.safeParse(data);
   if (!parsed.success) {
@@ -50,6 +49,7 @@ export async function saveSettings(formData: FormData) {
       where: { id: existing.id },
       data: {
         ...parsed.data,
+        logoImage: parsed.data.logoImage || null,
         addressLine4: parsed.data.addressLine4 || null,
         ogImage: parsed.data.ogImage || null,
         heroBackgroundImage: parsed.data.heroBackgroundImage || null,
@@ -60,6 +60,12 @@ export async function saveSettings(formData: FormData) {
     await prisma.siteSettings.create({
       data: {
         ...parsed.data,
+        heroCtaTertiaryLabel: "Call",
+        heroCtaTertiaryHref: "/contact",
+        ctaStripText: "Reserve a helicopter flight with our operations desk.",
+        ctaStripButtonLabel: "Reserve a flight",
+        ctaStripButtonHref: "/check-availability",
+        logoImage: parsed.data.logoImage || null,
         addressLine4: parsed.data.addressLine4 || null,
         ogImage: parsed.data.ogImage || null,
         heroBackgroundImage: parsed.data.heroBackgroundImage || null,
@@ -68,10 +74,7 @@ export async function saveSettings(formData: FormData) {
     });
   }
 
-  revalidatePath("/");
-  revalidatePath("/services");
-  revalidatePath("/tours");
-  revalidatePath("/contact");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/settings");
 
   return;
@@ -88,6 +91,7 @@ const badgeSchema = z.object({
 });
 
 export async function upsertTrustBadge(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = badgeSchema.safeParse(data);
   if (!parsed.success) return;
@@ -122,6 +126,7 @@ export async function upsertTrustBadge(formData: FormData) {
 }
 
 export async function deleteTrustBadge(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id") || "");
   if (!id) return;
   await prisma.trustBadge.delete({ where: { id } });
@@ -141,6 +146,7 @@ const whySchema = z.object({
 });
 
 export async function upsertWhyChoose(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = whySchema.safeParse(data);
   if (!parsed.success) return;
@@ -175,6 +181,7 @@ export async function upsertWhyChoose(formData: FormData) {
 }
 
 export async function deleteWhyChoose(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id") || "");
   if (!id) return;
   await prisma.whyChooseItem.delete({ where: { id } });
@@ -187,12 +194,13 @@ const destinationSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1),
   description: z.string().min(1),
-  image: z.string().optional(),
+  image: optionalLocalImageSourceSchema,
   order: z.string().optional(),
   visible: z.string().optional()
 });
 
 export async function upsertDestination(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = destinationSchema.safeParse(data);
   if (!parsed.success) return;
@@ -226,6 +234,7 @@ export async function upsertDestination(formData: FormData) {
 }
 
 export async function deleteDestination(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id") || "");
   if (!id) return;
   await prisma.destination.delete({ where: { id } });
@@ -237,13 +246,14 @@ export async function deleteDestination(formData: FormData) {
 const socialSchema = z.object({
   id: z.string().optional(),
   label: z.string().min(1),
-  href: z.string().min(1),
+  href: safePublicHrefSchema,
   order: z.string().optional(),
   visible: z.string().optional(),
   settingsId: z.string().min(1)
 });
 
 export async function upsertSocialLink(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = socialSchema.safeParse(data);
   if (!parsed.success) return;
@@ -276,6 +286,7 @@ export async function upsertSocialLink(formData: FormData) {
 }
 
 export async function deleteSocialLink(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id") || "");
   if (!id) return;
   await prisma.socialLink.delete({ where: { id } });

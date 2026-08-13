@@ -4,10 +4,12 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
+import { requireAdminSession } from "@/lib/admin-auth";
+import { safePublicHrefSchema } from "@/lib/safe-url";
 
 const navSchema = z.object({
   label: z.string().min(1),
-  href: z.string().min(1),
+  href: safePublicHrefSchema,
   order: z.string().optional(),
   visible: z.string().optional()
 });
@@ -21,12 +23,13 @@ const footerGroupSchema = z.object({
 const footerLinkSchema = z.object({
   groupId: z.string().min(1),
   label: z.string().min(1),
-  href: z.string().min(1),
+  href: safePublicHrefSchema,
   order: z.string().optional(),
   visible: z.string().optional()
 });
 
 export async function createNavItem(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = navSchema.safeParse(data);
   if (!parsed.success) return;
@@ -46,6 +49,7 @@ export async function createNavItem(formData: FormData) {
 }
 
 export async function updateNavItem(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id") || "");
   const data = Object.fromEntries(formData.entries());
   const parsed = navSchema.safeParse(data);
@@ -67,6 +71,7 @@ export async function updateNavItem(formData: FormData) {
 }
 
 export async function deleteNavItem(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id") || "");
   if (!id) return;
   await prisma.navItem.delete({ where: { id } });
@@ -76,6 +81,7 @@ export async function deleteNavItem(formData: FormData) {
 }
 
 export async function createFooterGroup(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = footerGroupSchema.safeParse(data);
   if (!parsed.success) return;
@@ -94,6 +100,7 @@ export async function createFooterGroup(formData: FormData) {
 }
 
 export async function deleteFooterGroup(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id") || "");
   if (!id) return;
   await prisma.footerGroup.delete({ where: { id } });
@@ -103,6 +110,7 @@ export async function deleteFooterGroup(formData: FormData) {
 }
 
 export async function createFooterLink(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = footerLinkSchema.safeParse(data);
   if (!parsed.success) return;
@@ -123,6 +131,7 @@ export async function createFooterLink(formData: FormData) {
 }
 
 export async function deleteFooterLink(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id") || "");
   if (!id) return;
   await prisma.footerLink.delete({ where: { id } });

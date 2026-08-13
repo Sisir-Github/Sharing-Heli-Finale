@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAdminSession } from "@/lib/admin-auth";
+import { SITE_URL } from "@/lib/constants";
 
 export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  }
+
   const key = process.env.INDEXNOW_KEY;
   const keyLocation = process.env.INDEXNOW_KEY_LOCATION;
 
@@ -40,6 +47,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  let submittedUrl: URL;
+  try {
+    submittedUrl = new URL(payload.url);
+  } catch {
+    return NextResponse.json({ success: false, error: "Invalid url" }, { status: 400 });
+  }
+
+  if (submittedUrl.origin !== new URL(SITE_URL).origin) {
+    return NextResponse.json({ success: false, error: "URL must use the canonical site host" }, { status: 400 });
+  }
+
   try {
     const response = await fetch("https://api.indexnow.org/indexnow", {
       method: "POST",
@@ -49,8 +67,8 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         host: "sharingheli.com",
         key,
-        keyLocation: keyLocation || `https://sharingheli.com/${key}.txt`,
-        urlList: [payload.url]
+        keyLocation: keyLocation || `${SITE_URL.replace(/\/$/, "")}/indexnow-key.txt`,
+        urlList: [submittedUrl.toString()]
       })
     });
 

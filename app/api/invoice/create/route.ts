@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { randomUUID } from "crypto";
 
 import type { InvoiceRecord } from "@/lib/invoice/types";
 import { invoiceSchema, sanitizeInvoicePayload } from "@/lib/invoice/validation";
@@ -7,15 +8,31 @@ import { generateInvoicePdf } from "@/lib/invoice/pdf";
 import { saveInvoice, saveInvoicePdf, safeInvoiceId } from "@/lib/invoice/store";
 import { sendInvoiceEmail } from "@/lib/invoice/email";
 import { prisma } from "@/lib/prisma";
+import { getAdminSession } from "@/lib/admin-auth";
+
+const MAX_BODY_BYTES = 64 * 1024;
 
 function generateInvoiceNumber() {
-  const stamp = new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
+  const stamp = new Date().toISOString().replace(/\D/g, "").slice(0, 14);
   return `INV-${stamp}`;
 }
 
 export async function POST(request: Request) {
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
-    const payload = await request.json();
+    if (!request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) {
+      return NextResponse.json({ ok: false, error: "Content-Type must be application/json" }, { status: 415 });
+    }
+
+    const rawBody = await request.text();
+    if (new TextEncoder().encode(rawBody).byteLength > MAX_BODY_BYTES) {
+      return NextResponse.json({ ok: false, error: "Request payload is too large" }, { status: 413 });
+    }
+    const payload = JSON.parse(rawBody) as unknown;
     const parsed = invoiceSchema.safeParse(payload);
 
     if (!parsed.success) {
@@ -47,7 +64,7 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString()
     };
 
-    await prisma.invoice.upsert({
+    const invoice = await prisma.invoice.upsert({
       where: { invoiceNumber },
       update: {
         invoiceNumberDisplay,
@@ -71,6 +88,7 @@ export async function POST(request: Request) {
       },
       create: {
         invoiceNumber,
+        publicToken: randomUUID(),
         invoiceNumberDisplay,
         issueDate: sanitized.issueDate,
         paymentDueDate: sanitized.paymentDueDate,
@@ -96,20 +114,30 @@ export async function POST(request: Request) {
     await saveInvoicePdf(invoiceNumber, pdfBuffer);
 
     let emailSent = false;
+    let emailWarning: string | undefined;
     if (sanitized.customerEmail) {
-      await sendInvoiceEmail(record, pdfBuffer, sanitized.customerEmail);
-      emailSent = true;
+      try {
+        await sendInvoiceEmail(record, pdfBuffer, sanitized.customerEmail);
+        emailSent = true;
+      } catch (error) {
+        console.error("invoice_email_error", error);
+        emailWarning = "Invoice saved, but the email could not be sent.";
+      }
     }
 
     return NextResponse.json({
       ok: true,
       invoiceNumber,
       invoiceNumberDisplay,
-      viewUrl: `/invoice/${invoiceNumber}`,
-      pdfUrl: `/api/invoice/${invoiceNumber}/pdf`,
-      emailSent
+      viewUrl: `/invoice/${invoice.publicToken}`,
+      pdfUrl: `/api/invoice/${invoice.publicToken}/pdf`,
+      emailSent,
+      ...(emailWarning ? { warning: emailWarning } : {})
     });
   } catch (error) {
+    if (error instanceof SyntaxError) {
+      return NextResponse.json({ ok: false, error: "Invalid request payload" }, { status: 400 });
+    }
     console.error("Invoice create failed", error);
     return NextResponse.json({ ok: false, error: "Invoice creation failed" }, { status: 500 });
   }

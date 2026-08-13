@@ -22,7 +22,9 @@ export type TourProductSchemaInput = {
   name: string;
   description: string;
   path: string;
-  fromPriceUsd: number;
+  price?: number;
+  currency?: string;
+  priceValidUntil?: Date | string | null;
   duration: string;
 };
 

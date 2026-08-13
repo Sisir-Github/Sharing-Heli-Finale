@@ -12,7 +12,7 @@ export function computeItems(items: { description: string; unitPrice: number; qu
   return items.map((item) => {
     const unitPrice = roundCurrency(item.unitPrice);
     const quantity = roundCurrency(item.quantity);
-    const lineTotal = roundCurrency(item.lineTotal ?? unitPrice * quantity);
+    const lineTotal = roundCurrency(unitPrice * quantity);
     return {
       description: item.description,
       unitPrice,

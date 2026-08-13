@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 
 import { Reveal } from "@/components/ui/Reveal";
@@ -13,7 +13,6 @@ type InquiryState = {
   service: string;
   message: string;
   companyWebsite: string;
-  pageSource: string;
 };
 
 type ApiResponse = {
@@ -57,15 +56,8 @@ export function InquiryForm({
     phone: "",
     service: initialService,
     message: "",
-    companyWebsite: "",
-    pageSource: ""
+    companyWebsite: ""
   });
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setFormData((prev) => ({ ...prev, pageSource: window.location.pathname }));
-    }
-  }, []);
   const [status, setStatus] = useState<{ type: "idle" | "success" | "error"; message: string }>({
     type: "idle",
     message: ""
@@ -83,7 +75,10 @@ export function InquiryForm({
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          pageSource: window.location.pathname
+        })
       });
 
       const result = (await response.json()) as ApiResponse;
@@ -110,8 +105,7 @@ export function InquiryForm({
         email: "",
         phone: "",
         message: "",
-        companyWebsite: "",
-        pageSource: ""
+        companyWebsite: ""
       }));
     } catch {
       setStatus({
@@ -124,17 +118,17 @@ export function InquiryForm({
   }
 
   return (
-    <section id="inquiry" className="section-space pt-6">
+    <section id="inquiry" className="section-space bg-canvas pt-6">
       <Reveal className="shell grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
         <aside className="space-y-5">
-          <article className="glass rounded-3xl p-6 sm:p-8">
-            <p className="text-xs uppercase tracking-[0.2em] text-gold">Direct Coordination</p>
-            <h2 className="mt-3 font-display text-3xl text-white">24/7 Operations Desk</h2>
+          <article className="surface-card p-6 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rhododendron">Direct coordination</p>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-normal text-ink">Pokhara operations desk</h2>
               <p className="copy mt-3">
-                Speak with our team for charter planning, tour schedules, rescue coordination, and premium mission support.
+                Speak with our team for charter planning, tour availability, urgent coordination, and custom flight requests.
               </p>
 
-            <div className="mt-6 space-y-3 text-sm text-slate-100">
+            <div className="mt-6 space-y-3 text-sm text-slate-600">
               <p className="inline-flex items-center gap-2"><Phone size={15} /> {contactSettings.primaryPhone}</p>
               <p className="inline-flex items-center gap-2"><Phone size={15} /> WhatsApp {contactSettings.whatsappNumber}</p>
               <p className="inline-flex items-center gap-2"><Mail size={15} /> {contactSettings.email}</p>
@@ -152,22 +146,22 @@ export function InquiryForm({
             </a>
           </article>
 
-          <article className="glass rounded-3xl p-6">
-            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-gold"><ShieldCheck size={14} /> Trust Signals</p>
+          <article className="surface-card p-6">
+            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-rhododendron"><ShieldCheck size={14} /> Before you book</p>
             <ul className="copy mt-3 space-y-2 text-sm">
-              <li>Government-regulation compliant operations</li>
-              <li>Certified crew and experienced mountain pilots</li>
-              <li>International traveler-ready support workflow</li>
-              <li>Rapid emergency mission coordination</li>
+              <li>Weather and route details confirmed before departure</li>
+              <li>Passenger and baggage requirements explained clearly</li>
+              <li>Operating details reviewed before payment</li>
+              <li>Emergency requests handled as coordination, not a guarantee</li>
             </ul>
           </article>
 
           {showMap ? (
-            <article className="glass rounded-3xl p-2">
+            <article className="surface-card p-2">
               <iframe
                 title="Sharing Heli Nepal Location"
                 src="https://www.google.com/maps?q=Lakeside-6%2C%2015%20Street%20No.%2C%20Pokhara%2033700%2C%20Kaski%2C%20Gandaki%20Province%2C%20Nepal&output=embed"
-                className="h-64 w-full rounded-2xl border-0"
+                className="h-64 w-full rounded-lg border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
@@ -175,13 +169,13 @@ export function InquiryForm({
           ) : null}
         </aside>
 
-        <div className="glass rounded-[1.8rem] p-6 sm:p-8">
-          <h3 className="font-display text-3xl text-white">Premium Inquiry Form</h3>
+        <div className="surface-card p-6 sm:p-8">
+          <h3 className="font-display text-3xl font-semibold tracking-normal text-ink">Flight inquiry form</h3>
           <p className="copy mt-3">
-            Share your travel goals and route preference. We will send a tailored response with practical next steps.
+            Share your route, date, passenger count, and questions. We will reply with practical next steps.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 grid gap-4" noValidate>
+          <form onSubmit={handleSubmit} className="mt-8 grid gap-4">
             <input
               className="hidden"
               type="text"
@@ -192,20 +186,20 @@ export function InquiryForm({
               onChange={(event) => setFormData((prev) => ({ ...prev, companyWebsite: event.target.value }))}
             />
 
-            <label className="grid gap-2 text-sm text-haze">
+            <label className="grid gap-2 text-sm font-medium text-slate-600">
               Full Name
               <input
                 required
                 autoComplete="name"
                 value={formData.name}
                 onChange={(event) => setFormData((prev) => ({ ...prev, name: event.target.value }))}
-                className="rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-aurora"
+                className="input"
                 placeholder="Your full name"
               />
             </label>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="grid gap-2 text-sm text-haze">
+              <label className="grid gap-2 text-sm font-medium text-slate-600">
                 Email
                 <input
                   required
@@ -213,12 +207,12 @@ export function InquiryForm({
                   autoComplete="email"
                   value={formData.email}
                   onChange={(event) => setFormData((prev) => ({ ...prev, email: event.target.value }))}
-                  className="rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-aurora"
+                  className="input"
                   placeholder="you@example.com"
                 />
               </label>
 
-              <label className="grid gap-2 text-sm text-haze">
+              <label className="grid gap-2 text-sm font-medium text-slate-600">
                 Phone
                 <input
                   required
@@ -226,28 +220,28 @@ export function InquiryForm({
                   autoComplete="tel"
                   value={formData.phone}
                   onChange={(event) => setFormData((prev) => ({ ...prev, phone: event.target.value }))}
-                  className="rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-aurora"
+                  className="input"
                   placeholder="+977-98XXXXXXXX"
                 />
               </label>
             </div>
 
-            <label className="grid gap-2 text-sm text-haze">
+            <label className="grid gap-2 text-sm font-medium text-slate-600">
               Service
               <select
                 value={formData.service}
                 onChange={(event) => setFormData((prev) => ({ ...prev, service: event.target.value }))}
-                className="rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-aurora"
+                className="input"
               >
                 {serviceOptions.map((service) => (
-                  <option key={service} value={service} className="bg-midnight text-white">
+                  <option key={service} value={service}>
                     {service}
                   </option>
                 ))}
               </select>
             </label>
 
-            <label className="grid gap-2 text-sm text-haze">
+            <label className="grid gap-2 text-sm font-medium text-slate-600">
               Message
               <textarea
                 required
@@ -255,7 +249,7 @@ export function InquiryForm({
                 rows={5}
                 value={formData.message}
                 onChange={(event) => setFormData((prev) => ({ ...prev, message: event.target.value }))}
-                className="rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-aurora"
+                className="textarea"
                 placeholder="Share travel date, passenger count, route preference, and special requests."
               />
             </label>
@@ -265,17 +259,17 @@ export function InquiryForm({
               disabled={isSubmitting}
               className="inquiry-button mt-2 w-full disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isSubmitting ? "Submitting Inquiry..." : "Inquiry Now"}
+              {isSubmitting ? "Sending inquiry..." : "Send inquiry"}
             </button>
 
             {status.type !== "idle" ? (
               <p
-                className={`rounded-xl border px-4 py-3 text-sm ${
+                className={`rounded-lg border px-4 py-3 text-sm ${
                   status.type === "success"
-                    ? "border-emerald-400/35 bg-emerald-500/10 text-emerald-200"
-                    : "border-rose-400/35 bg-rose-500/10 text-rose-200"
+                    ? "border-emerald-500/25 bg-emerald-50 text-emerald-700"
+                    : "border-rose-500/25 bg-rose-50 text-rose-700"
                 }`}
-                role="status"
+                role={status.type === "error" ? "alert" : "status"}
               >
                 {status.message}
               </p>

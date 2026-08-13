@@ -15,23 +15,21 @@ type RelatedLinksProps = {
 
 export function RelatedLinks({ heading, items }: RelatedLinksProps) {
   return (
-    <section className="section-space pt-8">
+    <section className="bg-canvas py-12 sm:py-16">
       <Reveal className="shell">
-        <h2 className="headline text-balance text-3xl sm:text-4xl">{heading}</h2>
-        <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <h2 className="font-display text-2xl font-semibold tracking-normal text-ink">{heading}</h2>
+        <nav className="mt-6 grid border-y border-ink/10 md:grid-cols-3" aria-label={heading}>
           {items.map((item) => (
-            <article
+            <Link
               key={item.href}
-              className="glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-aurora/40 hover:shadow-luxe"
+              href={item.href}
+              className="group flex items-center justify-between gap-4 border-b border-ink/10 py-5 last:border-b-0 md:border-b-0 md:border-r md:px-5 md:first:pl-0 md:last:border-r-0"
             >
-              <h3 className="font-display text-2xl text-white">{item.title}</h3>
-              <p className="copy mt-3 text-sm">{item.description}</p>
-              <Link href={item.href} className="outline-button mt-5">
-                Explore
-              </Link>
-            </article>
+              <span><span className="block text-sm font-semibold text-ink">{item.title}</span><span className="mt-1 block text-xs leading-5 text-slate-500">{item.description}</span></span>
+              <span className="text-aurora transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+            </Link>
           ))}
-        </div>
+        </nav>
       </Reveal>
     </section>
   );
