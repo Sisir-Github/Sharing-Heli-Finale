@@ -1,11 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdminSession } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
-import { getCanonicalTourPath } from "@/lib/seo/canonical";
 import { PRICE_MODES } from "@/lib/tours/pricing";
 
 const optionalNumber = z.preprocess(
@@ -40,12 +40,28 @@ const pricingSchema = z
         message: "Price validity end cannot be before its start"
       });
     }
+    if (value.priceMode === "SHARED_PER_PERSON" && value.sharedPriceFrom == null) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["sharedPriceFrom"],
+        message: "Enter a shared fare before showing it publicly"
+      });
+    }
+    if (value.priceMode === "PRIVATE_PER_AIRCRAFT" && value.privateCharterPrice == null) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["privateCharterPrice"],
+        message: "Enter a private aircraft fare before showing it publicly"
+      });
+    }
   });
 
 export async function updateTourPricing(formData: FormData) {
   await requireAdminSession();
   const parsed = pricingSchema.safeParse(Object.fromEntries(formData.entries()));
-  if (!parsed.success) return;
+  if (!parsed.success) {
+    redirect("/admin/pricing?error=invalid-price");
+  }
 
   const tour = await prisma.tour.update({
     where: { id: parsed.data.id },
@@ -65,8 +81,7 @@ export async function updateTourPricing(formData: FormData) {
     select: { slug: true }
   });
 
-  revalidatePath("/");
-  revalidatePath("/tours");
-  revalidatePath(getCanonicalTourPath(tour.slug));
+  revalidatePath("/", "layout");
   revalidatePath("/admin/pricing");
+  redirect(`/admin/pricing?saved=${encodeURIComponent(tour.slug)}`);
 }

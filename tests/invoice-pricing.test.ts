@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { computeItems, computeTotals } from "@/lib/invoice/utils";
 import { invoiceSchema } from "@/lib/invoice/validation";
-import { getTourPricePresentation } from "@/lib/tours/pricing";
+import { getTourPricePresentation, isPriceDateActive } from "@/lib/tours/pricing";
 
 const invoicePayload = {
   issueDate: "2026-08-13",
@@ -36,7 +36,7 @@ test("invoice totals are calculated from unit prices and quantities", () => {
   assert.deepEqual(totals, { subtotal: 2500.26, tax: 100, discount: 50, grandTotal: 2550.26 });
 });
 
-test("tour pricing is shown only inside a verified validity window", () => {
+test("tour pricing is shown after verification with optional validity dates", () => {
   const active = getTourPricePresentation({
     currency: "USD",
     priceMode: "SHARED_PER_PERSON",
@@ -53,9 +53,24 @@ test("tour pricing is shown only inside a verified validity window", () => {
     priceValidFrom: "2020-01-01",
     priceValidUntil: "2020-01-02"
   });
+  const noValidityWindow = getTourPricePresentation({
+    currency: "USD",
+    priceMode: "PRIVATE_PER_AIRCRAFT",
+    privateCharterPrice: 1900,
+    lastVerifiedAt: "2026-08-01"
+  });
 
   assert.equal(active.isVerified, true);
   assert.match(active.label, /\$500/);
+  assert.equal(noValidityWindow.isVerified, true);
+  assert.match(noValidityWindow.label, /\$1,900/);
   assert.equal(expired.isVerified, false);
   assert.equal(expired.label, "");
+});
+
+test("tour price validity uses the Nepal calendar date", () => {
+  const lateUtcOnAugust13 = new Date("2026-08-13T19:00:00.000Z");
+
+  assert.equal(isPriceDateActive("2026-08-14", "from", lateUtcOnAugust13), true);
+  assert.equal(isPriceDateActive("2026-08-13", "until", lateUtcOnAugust13), false);
 });

@@ -82,12 +82,12 @@ Optional integrations:
 ## Operational Notes
 
 - `/admin/reservations` manages reservation status, payment state, confirmed date, quoted amount, deposit, aircraft, pickup point, and internal notes. It also supports manually entered phone or walk-in requests and CSV export.
-- `/admin/pricing` is the fast price desk. Fixed public prices require an amount and validity dates; saving records the verification date. Full route content remains in `/admin/tours`.
+- `/admin/pricing` is the fast price desk. Choose the public display mode and enter its matching amount; saving records the verification date and refreshes the frontend immediately. Validity dates are optional. Full route content remains in `/admin/tours`.
 - `/admin/settings`, `/admin/navigation`, `/admin/services`, `/admin/tours`, `/admin/blog`, and `/admin/media` control the corresponding customer-facing content and assets. The logo URL is managed in Site Content.
 - `/api/health` returns HTTP 200 only when the application can reach the SQLite database; use it for deployment and uptime checks.
 - `prisma/sharing-heli.db` is persistent business data. Keep the app on one server process, preserve the file between deployments, and include it in off-server backups.
 - A public reservation is saved before SMTP is attempted. Email delivery failure does not discard the reservation record.
-- Unverified or expired tour prices stay hidden. A public fare requires price mode, matching amount, validity dates, and `lastVerifiedAt`.
+- Unverified or expired tour prices stay hidden. A public fare requires a display mode, its matching amount, and `lastVerifiedAt`; optional validity dates can limit when it appears.
 - Invoice creation requires an admin session. Customer invoice and PDF links use a stored random public token, not the invoice number.
 - Inquiry leads remain saved when SMTP notification fails after a successful database write.
 - Uploads accept only signature-validated JPEG, PNG, WebP, and AVIF files up to 8 MB.

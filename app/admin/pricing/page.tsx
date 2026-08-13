@@ -1,6 +1,6 @@
 import { updateTourPricing } from "@/app/admin/pricing/actions";
 import { prisma } from "@/lib/prisma";
-import { getTourPricePresentation } from "@/lib/tours/pricing";
+import { getAdminPriceMode, getTourPricePresentation } from "@/lib/tours/pricing";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +8,12 @@ function dateValue(value: Date | null) {
   return value?.toISOString().slice(0, 10) || "";
 }
 
-export default async function AdminPricingPage() {
+export default async function AdminPricingPage({
+  searchParams
+}: {
+  searchParams: Promise<{ saved?: string; error?: string }>;
+}) {
+  const status = await searchParams;
   const tours = await prisma.tour.findMany({ orderBy: [{ featured: "desc" }, { title: "asc" }] });
 
   return (
@@ -18,6 +23,17 @@ export default async function AdminPricingPage() {
         <h1 className="mt-2 font-display text-3xl text-white">Tour pricing</h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-haze">Update customer-facing fares without opening the full tour editor. Saving a fixed price records today as the verification date.</p>
       </div>
+
+      {status.saved ? (
+        <p className="rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200" role="status">
+          Price saved and published to the customer-facing pages.
+        </p>
+      ) : null}
+      {status.error ? (
+        <p className="rounded-lg border border-rose-400/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-200" role="alert">
+          Select a public display mode and enter its matching fare. Valid-until must not be before valid-from.
+        </p>
+      ) : null}
 
       <div className="overflow-hidden rounded-lg border border-white/10 bg-white/[0.03]">
         {tours.map((tour) => {
@@ -35,10 +51,10 @@ export default async function AdminPricingPage() {
 
               <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                 <label className="grid gap-2 text-xs text-haze">Public price mode
-                  <select name="priceMode" defaultValue={tour.priceMode} className="input">
-                    <option value="LIVE_QUOTE">Hide public price</option>
-                    <option value="SHARED_PER_PERSON">Shared, per person</option>
-                    <option value="PRIVATE_PER_AIRCRAFT">Private, per aircraft</option>
+                  <select name="priceMode" defaultValue={getAdminPriceMode(tour)} className="input">
+                    <option value="SHARED_PER_PERSON">Show shared fare per person</option>
+                    <option value="PRIVATE_PER_AIRCRAFT">Show private fare per aircraft</option>
+                    <option value="LIVE_QUOTE">Hide price from website</option>
                   </select>
                 </label>
                 <label className="grid gap-2 text-xs text-haze">Currency
@@ -50,10 +66,10 @@ export default async function AdminPricingPage() {
                 <label className="grid gap-2 text-xs text-haze">Private aircraft from
                   <input name="privateCharterPrice" type="number" min="0" step="0.01" defaultValue={tour.privateCharterPrice ?? ""} className="input" />
                 </label>
-                <label className="grid gap-2 text-xs text-haze">Valid from
+                <label className="grid gap-2 text-xs text-haze">Valid from (optional)
                   <input name="priceValidFrom" type="date" defaultValue={dateValue(tour.priceValidFrom)} className="input" />
                 </label>
-                <label className="grid gap-2 text-xs text-haze">Valid until
+                <label className="grid gap-2 text-xs text-haze">Valid until (optional)
                   <input name="priceValidUntil" type="date" defaultValue={dateValue(tour.priceValidUntil)} className="input" />
                 </label>
                 <label className="grid gap-2 text-xs text-haze md:col-span-2">Public pricing note

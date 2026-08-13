@@ -150,7 +150,7 @@ export default async function AdminToursPage() {
                 <h2 className="text-lg font-semibold text-white">{tour.title}</h2>
                 <span className={price.isVerified ? "text-sm text-emerald-300" : "text-sm text-amber-200"}>{price.label || "Price hidden"}</span>
               </div>
-              {!price.isVerified ? <p className="rounded-xl border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">Public price is hidden until a matching amount, validity window, and verification date are saved.</p> : null}
+              {!price.isVerified ? <p className="rounded-xl border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">Public price is hidden until a public display mode and matching amount are saved. Optional validity dates must include today.</p> : null}
               <div className="grid gap-4 md:grid-cols-2">
                 <input name="title" defaultValue={tour.title} className="input" required />
                 <input name="slug" defaultValue={tour.slug} className="input" required />

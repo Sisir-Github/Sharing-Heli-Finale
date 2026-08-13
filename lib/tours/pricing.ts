@@ -1,3 +1,5 @@
+import { getNepalDateInput } from "@/lib/date";
+
 export const PRICE_MODES = [
   "LIVE_QUOTE",
   "SHARED_PER_PERSON",
@@ -23,13 +25,27 @@ export type PricePresentation = {
   detail: string;
 };
 
-function isDateActive(value: Date | string | null | undefined, comparison: "from" | "until") {
+export function getAdminPriceMode(tour: Pick<TourPricing, "priceMode" | "sharedPriceFrom" | "privateCharterPrice">): PriceMode {
+  if (tour.priceMode === "SHARED_PER_PERSON" || tour.priceMode === "PRIVATE_PER_AIRCRAFT") {
+    return tour.priceMode;
+  }
+  if (tour.sharedPriceFrom != null) return "SHARED_PER_PERSON";
+  if (tour.privateCharterPrice != null) return "PRIVATE_PER_AIRCRAFT";
+  return "LIVE_QUOTE";
+}
+
+export function isPriceDateActive(
+  value: Date | string | null | undefined,
+  comparison: "from" | "until",
+  now = new Date()
+) {
   if (!value) return true;
   const date = new Date(value);
-  if (comparison === "until") date.setUTCHours(23, 59, 59, 999);
-  const time = date.getTime();
-  if (Number.isNaN(time)) return false;
-  return comparison === "from" ? time <= Date.now() : time >= Date.now();
+  if (Number.isNaN(date.getTime())) return false;
+
+  const targetDate = date.toISOString().slice(0, 10);
+  const currentDate = getNepalDateInput(now);
+  return comparison === "from" ? targetDate <= currentDate : targetDate >= currentDate;
 }
 
 function formatMoney(amount: number, currency: string) {
@@ -45,11 +61,8 @@ export function getTourPricePresentation(tour: TourPricing): PricePresentation {
   const currency = tour.currency || "USD";
   const isCurrent =
     Boolean(tour.lastVerifiedAt) &&
-    Boolean(tour.priceValidFrom) &&
-    Boolean(tour.priceValidUntil) &&
-    isDateActive(tour.lastVerifiedAt, "from") &&
-    isDateActive(tour.priceValidFrom, "from") &&
-    isDateActive(tour.priceValidUntil, "until");
+    isPriceDateActive(tour.priceValidFrom, "from") &&
+    isPriceDateActive(tour.priceValidUntil, "until");
 
   if (isCurrent && mode === "SHARED_PER_PERSON" && tour.sharedPriceFrom != null) {
     return {
