@@ -9,6 +9,7 @@ import { requireAdminSession } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 import { FLIGHT_TYPES, PAYMENT_STATUSES, RESERVATION_STATUSES } from "@/lib/reservations";
 import { getNepalDateInput, isValidDateInput } from "@/lib/date";
+import { whatsappNumberSchema } from "@/lib/validation";
 
 const optionalAmount = z.preprocess(
   (value) => (value === "" || value == null ? null : Number(value)),
@@ -70,7 +71,7 @@ export async function updateReservation(formData: FormData) {
 const manualSchema = z.object({
   customerName: z.string().trim().min(2).max(80),
   customerEmail: z.string().trim().email().max(120),
-  customerPhone: z.string().trim().min(7).max(25),
+  customerPhone: whatsappNumberSchema,
   routeName: z.string().trim().min(2).max(120),
   flightType: z.enum(FLIGHT_TYPES),
   preferredDate: z.string().refine(isValidDateInput, "Choose a valid date"),

@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { formatFlightType } from "@/lib/reservations";
 import { reservationSchema, sanitizeReservation } from "@/lib/validation";
+import { sendReservationWhatsApp } from "@/lib/whatsapp";
 
 export const runtime = "nodejs";
 
@@ -125,19 +126,64 @@ export async function POST(request: NextRequest) {
     customerNotes: reservation.customerNotes
   };
 
+  const settings = await prisma.siteSettings.findFirst({ select: { email: true } }).catch(() => null);
+  const notificationEmail = process.env.RESERVATION_NOTIFICATION_EMAIL
+    || settings?.email
+    || process.env.INQUIRY_EMAIL
+    || COMPANY.inquiryEmail;
+  let transporter: ReturnType<typeof getTransporter> | null = null;
+  const sendEmail = (message: ReturnType<typeof buildReservationNotification> | ReturnType<typeof buildReservationAcknowledgement>) => {
+    transporter ||= getTransporter();
+    return transporter.sendMail(message);
+  };
+  const deliveries = await Promise.allSettled([
+    Promise.resolve().then(() => sendEmail(buildReservationNotification(mailData, notificationEmail))),
+    Promise.resolve().then(() => sendEmail(buildReservationAcknowledgement(mailData))),
+    sendReservationWhatsApp(mailData)
+  ]);
+  const deliveredAt = new Date();
+  const deliveryErrors = deliveries
+    .map((result, index) => result.status === "rejected"
+      ? `${["business email", "customer email", "WhatsApp"][index]}: ${result.reason instanceof Error ? result.reason.message : "delivery failed"}`
+      : null)
+    .filter(Boolean)
+    .join("; ")
+    .slice(0, 1000);
+
   try {
-    const settings = await prisma.siteSettings.findFirst({ select: { email: true } });
-    const transporter = getTransporter();
-    await transporter.sendMail(buildReservationNotification(mailData, settings?.email || process.env.INQUIRY_EMAIL || COMPANY.inquiryEmail));
-    await transporter.sendMail(buildReservationAcknowledgement(mailData));
+    await prisma.reservation.update({
+      where: { id: reservation.id },
+      data: {
+        adminEmailSentAt: deliveries[0].status === "fulfilled" ? deliveredAt : null,
+        customerEmailSentAt: deliveries[1].status === "fulfilled" ? deliveredAt : null,
+        customerWhatsAppSentAt: deliveries[2].status === "fulfilled" ? deliveredAt : null,
+        notificationError: deliveryErrors || null
+      }
+    });
   } catch (error) {
-    console.error("reservation_email_error", error);
+    console.error("reservation_notification_status_error", error);
   }
+
+  if (deliveryErrors) {
+    console.error("reservation_notification_error", reservation.bookingReference, deliveryErrors);
+  }
+
+  const customerEmailSent = deliveries[1].status === "fulfilled";
+  const customerWhatsAppSent = deliveries[2].status === "fulfilled";
+  const confirmationMessage = customerEmailSent && customerWhatsAppSent
+    ? "Your reservation request was received. Confirmation was sent by email and WhatsApp."
+    : customerEmailSent
+      ? "Your reservation request was received. A confirmation email was sent, and our team will follow up on WhatsApp."
+      : "Your reservation request was received. Please save your booking reference while our team follows up.";
 
   return NextResponse.json({
     success: true,
     bookingReference: reservation.bookingReference,
-    message: "Your reservation request was received."
+    message: confirmationMessage,
+    notifications: {
+      customerEmail: customerEmailSent,
+      customerWhatsApp: customerWhatsAppSent
+    }
   });
 }
 

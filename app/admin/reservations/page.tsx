@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import Link from "next/link";
-import { CalendarDays, Download, Plus, Search } from "lucide-react";
+import { CalendarDays, Download, MailCheck, MessageCircleMore, Plus, Search } from "lucide-react";
 
 import { createManualReservation, updateReservation } from "@/app/admin/reservations/actions";
 import { prisma } from "@/lib/prisma";
@@ -80,7 +80,7 @@ export default async function AdminReservationsPage({ searchParams }: { searchPa
         <form action={createManualReservation} className="grid gap-3 border-t border-white/10 p-5 md:grid-cols-2 xl:grid-cols-4">
           <input name="customerName" className="input" placeholder="Customer name" required />
           <input name="customerEmail" type="email" className="input" placeholder="Email" required />
-          <input name="customerPhone" className="input" placeholder="Phone" required />
+          <input name="customerPhone" type="tel" className="input" placeholder="WhatsApp (+country code)" required />
           <input name="routeName" className="input" placeholder="Route" required />
           <select name="flightType" className="input" defaultValue="FLEXIBLE">{FLIGHT_TYPES.map((type) => <option key={type} value={type}>{formatFlightType(type)}</option>)}</select>
           <input name="preferredDate" type="date" className="input" required />
@@ -100,7 +100,7 @@ export default async function AdminReservationsPage({ searchParams }: { searchPa
                   <span className="text-xs font-semibold text-aurora">{reservation.bookingReference}</span>
                 </div>
                 <p className="mt-2 font-semibold text-white">{reservation.customerName}</p>
-                <p className="mt-1 text-xs text-haze">{reservation.customerPhone} · {reservation.customerEmail}</p>
+                <p className="mt-1 text-xs text-haze"><a href={`https://wa.me/${reservation.customerPhone.replace(/[^\d]/g, "")}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-white"><MessageCircleMore size={12} />{reservation.customerPhone}</a> · {reservation.customerEmail}</p>
               </div>
               <div>
                 <p className="text-sm font-semibold text-white">{reservation.routeName}</p>
@@ -115,6 +115,12 @@ export default async function AdminReservationsPage({ searchParams }: { searchPa
 
             <form action={updateReservation} className="border-t border-white/10 bg-black/10 p-5 lg:p-6">
               <input type="hidden" name="id" value={reservation.id} />
+              <div className="mb-5 flex flex-wrap gap-2 text-[11px]">
+                <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 ${reservation.adminEmailSentAt ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-200" : "border-white/10 text-haze"}`}><MailCheck size={13} /> Business email {reservation.adminEmailSentAt ? "sent" : "pending"}</span>
+                <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 ${reservation.customerEmailSentAt ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-200" : "border-white/10 text-haze"}`}><MailCheck size={13} /> Customer email {reservation.customerEmailSentAt ? "sent" : "pending"}</span>
+                <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 ${reservation.customerWhatsAppSentAt ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-200" : "border-white/10 text-haze"}`}><MessageCircleMore size={13} /> WhatsApp {reservation.customerWhatsAppSentAt ? "sent" : "pending"}</span>
+              </div>
+              {reservation.notificationError ? <p className="mb-5 rounded-lg border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-xs leading-5 text-amber-100">Notification status: {reservation.notificationError}</p> : null}
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <label className="grid gap-2 text-xs text-haze">Reservation status
                   <select name="status" defaultValue={reservation.status} className="input">{RESERVATION_STATUSES.map((status) => <option key={status} value={status}>{formatReservationStatus(status)}</option>)}</select>

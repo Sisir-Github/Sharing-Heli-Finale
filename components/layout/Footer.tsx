@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Mail, MapPin, MessageCircleMore, Phone } from "lucide-react";
+import { ArrowUpRight, Facebook, Instagram, Mail, MapPin, MessageCircleMore, Phone, Youtube } from "lucide-react";
 
 import { BrandLogo } from "@/components/layout/BrandLogo";
 import { getFooterGroups, getSiteSettings } from "@/lib/cms";
@@ -31,6 +31,12 @@ const fallbackGroups = [
   }
 ];
 
+const socialIcons = {
+  facebook: Facebook,
+  instagram: Instagram,
+  youtube: Youtube
+};
+
 export async function Footer() {
   const [settings, groups] = await Promise.all([getSiteSettings(), getFooterGroups()]);
   const resolved = {
@@ -48,6 +54,10 @@ export async function Footer() {
   };
   const footerGroups = groups.length ? groups.slice(0, 2) : fallbackGroups;
   const whatsappHref = `https://wa.me/${resolved.whatsappNumber.replace(/[^\d]/g, "")}`;
+  const socialLinks = (settings
+    ? settings.socialLinks.filter((link) => link.visible)
+    : COMPANY.socialLinks
+  ).filter((link) => isSafePublicHref(link.href));
 
   return (
     <footer className="bg-footer pb-24 pt-20 text-white md:pb-10 lg:pt-24">
@@ -64,6 +74,24 @@ export async function Footer() {
                 {COMPANY.operator}
               </a>
             </p>
+            <div className="mt-7 flex items-center gap-2" aria-label="Social media">
+              {socialLinks.map((link) => {
+                const Icon = socialIcons[link.label.toLowerCase() as keyof typeof socialIcons] || ArrowUpRight;
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={link.label}
+                    title={link.label}
+                    className="grid h-10 w-10 place-items-center rounded-lg border border-white/15 text-white/65 transition-colors hover:border-white/35 hover:text-white"
+                  >
+                    <Icon size={17} />
+                  </a>
+                );
+              })}
+            </div>
           </div>
 
           {footerGroups.map((group) => (

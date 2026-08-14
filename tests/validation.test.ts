@@ -47,6 +47,25 @@ test("reservation validation rejects impossible dates and passenger overflow", (
   assert.equal(parsed.success, false);
 });
 
+test("reservation requires an international WhatsApp number", () => {
+  const base = {
+    customerName: "Test Customer",
+    customerEmail: "customer@example.com",
+    routeName: "Pokhara to Annapurna",
+    flightType: "FLEXIBLE",
+    preferredDate: "2026-09-15",
+    passengers: 2,
+    companyWebsite: ""
+  };
+
+  const valid = reservationSchema.safeParse({ ...base, customerPhone: "+977 985-602-8155" });
+  assert.equal(valid.success, true);
+  if (valid.success) assert.equal(valid.data.customerPhone, "+9779856028155");
+
+  assert.equal(reservationSchema.safeParse({ ...base, customerPhone: "9856028155" }).success, false);
+  assert.equal(reservationSchema.safeParse({ ...base, customerPhone: "009779856028155" }).success, false);
+});
+
 test("inquiry validation and sanitization normalize customer input", () => {
   const parsed = inquirySchema.parse({
     name: "  Jane <b>Doe</b>  ",

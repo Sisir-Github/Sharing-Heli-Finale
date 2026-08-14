@@ -8,6 +8,7 @@ export default async function AdminNavigationPage() {
     id: string;
     label: string;
     href: string;
+    groupLabel: string | null;
     order: number;
     visible: boolean;
   };
@@ -36,6 +37,7 @@ export default async function AdminNavigationPage() {
             <p className="text-sm text-haze">Add new item</p>
             <input name="label" placeholder="Label" className="input" required />
             <input name="href" placeholder="/services" className="input" required />
+            <input name="groupLabel" placeholder="Dropdown group (optional)" className="input" />
             <input name="order" type="number" placeholder="Order" className="input" />
             <label className="flex items-center gap-2 text-sm text-haze">
               <input type="checkbox" name="visible" defaultChecked />
@@ -50,6 +52,7 @@ export default async function AdminNavigationPage() {
                 <input type="hidden" name="id" value={item.id} />
                 <input name="label" defaultValue={item.label} className="input" required />
                 <input name="href" defaultValue={item.href} className="input" required />
+                <input name="groupLabel" defaultValue={item.groupLabel || ""} placeholder="Dropdown group (optional)" className="input" />
                 <input name="order" type="number" defaultValue={item.order} className="input" />
                 <label className="flex items-center gap-2 text-sm text-haze">
                   <input type="checkbox" name="visible" defaultChecked={item.visible} />

@@ -67,11 +67,12 @@ model SocialLink {
 }
 
 model NavItem {
-  id      String  @id @default(cuid())
-  label   String
-  href    String
-  order   Int     @default(0)
-  visible Boolean @default(true)
+  id         String  @id @default(cuid())
+  label      String
+  href       String
+  groupLabel String?
+  order      Int     @default(0)
+  visible    Boolean @default(true)
 }
 
 model FooterGroup {
@@ -196,31 +197,35 @@ model Tour {
 }
 
 model Reservation {
-  id               String    @id @default(cuid())
-  bookingReference String    @unique
-  status           String    @default("PENDING")
-  paymentStatus    String    @default("UNPAID")
-  customerName     String
-  customerEmail    String
-  customerPhone    String
-  tourId           String?
-  tour             Tour?     @relation(fields: [tourId], references: [id], onDelete: SetNull)
-  routeName        String
-  flightType       String
-  preferredDate    DateTime
-  alternateDate    DateTime?
-  confirmedDate    DateTime?
-  passengers       Int
-  quotedAmount     Float?
-  depositAmount    Float?
-  currency         String    @default("USD")
-  assignedAircraft String?
-  pickupPoint      String?
-  customerNotes    String?
-  adminNotes       String?
-  source           String?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id                     String    @id @default(cuid())
+  bookingReference       String    @unique
+  status                 String    @default("PENDING")
+  paymentStatus          String    @default("UNPAID")
+  customerName           String
+  customerEmail          String
+  customerPhone          String
+  tourId                 String?
+  tour                   Tour?     @relation(fields: [tourId], references: [id], onDelete: SetNull)
+  routeName              String
+  flightType             String
+  preferredDate          DateTime
+  alternateDate          DateTime?
+  confirmedDate          DateTime?
+  passengers             Int
+  quotedAmount           Float?
+  depositAmount          Float?
+  currency               String    @default("USD")
+  assignedAircraft       String?
+  pickupPoint            String?
+  customerNotes          String?
+  adminNotes             String?
+  source                 String?
+  adminEmailSentAt       DateTime?
+  customerEmailSentAt    DateTime?
+  customerWhatsAppSentAt DateTime?
+  notificationError      String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
 
   @@index([status, preferredDate])
   @@index([customerEmail])

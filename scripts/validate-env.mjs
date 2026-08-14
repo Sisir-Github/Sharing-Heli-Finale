@@ -14,7 +14,12 @@ const requiredRuntime = [
   "SMTP_USER",
   "SMTP_PASS",
   "SMTP_FROM",
-  "INQUIRY_EMAIL"
+  "INQUIRY_EMAIL",
+  "WHATSAPP_GRAPH_API_VERSION",
+  "WHATSAPP_PHONE_NUMBER_ID",
+  "WHATSAPP_ACCESS_TOKEN",
+  "WHATSAPP_TEMPLATE_NAME",
+  "WHATSAPP_TEMPLATE_LANGUAGE"
 ];
 
 if (includeSeed) requiredRuntime.push("ADMIN_EMAIL", "ADMIN_PASSWORD");
@@ -51,6 +56,10 @@ if (nextAuthSecret && nextAuthSecret.length < 32) {
 const smtpPort = Number(process.env.SMTP_PORT);
 if (process.env.SMTP_PORT && (!Number.isInteger(smtpPort) || smtpPort < 1 || smtpPort > 65535)) {
   errors.push("SMTP_PORT: must be a valid TCP port");
+}
+
+if (process.env.WHATSAPP_GRAPH_API_VERSION && !/^v\d+\.\d+$/.test(process.env.WHATSAPP_GRAPH_API_VERSION)) {
+  errors.push("WHATSAPP_GRAPH_API_VERSION: must look like v23.0");
 }
 
 for (const name of ["SMTP_PASS", "NEXTAUTH_SECRET", ...(includeSeed ? ["ADMIN_PASSWORD"] : [])]) {

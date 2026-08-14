@@ -107,7 +107,7 @@ export function buildReservationNotification(data: ReservationMailData, toEmail:
     ["Reference", data.bookingReference],
     ["Customer", data.customerName],
     ["Email", data.customerEmail],
-    ["Phone", data.customerPhone],
+    ["WhatsApp", data.customerPhone],
     ["Route", data.routeName],
     ["Flight type", data.flightType],
     ["Preferred date", formatMailDate(data.preferredDate)],
@@ -155,6 +155,7 @@ export function buildReservationAcknowledgement(data: ReservationMailData) {
       `Reference: ${data.bookingReference}`,
       `Preferred date: ${formatMailDate(data.preferredDate)}`,
       `Passengers: ${data.passengers}`,
+      `WhatsApp: ${data.customerPhone}`,
       "",
       "This is a request, not a confirmed flight. Our flight desk will review availability and send the current fare and operating details before payment."
     ].join("\n"),
@@ -167,7 +168,8 @@ export function buildReservationAcknowledgement(data: ReservationMailData) {
         <div style="margin:24px 0;padding:18px;border:1px solid #dff5fc;background:#f7fbff;">
           <p style="margin:0 0 8px;"><strong>Reference:</strong> ${escapeHtml(data.bookingReference)}</p>
           <p style="margin:0 0 8px;"><strong>Preferred date:</strong> ${escapeHtml(formatMailDate(data.preferredDate))}</p>
-          <p style="margin:0;"><strong>Passengers:</strong> ${data.passengers}</p>
+          <p style="margin:0 0 8px;"><strong>Passengers:</strong> ${data.passengers}</p>
+          <p style="margin:0;"><strong>WhatsApp:</strong> ${escapeHtml(data.customerPhone)}</p>
         </div>
         <p>This is a request, not a confirmed flight. Our flight desk will review availability and send the current fare and operating details before payment.</p>
       </div>

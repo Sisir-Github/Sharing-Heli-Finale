@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
-import { COMPANY } from "../lib/constants";
+import { COMPANY, NAV_LINKS } from "../lib/constants";
 
 const prisma = new PrismaClient();
 
@@ -68,8 +68,7 @@ async function main() {
 
     await prisma.socialLink.createMany({
       data: [
-        { settingsId: settings.id, label: "Facebook", href: "https://facebook.com", order: 1, visible: false },
-        { settingsId: settings.id, label: "Instagram", href: "https://instagram.com", order: 2, visible: false }
+        ...COMPANY.socialLinks.map((link, index) => ({ settingsId: settings.id, ...link, order: index + 1, visible: true }))
       ]
     });
 
@@ -130,13 +129,7 @@ async function main() {
   if (navCount === 0) {
     await prisma.navItem.createMany({
       data: [
-        { label: "Home", href: "/", order: 1, visible: true },
-        { label: "Tours", href: "/tours", order: 2, visible: true },
-        { label: "Charter", href: "/helicopter-charter-nepal", order: 3, visible: true },
-        { label: "Destinations", href: "/destinations", order: 4, visible: true },
-        { label: "Blog", href: "/blog", order: 5, visible: true },
-        { label: "About", href: "/about-us", order: 6, visible: true },
-        { label: "Contact", href: "/contact", order: 7, visible: true }
+        ...NAV_LINKS.map((item, index) => ({ ...item, order: (index + 1) * 10, visible: true }))
       ]
     });
   }

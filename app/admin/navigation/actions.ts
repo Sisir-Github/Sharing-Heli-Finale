@@ -10,6 +10,7 @@ import { safePublicHrefSchema } from "@/lib/safe-url";
 const navSchema = z.object({
   label: z.string().min(1),
   href: safePublicHrefSchema,
+  groupLabel: z.string().trim().max(40).optional(),
   order: z.string().optional(),
   visible: z.string().optional()
 });
@@ -38,6 +39,7 @@ export async function createNavItem(formData: FormData) {
     data: {
       label: parsed.data.label,
       href: parsed.data.href,
+      groupLabel: parsed.data.groupLabel || null,
       order: Number(parsed.data.order || 0),
       visible: parsed.data.visible === "on"
     }
@@ -60,6 +62,7 @@ export async function updateNavItem(formData: FormData) {
     data: {
       label: parsed.data.label,
       href: parsed.data.href,
+      groupLabel: parsed.data.groupLabel || null,
       order: Number(parsed.data.order || 0),
       visible: parsed.data.visible === "on"
     }

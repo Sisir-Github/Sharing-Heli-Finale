@@ -127,8 +127,18 @@ export function ReservationForm({ tours, selectedTourSlug }: { tours: TourOption
         <label className="field-label">Name
           <input name="customerName" autoComplete="name" className="input mt-2" required />
         </label>
-        <label className="field-label">Phone / WhatsApp
-          <input name="customerPhone" autoComplete="tel" className="input mt-2" required />
+        <label className="field-label">WhatsApp number <span className="normal-case text-slate-400">(with country code)</span>
+          <input
+            name="customerPhone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            className="input mt-2"
+            placeholder="+9779856028155"
+            pattern="\+[1-9][0-9\s().-]{7,20}"
+            title="Include the international country code, for example +977, +91, or +81"
+            required
+          />
         </label>
         <label className="field-label md:col-span-2">Email
           <input name="customerEmail" type="email" autoComplete="email" className="input mt-2" required />

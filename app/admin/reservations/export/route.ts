@@ -21,7 +21,7 @@ export async function GET() {
     console.error("reservation_export_error", error);
     return NextResponse.json({ ok: false, error: "Reservation export is temporarily unavailable" }, { status: 503 });
   }
-  const header = ["reference", "status", "paymentStatus", "customer", "email", "phone", "route", "flightType", "preferredDate", "confirmedDate", "passengers", "quotedAmount", "currency", "aircraft", "createdAt"];
+  const header = ["reference", "status", "paymentStatus", "customer", "email", "whatsapp", "route", "flightType", "preferredDate", "confirmedDate", "passengers", "quotedAmount", "currency", "aircraft", "adminEmailSentAt", "customerEmailSentAt", "customerWhatsAppSentAt", "createdAt"];
   const rows = reservations.map((item) => [
     item.bookingReference,
     item.status,
@@ -37,6 +37,9 @@ export async function GET() {
     item.quotedAmount ?? "",
     item.currency,
     item.assignedAircraft || "",
+    item.adminEmailSentAt?.toISOString() || "",
+    item.customerEmailSentAt?.toISOString() || "",
+    item.customerWhatsAppSentAt?.toISOString() || "",
     item.createdAt.toISOString()
   ]);
   const csv = rowsToCsv([header, ...rows]);

@@ -5,6 +5,16 @@ import { FLIGHT_TYPES } from "@/lib/reservations";
 import { isValidDateInput } from "@/lib/date";
 
 const phonePattern = /^[+\d][\d\s().-]{6,24}$/;
+const internationalWhatsAppPattern = /^\+[1-9]\d{7,14}$/;
+
+export const whatsappNumberSchema = z
+  .string()
+  .trim()
+  .transform((value) => value.replace(/[\s().-]/g, ""))
+  .refine(
+    (value) => internationalWhatsAppPattern.test(value),
+    "Enter a WhatsApp number with country code, for example +9779856028155"
+  );
 
 export const inquirySchema = z.object({
   name: z.string().trim().min(2, "Name is required").max(80, "Name is too long"),
@@ -45,7 +55,7 @@ export const reservationSchema = z
   .object({
     customerName: z.string().trim().min(2, "Name is required").max(80),
     customerEmail: z.string().trim().email("Provide a valid email").max(120),
-    customerPhone: z.string().trim().regex(phonePattern, "Provide a valid phone number"),
+    customerPhone: whatsappNumberSchema,
     tourId: z.string().trim().max(80).optional().or(z.literal("")),
     routeName: z.string().trim().min(2, "Select a route").max(120),
     flightType: z.enum(FLIGHT_TYPES),
