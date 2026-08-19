@@ -2,7 +2,8 @@ import type { Prisma } from "@prisma/client";
 import Link from "next/link";
 import { CalendarDays, Download, MailCheck, MessageCircleMore, Plus, Search } from "lucide-react";
 
-import { createManualReservation, updateReservation } from "@/app/admin/reservations/actions";
+import { createManualReservation, deleteReservation, updateReservation } from "@/app/admin/reservations/actions";
+import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { prisma } from "@/lib/prisma";
 import { FLIGHT_TYPES, formatFlightType, formatReservationStatus, PAYMENT_STATUSES, RESERVATION_STATUSES, toDateInput } from "@/lib/reservations";
 
@@ -151,7 +152,14 @@ export default async function AdminReservationsPage({ searchParams }: { searchPa
                 </label>
               </div>
               {reservation.customerNotes ? <p className="mt-4 border-l-2 border-aurora pl-4 text-sm leading-6 text-slate-300"><strong className="text-white">Customer note:</strong> {reservation.customerNotes}</p> : null}
-              <div className="mt-5 flex justify-end"><button className="rounded-lg bg-aurora px-5 py-2.5 text-sm font-semibold text-white">Save reservation</button></div>
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+                <ConfirmDeleteButton
+                  formAction={deleteReservation}
+                  label="Delete reservation"
+                  confirmMessage={`Permanently delete reservation ${reservation.bookingReference} for ${reservation.customerName}? This cannot be undone.`}
+                />
+                <button className="rounded-lg bg-aurora px-5 py-2.5 text-sm font-semibold text-white">Save reservation</button>
+              </div>
             </form>
           </details>
         )) : <p className="p-8 text-center text-sm text-haze">No reservations match these filters.</p>}

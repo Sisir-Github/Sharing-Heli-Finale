@@ -104,3 +104,14 @@ export async function createManualReservation(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/admin/reservations");
 }
+
+export async function deleteReservation(formData: FormData) {
+  await requireAdminSession();
+  const id = String(formData.get("id") || "");
+  if (!id) return;
+
+  await prisma.reservation.delete({ where: { id } });
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/reservations");
+}

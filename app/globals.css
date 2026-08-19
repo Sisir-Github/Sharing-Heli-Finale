@@ -665,9 +665,13 @@ a {
     color: #8fa3ad;
   }
 
-  .admin-shell .surface-card {
+  /* .glass and .surface-card are public-site light surfaces. In the admin they
+     must be dark, otherwise the panel stays white and the translucent inputs
+     inside it become white-on-white. */
+  .admin-shell .surface-card,
+  .admin-shell .glass {
     background: #0f3648;
-    border-color: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: none;
   }
 
@@ -675,6 +679,16 @@ a {
   .admin-shell .textarea {
     background: rgba(255, 255, 255, 0.06);
     border-color: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+  }
+
+  .admin-shell .input::placeholder,
+  .admin-shell .textarea::placeholder {
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  .admin-shell .input option {
+    background: #0f3648;
     color: #ffffff;
   }
 
