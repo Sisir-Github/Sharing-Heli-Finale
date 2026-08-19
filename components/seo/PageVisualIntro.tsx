@@ -8,23 +8,21 @@ type PageVisualIntroProps = {
 
 export function PageVisualIntro({ imageSrc, imageAlt, note }: PageVisualIntroProps) {
   return (
-    <section className="section-space bg-canvas pt-4">
-      <div className="shell grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-        <div className="surface-card overflow-hidden">
-          <Image
-            src={imageSrc}
-            alt={imageAlt}
-            width={1600}
-            height={900}
-            priority={false}
-            sizes="(max-width: 1024px) 100vw, 60vw"
-            className="h-full w-full object-cover"
-          />
-        </div>
+    <section className="band-tight band-cream">
+      <div className="shell grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14">
+        <figure className="media-frame m-0 aspect-[16/10]">
+          <Image src={imageSrc} alt={imageAlt} fill sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" />
+        </figure>
 
-        <div className="surface-card p-6 sm:p-8">
-          <h2 className="font-display text-3xl font-semibold tracking-normal text-ink">Operational brief</h2>
-          <p className="copy mt-4">{note}</p>
+        <div>
+          <p className="eyebrow">
+            <span className="inline-block h-px w-7 bg-current align-middle" aria-hidden="true" />
+            Operational brief
+          </p>
+          <h2 className="mt-5 font-display text-[1.7rem] font-semibold leading-[1.14] tracking-[-0.01em] text-navy sm:text-[2.1rem]">
+            What this means for your flight
+          </h2>
+          <p className="mt-5 text-[15px] leading-[1.9] text-[var(--muted)]">{note}</p>
         </div>
       </div>
     </section>

@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PageIntro } from "@/components/layout/PageIntro";
 import { InquiryForm } from "@/components/contact/InquiryForm";
@@ -42,7 +41,6 @@ export default async function InquiryServicePage({ params }: InquiryServicePageP
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
-      <Breadcrumbs items={breadcrumbs} />
       <PageIntro
         eyebrow="Service Inquiry"
         title={`${serviceName} Inquiry`}

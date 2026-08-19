@@ -1,9 +1,7 @@
-import Image from "next/image";
-import Link from "next/link";
 
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ServiceDetail } from "@/components/services/ServiceDetail";
+import { PageHero } from "@/components/ui/PageHero";
 import { ReservationButton } from "@/components/ui/ReservationButton";
 import { buildBreadcrumbSchema } from "@/lib/seo/schema";
 import { safeLocalImageSource } from "@/lib/safe-url";
@@ -66,35 +64,16 @@ export function ServiceLanding({
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
-      <Breadcrumbs items={breadcrumbs} />
-      <section className="relative isolate min-h-[450px] overflow-hidden bg-ink text-white sm:min-h-[510px]">
-        <Image
-          src={heroImage}
-          alt={`${displayService.title} in Nepal`}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-ink/70" aria-hidden="true" />
-        <div className="shell relative z-10 flex min-h-[450px] items-end py-12 sm:min-h-[510px] sm:py-16">
-          <div className="max-w-3xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-copper">Helicopter service</p>
-            <h1 className="mt-4 font-display text-4xl font-semibold leading-tight tracking-normal text-white sm:text-6xl">
-              {displayService.title}
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
-              {displayService.seoDescription || displayService.shortDescription}
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3 border-t border-white/20 pt-6">
-              <ReservationButton className="min-h-12 px-5" />
-              <Link href="/services" className="inline-flex min-h-12 items-center justify-center rounded-lg border border-white/35 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10">
-                View all services
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Helicopter service"
+        title={displayService.title}
+        description={displayService.seoDescription || displayService.shortDescription}
+        image={heroImage}
+        imageAlt={`${displayService.title} in Nepal`}
+        priority
+        actions={<ReservationButton />}
+        secondaryAction={{ label: "View all services", href: "/services" }}
+      />
       <ServiceDetail
         longDescription={displayService.longDescription}
       />

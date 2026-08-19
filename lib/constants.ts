@@ -55,16 +55,8 @@ export function resolveContactSettings(settings?: ContactSource | null) {
 export const NAV_LINKS = [
   { label: "Home", href: "/", groupLabel: null },
   { label: "About Us", href: "/about-us", groupLabel: null },
-  { label: "All Services", href: "/services", groupLabel: "Services" },
-  { label: "Private Helicopter Charter", href: "/helicopter-charter-nepal", groupLabel: "Services" },
-  { label: "Pokhara Helicopter Service", href: "/pokhara-helicopter-service", groupLabel: "Services" },
-  { label: "Emergency Flight Coordination", href: "/emergency-helicopter-rescue-nepal", groupLabel: "Services" },
-  { label: "All Heli Tours", href: "/tours", groupLabel: "Heli Tours" },
-  { label: "Everest Region Tour", href: "/everest-base-camp-helicopter-tour-nepal", groupLabel: "Heli Tours" },
-  { label: "Annapurna Base Camp Tour", href: "/annapurna-base-camp-helicopter-tour-nepal", groupLabel: "Heli Tours" },
-  { label: "Shared Helicopter Flights", href: "/helicopter-tours/shared-helicopter-flights", groupLabel: "Heli Tours" },
-  { label: "Muktinath Helicopter Tour", href: "/muktinath-helicopter-tour-nepal", groupLabel: "Pilgrimage Tours" },
-  { label: "Muktinath Travel Guide", href: "/blog/muktinath-helicopter-tour-from-pokhara", groupLabel: "Pilgrimage Tours" },
+  { label: "Services", href: "/services", groupLabel: null },
+  { label: "Heli Tours", href: "/tours", groupLabel: null },
   { label: "Contact", href: "/contact", groupLabel: null },
   { label: "Blog", href: "/blog", groupLabel: null }
 ] as const;

@@ -2,7 +2,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { getBlogPostBySlug } from "@/lib/cms";
@@ -86,27 +85,29 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           })
         ]}
       />
-      <Breadcrumbs items={breadcrumbs} />
-      <article className="section-space pt-10">
+      <article className="band band-cream">
         <header className="shell max-w-4xl">
-          <p className="eyebrow">{post.category || "Flight planning"}</p>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-tight text-ink sm:text-6xl">{post.title}</h1>
-          <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm text-slate-600">
+          <p className="eyebrow">
+            <span className="inline-block h-px w-7 bg-current align-middle" aria-hidden="true" />
+            {post.category || "Flight planning"}
+          </p>
+          <h1 className="mt-5 font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.01em] text-navy sm:text-[2.9rem]">{post.title}</h1>
+          <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 font-display text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
             <span>By {post.author || COMPANY.brandName}</span>
             <time dateTime={publishedAt.toISOString()}>Published {publishedAt.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</time>
             <time dateTime={post.updatedAt.toISOString()}>Updated {post.updatedAt.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</time>
           </div>
-          <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-lg border border-ink/10 bg-white">
+          <div className="media-frame relative mt-9 aspect-[16/9]">
             <Image src={image} alt={post.title} fill priority sizes="(max-width: 896px) 100vw, 896px" className="object-cover" />
           </div>
         </header>
         {headings.length >= 3 ? (
-          <nav aria-label="Article contents" className="shell mt-10 max-w-3xl border-y border-ink/10 py-6">
-            <p className="text-sm font-semibold uppercase text-ink">In this article</p>
-            <ol className="mt-4 grid gap-2 text-sm text-slate-700 sm:grid-cols-2">
+          <nav aria-label="Article contents" className="shell mt-11 max-w-3xl border-y border-sand py-7">
+            <p className="font-display text-[11px] font-semibold uppercase tracking-[0.22em] text-navy">In this article</p>
+            <ol className="mt-5 grid gap-2 text-sm text-[var(--muted)] sm:grid-cols-2">
               {headings.map((heading) => (
                 <li key={heading.id}>
-                  <a className="transition hover:text-sky-700" href={`#${heading.id}`}>
+                  <a className="transition-colors hover:text-navy" href={`#${heading.id}`}>
                     {heading.label}
                   </a>
                 </li>
@@ -114,7 +115,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </ol>
           </nav>
         ) : null}
-        <div className="article-body copy shell mt-8 max-w-3xl text-base leading-8">
+        <div className="article-body shell mt-10 max-w-3xl text-base">
           <ReactMarkdown
             components={{
               h2: ({ children }) => <h2 id={headingId(String(children))}>{children}</h2>

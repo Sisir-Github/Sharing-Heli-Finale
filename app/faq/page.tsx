@@ -1,6 +1,6 @@
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { PageHero } from "@/components/ui/PageHero";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/seo/schema";
 
@@ -58,18 +58,16 @@ export default function FaqPage() {
   return (
     <>
       <JsonLd data={[buildBreadcrumbSchema(breadcrumbs), buildFaqSchema(faqs)]} />
-      <Breadcrumbs items={breadcrumbs} />
-      <section className="section-space bg-canvas pb-8">
-        <div className="shell max-w-3xl">
-          <p className="eyebrow">Before You Request A Flight</p>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-tight text-ink sm:text-6xl">
-            Clear Answers For Helicopter Travel In Nepal
-          </h1>
-          <p className="copy mt-6 text-lg">
-            Start with the practical details that affect availability, confirmation, and the final quote. Route-specific conditions are confirmed for each request.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Before you request a flight"
+        title="Clear answers for helicopter travel in Nepal"
+        description="Start with the practical details that affect availability, confirmation and the final quote. Route-specific conditions are confirmed for each request."
+        image="/images/campaign/everest-helicopter.jpg"
+        imageAlt="Helicopter flying in the Everest region of Nepal"
+        primaryAction={{ label: "Reserve a flight", href: "/check-availability" }}
+        size="sm"
+        priority
+      />
       <FaqSection items={faqs} />
     </>
   );

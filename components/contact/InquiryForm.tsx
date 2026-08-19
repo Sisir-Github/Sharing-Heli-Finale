@@ -119,7 +119,7 @@ export function InquiryForm({
   }
 
   return (
-    <section id="inquiry" className="section-space bg-canvas pt-6">
+    <section id="inquiry" className="band band-cream">
       <Reveal className="shell grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
         <aside className="space-y-5">
           <article className="surface-card p-6 sm:p-8">

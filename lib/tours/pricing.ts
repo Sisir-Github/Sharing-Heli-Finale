@@ -48,7 +48,7 @@ export function isPriceDateActive(
   return comparison === "from" ? targetDate <= currentDate : targetDate >= currentDate;
 }
 
-function formatMoney(amount: number, currency: string) {
+export function formatTourMoney(amount: number, currency: string) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
@@ -67,7 +67,7 @@ export function getTourPricePresentation(tour: TourPricing): PricePresentation {
   if (isCurrent && mode === "SHARED_PER_PERSON" && tour.sharedPriceFrom != null) {
     return {
       isVerified: true,
-      label: `From ${formatMoney(tour.sharedPriceFrom, currency)} / person`,
+      label: `From ${formatTourMoney(tour.sharedPriceFrom, currency)} / person`,
       detail: tour.pricingNote || "Shared-flight fare. Final price depends on availability and operating conditions.",
     };
   }
@@ -75,7 +75,7 @@ export function getTourPricePresentation(tour: TourPricing): PricePresentation {
   if (isCurrent && mode === "PRIVATE_PER_AIRCRAFT" && tour.privateCharterPrice != null) {
     return {
       isVerified: true,
-      label: `From ${formatMoney(tour.privateCharterPrice, currency)} / aircraft`,
+      label: `From ${formatTourMoney(tour.privateCharterPrice, currency)} / aircraft`,
       detail: tour.pricingNote || "Private-charter fare. Final price depends on routing and operating conditions.",
     };
   }
@@ -84,5 +84,20 @@ export function getTourPricePresentation(tour: TourPricing): PricePresentation {
     isVerified: false,
     label: "",
     detail: "",
+  };
+}
+
+export function getTourComparisonRates(tour: TourPricing) {
+  const currency = tour.currency || "USD";
+  const isCurrent =
+    Boolean(tour.lastVerifiedAt) &&
+    isPriceDateActive(tour.priceValidFrom, "from") &&
+    isPriceDateActive(tour.priceValidUntil, "until");
+
+  return {
+    isCurrent,
+    shared: isCurrent && tour.sharedPriceFrom != null ? formatTourMoney(tour.sharedPriceFrom, currency) : null,
+    privateCharter: isCurrent && tour.privateCharterPrice != null ? formatTourMoney(tour.privateCharterPrice, currency) : null,
+    checkedAt: isCurrent && tour.lastVerifiedAt ? new Date(tour.lastVerifiedAt) : null
   };
 }

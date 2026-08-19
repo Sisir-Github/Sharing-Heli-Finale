@@ -1,9 +1,25 @@
 import { createTour, deleteTour, updateTour } from "@/app/admin/tours/actions";
 import { prisma } from "@/lib/prisma";
 import { asStringArray } from "@/lib/json-array";
+import { TOUR_CATEGORIES, TOUR_CATEGORY_LABELS } from "@/lib/tours/categories";
 import { getTourPricePresentation } from "@/lib/tours/pricing";
+import { TOUR_REGIONS, TOUR_REGION_CONTENT } from "@/lib/tours/regions";
 
 export const dynamic = "force-dynamic";
+
+function ClassificationFields({ tour }: { tour?: { region: string; category: string; sortOrder: number } }) {
+  return (
+    <>
+      <select name="region" defaultValue={tour?.region || TOUR_REGIONS[0]} className="input" aria-label="Tour region">
+        {TOUR_REGION_CONTENT.map((region) => <option key={region.id} value={region.id}>{region.label}</option>)}
+      </select>
+      <select name="category" defaultValue={tour?.category || "SCENIC"} className="input" aria-label="Tour type">
+        {TOUR_CATEGORIES.map((category) => <option key={category} value={category}>{TOUR_CATEGORY_LABELS[category]}</option>)}
+      </select>
+      <input name="sortOrder" type="number" min="0" step="1" defaultValue={tour?.sortOrder ?? 0} placeholder="Display order" className="input" required />
+    </>
+  );
+}
 
 function PricingFields({
   tour
@@ -108,7 +124,7 @@ function ContentFields({
 }
 
 export default async function AdminToursPage() {
-  const tours = await prisma.tour.findMany({ orderBy: { updatedAt: "desc" } });
+  const tours = await prisma.tour.findMany({ orderBy: [{ region: "asc" }, { sortOrder: "asc" }, { updatedAt: "desc" }] });
 
   return (
     <div className="space-y-8">
@@ -122,6 +138,7 @@ export default async function AdminToursPage() {
         <div className="grid gap-4 md:grid-cols-2">
           <input name="title" placeholder="Title" className="input" required />
           <input name="slug" placeholder="slug" className="input" required />
+          <ClassificationFields />
           <input name="duration" placeholder="Duration" className="input" required />
           <PricingFields />
           <ContentFields />
@@ -154,6 +171,7 @@ export default async function AdminToursPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <input name="title" defaultValue={tour.title} className="input" required />
                 <input name="slug" defaultValue={tour.slug} className="input" required />
+                <ClassificationFields tour={tour} />
                 <input name="duration" defaultValue={tour.duration} className="input" required />
                 <PricingFields tour={tour} />
                 <ContentFields tour={tour} />

@@ -47,6 +47,9 @@ export function getTransporter() {
     port,
     secure: port === 465,
     name: "sharingheli.com",
+    connectionTimeout: 15_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 30_000,
     disableFileAccess: true,
     disableUrlAccess: true,
     auth: {

@@ -49,9 +49,7 @@ try {
     }
 
     await page.goto(`${baseUrl}/contact`, { waitUntil: "networkidle" });
-    await page.getByRole("button", { name: "Switch color theme" }).click();
-    assert(await page.locator("html").getAttribute("data-theme") === "dark", `${viewport.name}: dark mode did not activate`);
-    assert(!(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)), `${viewport.name}: dark mode overflow detected`);
+    assert(!(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)), `${viewport.name}: contact page overflow detected`);
 
     if (viewport.name === "mobile") {
       assert(await page.getByRole("button", { name: "Toggle menu" }).isVisible(), "mobile menu button is not visible");

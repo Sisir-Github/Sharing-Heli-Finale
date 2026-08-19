@@ -1,4 +1,3 @@
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getTourPricePresentation, type TourPricing } from "@/lib/tours/pricing";
 
 type TourDetailProps = TourPricing & {
@@ -27,6 +26,12 @@ type TourDetailProps = TourPricing & {
 export function TourDetail(props: TourDetailProps) {
   const { duration, departureCity, overview, highlights, itinerary, inclusions, exclusions, operationalNotice } = props;
   const price = getTourPricePresentation(props);
+  const detailCards = [
+    ["Highlights", highlights],
+    ["Itinerary", itinerary],
+    ["Inclusions", inclusions],
+    ["Exclusions", exclusions]
+  ] as const;
   const planningSections = [
     ["Route", props.route],
     ["Best time", props.bestTime],
@@ -40,65 +45,85 @@ export function TourDetail(props: TourDetailProps) {
   ].filter((item): item is [string, string] => Boolean(item[1]));
 
   return (
-    <section className="section-space bg-canvas">
-      <div className="shell space-y-10">
-        <SectionHeading
-          eyebrow="Tour Overview"
-          title="Flight details"
-          description={price.label ? `Duration: ${duration} · ${price.label}` : `Duration: ${duration}`}
-        />
+    <>
+      <section className="band band-cream">
+        <div className="shell">
+          <div className="max-w-3xl">
+            <p className="eyebrow">
+              <span className="inline-block h-px w-7 bg-current align-middle" aria-hidden="true" />
+              Tour overview
+            </p>
+            <h2 className="mt-5 font-display text-[1.9rem] font-semibold leading-[1.1] tracking-[-0.01em] text-navy sm:text-[2.5rem]">
+              Flight details
+            </h2>
+            {overview ? <p className="mt-6 text-[15px] leading-[1.9] text-[var(--muted)]">{overview}</p> : null}
+          </div>
 
-        {overview ? <p className="copy max-w-4xl text-base leading-8">{overview}</p> : null}
+          <dl className="mt-10 grid gap-px border-y border-sand sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-sand">
+            <div className="border-b border-sand py-6 lg:border-b-0 lg:px-6 lg:first:pl-0">
+              <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Duration</dt>
+              <dd className="mt-2 font-display text-lg font-semibold text-navy">{duration}</dd>
+            </div>
+            <div className="border-b border-sand py-6 lg:border-b-0 lg:px-6">
+              <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Departure</dt>
+              <dd className="mt-2 font-display text-lg font-semibold text-navy">{departureCity || "Confirmed with your quote"}</dd>
+            </div>
+            <div className="border-b border-sand py-6 sm:border-b-0 lg:px-6">
+              <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Altitude</dt>
+              <dd className="mt-2 font-display text-lg font-semibold text-navy">{props.altitude || "Route-dependent"}</dd>
+            </div>
+            <div className="py-6 lg:px-6 lg:last:pr-0">
+              <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Fare</dt>
+              <dd className="mt-2 font-display text-lg font-semibold text-navy">{price.label || "Quoted per request"}</dd>
+            </div>
+          </dl>
 
-        <dl className="grid gap-5 border-y border-ink/15 py-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div><dt className="text-xs font-semibold uppercase text-slate-500">Duration</dt><dd className="mt-1 font-semibold text-ink">{duration}</dd></div>
-          <div><dt className="text-xs font-semibold uppercase text-slate-500">Departure</dt><dd className="mt-1 font-semibold text-ink">{departureCity || "Confirmed with your quote"}</dd></div>
-          <div><dt className="text-xs font-semibold uppercase text-slate-500">Altitude</dt><dd className="mt-1 font-semibold text-ink">{props.altitude || "Route-dependent"}</dd></div>
-          {price.label ? <div><dt className="text-xs font-semibold uppercase text-slate-500">Price</dt><dd className="mt-1 font-semibold text-ink">{price.label}</dd></div> : null}
-        </dl>
+          <div className="mt-10 grid gap-5 lg:grid-cols-2">
+            {detailCards.map(([heading, body]) => (
+              <article key={heading} className="surface-card p-6 sm:p-8">
+                <h3 className="font-display text-base font-semibold uppercase tracking-[0.12em] text-navy">{heading}</h3>
+                <span className="rule-accent mt-4" aria-hidden="true" />
+                <p className="mt-4 whitespace-pre-line text-sm leading-[1.9] text-[var(--muted)]">{body}</p>
+              </article>
+            ))}
+          </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="surface-card p-6">
-            <h3 className="text-lg font-semibold text-ink">Highlights</h3>
-            <p className="copy mt-3 whitespace-pre-line">{highlights}</p>
-          </div>
-          <div className="surface-card p-6">
-            <h3 className="text-lg font-semibold text-ink">Itinerary</h3>
-            <p className="copy mt-3 whitespace-pre-line">{itinerary}</p>
-          </div>
-          <div className="surface-card p-6">
-            <h3 className="text-lg font-semibold text-ink">Inclusions</h3>
-            <p className="copy mt-3 whitespace-pre-line">{inclusions}</p>
-          </div>
-          <div className="surface-card p-6">
-            <h3 className="text-lg font-semibold text-ink">Exclusions</h3>
-            <p className="copy mt-3 whitespace-pre-line">{exclusions}</p>
-          </div>
+          {operationalNotice ? (
+            <div className="mt-8 border-l-[3px] border-accent bg-white p-6">
+              <h3 className="font-display text-[11px] font-semibold uppercase tracking-[0.22em] text-navy">Operational note</h3>
+              <p className="mt-3 text-sm leading-[1.85] text-[var(--muted)]">{operationalNotice}</p>
+            </div>
+          ) : null}
+
+          {price.detail ? (
+            <p className="mt-8 border-t border-sand pt-6 text-sm leading-[1.85] text-[var(--muted)]">{price.detail}</p>
+          ) : null}
         </div>
+      </section>
 
-        {planningSections.length ? (
-          <div>
-            <h2 className="font-display text-3xl font-semibold tracking-normal text-ink">Flight planning details</h2>
-            <div className="mt-6 grid gap-x-10 gap-y-7 md:grid-cols-2">
+      {planningSections.length ? (
+        <section className="band band-cream-deep">
+          <div className="shell">
+            <div className="max-w-3xl">
+              <p className="eyebrow">
+                <span className="inline-block h-px w-7 bg-current align-middle" aria-hidden="true" />
+                Before you fly
+              </p>
+              <h2 className="mt-5 font-display text-[1.8rem] font-semibold leading-[1.12] tracking-[-0.01em] text-navy sm:text-[2.3rem]">
+                Flight planning details
+              </h2>
+            </div>
+            <div className="mt-10 grid gap-x-14 gap-y-8 md:grid-cols-2">
               {planningSections.map(([heading, copy]) => (
-                <article key={heading} className="border-t border-ink/15 pt-5">
-                  <h3 className="text-base font-semibold text-ink">{heading}</h3>
-                  <p className="copy mt-2 text-sm whitespace-pre-line">{copy}</p>
+                <article key={heading} className="border-t border-sand pt-6">
+                  <h3 className="font-display text-sm font-semibold uppercase tracking-[0.12em] text-navy">{heading}</h3>
+                  <p className="mt-3 whitespace-pre-line text-sm leading-[1.9] text-[var(--muted)]">{copy}</p>
                 </article>
               ))}
             </div>
           </div>
-        ) : null}
-
-        {operationalNotice ? (
-          <div className="rounded-lg border border-brass/40 bg-brass/10 p-5">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-ink">Operational note</h3>
-            <p className="copy mt-2 text-sm">{operationalNotice}</p>
-          </div>
-        ) : null}
-
-        {price.detail ? <p className="border-t border-ink/10 pt-6 text-sm text-haze">{price.detail}</p> : null}
-      </div>
-    </section>
+        </section>
+      ) : null}
+    </>
   );
 }

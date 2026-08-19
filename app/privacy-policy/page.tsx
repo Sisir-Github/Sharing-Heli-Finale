@@ -1,5 +1,4 @@
 import { PageIntro } from "@/components/layout/PageIntro";
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ContentSections } from "@/components/seo/ContentSections";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 
@@ -9,7 +8,6 @@ export const revalidate = 86400;
 export default function PrivacyPolicyPage() {
   return (
     <>
-      <Breadcrumbs items={[{ name: "Home", path: "/" }, { name: "Privacy Policy", path: "/privacy-policy" }]} />
       <PageIntro
         eyebrow="Privacy"
         title="Privacy Policy"

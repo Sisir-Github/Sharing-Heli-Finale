@@ -75,7 +75,10 @@ export async function getServiceBySlug(slug: string) {
 export async function getPublishedTours() {
   if (!hasDatabase) return FALLBACK_TOURS;
   try {
-    const tours = await prisma.tour.findMany({ where: { published: true }, orderBy: { createdAt: "desc" } });
+    const tours = await prisma.tour.findMany({
+      where: { published: true },
+      orderBy: [{ region: "asc" }, { sortOrder: "asc" }, { title: "asc" }]
+    });
     return tours.map(normalizeTour);
   } catch {
     return FALLBACK_TOURS;
@@ -97,7 +100,7 @@ export async function getFeaturedTours() {
   try {
     const tours = await prisma.tour.findMany({
       where: { published: true, featured: true },
-      orderBy: { createdAt: "desc" }
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }]
     });
     return tours.map(normalizeTour);
   } catch {
@@ -159,7 +162,7 @@ export async function getServicesAdmin() {
 
 export async function getToursAdmin() {
   if (!hasDatabase) return [];
-  const tours = await prisma.tour.findMany({ orderBy: { updatedAt: "desc" } });
+  const tours = await prisma.tour.findMany({ orderBy: [{ region: "asc" }, { sortOrder: "asc" }, { updatedAt: "desc" }] });
   return tours.map(normalizeTour);
 }
 

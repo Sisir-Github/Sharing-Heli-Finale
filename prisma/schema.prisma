@@ -149,6 +149,9 @@ model Tour {
   id                    String        @id @default(cuid())
   title                 String
   slug                  String        @unique
+  region                String        @default("EVEREST")
+  category              String        @default("SCENIC")
+  sortOrder             Int           @default(0)
   duration              String
   priceFrom             Float?
   currency              String
@@ -194,6 +197,8 @@ model Tour {
   reservations          Reservation[]
 
   @@index([published, featured])
+  @@index([published, region, sortOrder])
+  @@index([published, category])
 }
 
 model Reservation {

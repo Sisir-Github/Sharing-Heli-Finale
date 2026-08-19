@@ -1,4 +1,3 @@
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { PageIntro } from "@/components/layout/PageIntro";
@@ -16,7 +15,6 @@ export default function GuidesPage() {
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
-      <Breadcrumbs items={breadcrumbs} />
       <PageIntro
         eyebrow="Insights"
         title="Nepal Helicopter Planning Guides"

@@ -1,8 +1,7 @@
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
-import { PageIntro } from "@/components/layout/PageIntro";
 import { InquiryForm } from "@/components/contact/InquiryForm";
+import { PageHero } from "@/components/ui/PageHero";
 import { getPublishedServices, getSiteSettings } from "@/lib/cms";
 import { resolveContactSettings } from "@/lib/constants";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
@@ -19,36 +18,41 @@ export const revalidate = 900;
 
 export default async function ContactPage() {
   type ServiceItem = { title: string };
-  const [services, settings] = (await Promise.all([getPublishedServices(), getSiteSettings()])) as [ServiceItem[], Awaited<ReturnType<typeof getSiteSettings>>];
+  const [services, settings] = (await Promise.all([getPublishedServices(), getSiteSettings()])) as [
+    ServiceItem[],
+    Awaited<ReturnType<typeof getSiteSettings>>
+  ];
   const serviceNames = services.map((service) => service.title);
   const contactSettings = resolveContactSettings(settings);
 
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
-      <Breadcrumbs items={breadcrumbs} />
-      <PageIntro
+      <PageHero
         eyebrow="Contact"
-        title="Contact Sharing Heli Nepal"
-        description="Send your travel plans or mission details to our Pokhara operations desk for current availability and planning support."
-        headingLevel={1}
+        title="Talk to the Pokhara flight desk"
+        description="Send your travel plans or mission details for current availability, route feasibility and planning support."
+        image="/images/campaign/muktinath-helicopter.jpg"
+        imageAlt="Helicopter landing in the Nepal Himalayas"
+        size="sm"
+        priority
       />
       <InquiryForm showMap services={serviceNames} contactSettings={contactSettings} />
       <RelatedLinks
-        heading="Popular Inquiry Paths"
+        heading="Popular inquiry paths"
         items={[
           {
-            title: "Charter Inquiry",
-            description: "Request private charter scheduling, route planning, and ground support details.",
+            title: "Charter inquiry",
+            description: "Request private charter scheduling, route planning and ground support details.",
             href: "/contact/charter"
           },
           {
-            title: "Everest Tour Inquiry",
-            description: "Discuss timing, weather windows, and group arrangements for Everest flights.",
+            title: "Everest tour inquiry",
+            description: "Discuss timing, weather windows and group arrangements for Everest flights.",
             href: "/contact/everest-base-camp-helicopter-tour"
           },
           {
-            title: "Muktinath Pilgrimage Inquiry",
+            title: "Muktinath pilgrimage inquiry",
             description: "Coordinate religious travel requirements and mission planning support.",
             href: "/contact/muktinath-pilgrimage-tour"
           }

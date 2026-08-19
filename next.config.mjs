@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const isHttpsSite = process.env.NEXT_PUBLIC_SITE_URL?.startsWith("https://") ?? false;
+
 const contentSecurityPolicy = [
   "default-src 'self'",
   [
@@ -20,8 +22,8 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
-  "upgrade-insecure-requests"
-].join("; ");
+  isHttpsSite ? "upgrade-insecure-requests" : ""
+].filter(Boolean).join("; ");
 
 const nextConfig = {
   reactStrictMode: true,

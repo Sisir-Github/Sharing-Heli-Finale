@@ -1,5 +1,8 @@
 import Script from "next/script";
 
+import "@fontsource/oswald/500.css";
+import "@fontsource/oswald/600.css";
+import "@fontsource/oswald/700.css";
 import "@/app/globals.css";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { Footer } from "@/components/layout/Footer";
@@ -87,14 +90,7 @@ export default async function RootLayout({
   const settings = await getSiteSettings();
   const whatsappNumber = settings?.whatsappNumber || COMPANY.whatsappNumber;
   return (
-    <html lang="en-NP" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var saved=localStorage.getItem('sharing-heli-theme');var theme=saved==='dark'||saved==='light'?saved:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',theme);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();`
-          }}
-        />
-      </head>
+    <html lang="en-NP">
       <body className="antialiased">
         <JsonLd
           data={[

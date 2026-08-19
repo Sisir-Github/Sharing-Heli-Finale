@@ -1,5 +1,5 @@
 import { ReservationForm } from "@/components/reservations/ReservationForm";
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { PageHero } from "@/components/ui/PageHero";
 import { getPublishedTours } from "@/lib/cms";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 import { getTourPricePresentation } from "@/lib/tours/pricing";
@@ -19,17 +19,25 @@ export default async function CheckAvailabilityPage({ searchParams }: { searchPa
 
   return (
     <>
-      <Breadcrumbs items={[{ name: "Home", path: "/" }, { name: "Reserve a Flight", path: "/check-availability" }]} />
-      <section className="section-space pt-10">
+      <PageHero
+        eyebrow="Reservation request"
+        title="Reserve your preferred flight date"
+        description="Choose a route and send the essential passenger details. The operations desk will return the available aircraft, current fare and confirmation steps."
+        image="/images/campaign/sharing-heli-hero.jpg"
+        imageAlt="Helicopter ready for departure in Nepal"
+        size="sm"
+        priority
+      />
+
+      <section className="band band-cream">
         <div className="shell max-w-4xl">
-          <div className="max-w-3xl">
-            <p className="eyebrow">Reservation request</p>
-            <h1 className="mt-4 font-display text-4xl font-semibold leading-tight tracking-normal text-ink sm:text-6xl">Reserve your preferred flight date.</h1>
-            <p className="copy mt-5">Choose a route and send the essential passenger details. The operations desk will return the available aircraft, current fare, and confirmation steps.</p>
-          </div>
-          <div className="surface-card mt-10 p-5 sm:p-8 lg:p-10">
+          <div className="availability-panel p-5 sm:p-8 lg:p-10">
             <ReservationForm tours={tours} selectedTourSlug={tour} />
           </div>
+          <p className="mt-6 text-center text-xs leading-6 text-[var(--muted)]">
+            Submitting this form starts a request. A booking exists only once availability, route, operating details and
+            commercial terms are confirmed in writing.
+          </p>
         </div>
       </section>
     </>

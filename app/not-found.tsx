@@ -13,23 +13,26 @@ export const metadata = {
 
 export default function NotFound() {
   return (
-    <section className="section-space bg-canvas">
+    <section className="band band-cream">
       <div className="shell">
-        <div className="surface-card p-8 sm:p-10">
-          <p className="label">404</p>
-          <h1 className="font-display text-4xl font-semibold tracking-normal text-ink sm:text-5xl">Page Not Found</h1>
-          <p className="copy mt-4 max-w-2xl">
-            The page you are looking for is unavailable. Explore our helicopter tours, services, or contact desk to continue your journey.
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="font-display text-[4.5rem] font-bold leading-none text-accent sm:text-[6rem]">404</p>
+          <h1 className="mt-5 font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.01em] text-navy sm:text-[2.6rem]">
+            Page not found
+          </h1>
+          <p className="mt-5 text-[15px] leading-[1.85] text-[var(--muted)]">
+            The page you are looking for is unavailable. Explore our helicopter tours, services or contact desk to
+            continue.
           </p>
-          <div className="mt-7 flex flex-wrap gap-4">
+          <div className="mt-9 flex flex-wrap justify-center gap-3">
             <Link href="/" className="inquiry-button">
-              Go Home
+              Go home
             </Link>
             <Link href="/tours" className="outline-button">
-              View Tours
+              View tours
             </Link>
             <Link href="/contact" className="outline-button">
-              Contact Desk
+              Contact desk
             </Link>
           </div>
         </div>

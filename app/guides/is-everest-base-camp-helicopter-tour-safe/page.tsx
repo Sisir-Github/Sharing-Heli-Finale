@@ -1,6 +1,5 @@
 import { PageEngagementTracker } from "@/components/analytics/PageEngagementTracker";
 import { PageIntro } from "@/components/layout/PageIntro";
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ContentSections } from "@/components/seo/ContentSections";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -93,7 +92,6 @@ export default function EverestSafetyGuidePage() {
     <>
       <PageEngagementTracker trackGuideScroll />
       <JsonLd data={[buildBreadcrumbSchema(breadcrumbs), buildFaqSchema(faqs)]} />
-      <Breadcrumbs items={breadcrumbs} />
       <PageIntro
         eyebrow="Safety Guide"
         title="Is Everest Base Camp Helicopter Tour Safe?"

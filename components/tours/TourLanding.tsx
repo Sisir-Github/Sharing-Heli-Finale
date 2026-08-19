@@ -1,11 +1,10 @@
-import Image from "next/image";
-
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { TourDetail } from "@/components/tours/TourDetail";
+import { PageHero } from "@/components/ui/PageHero";
 import { ReservationButton } from "@/components/ui/ReservationButton";
 import { buildBreadcrumbSchema, buildFaqSchema, buildProductSchema } from "@/lib/seo/schema";
+import { normalizeTourCategory } from "@/lib/tours/categories";
 import { getTourImage } from "@/lib/tours/images";
 import { getTourPricePresentation, type TourPricing } from "@/lib/tours/pricing";
 
@@ -18,6 +17,7 @@ type ContactSettings = {
 
 type Tour = TourPricing & {
   title: string;
+  category?: string | null;
   duration: string;
   currency: string;
   images?: string[];
@@ -74,6 +74,7 @@ export function TourLanding({
   const faqs = resolveFaqs(displayTour.faqs);
   const slug = path.split("/").filter(Boolean).pop() || "";
   const heroImage = getTourImage(slug, displayTour.images?.[0]);
+  const category = normalizeTourCategory(displayTour.category, slug);
   const reservationHref = `/check-availability?tour=${encodeURIComponent(slug)}`;
   const schemaPrice =
     price.isVerified && tour.priceMode === "SHARED_PER_PERSON"
@@ -104,40 +105,35 @@ export function TourLanding({
           ...(faqs.length ? [buildFaqSchema(faqs)] : [])
         ]}
       />
-      <Breadcrumbs items={breadcrumbs} />
-      <section className="relative isolate min-h-[470px] overflow-hidden bg-ink text-white sm:min-h-[520px]">
-        <Image
-          src={heroImage}
-          alt={`${displayTour.title} route in Nepal`}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,24,33,0.82)_0%,rgba(7,24,33,0.58)_52%,rgba(7,24,33,0.2)_100%)]" aria-hidden="true" />
-        <div className="shell relative z-10 flex min-h-[470px] items-end py-12 sm:min-h-[520px] sm:py-16">
-          <div className="max-w-3xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-copper">Signature tour</p>
-            <h1 className="mt-4 font-display text-4xl font-semibold leading-tight tracking-normal text-white sm:text-6xl">
-              {displayTour.title}
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
-              {displayTour.seoDescription || displayTour.excerpt || displayTour.highlights}
-            </p>
-            <div className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-4 border-t border-white/20 pt-6">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.14em] text-white/55">Duration</p>
-                <p className="mt-1 text-sm font-semibold text-white">{displayTour.duration}</p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.14em] text-white/55">Departure</p>
-                <p className="mt-1 text-sm font-semibold text-white">{displayTour.departureCity || "Confirmed with quote"}</p>
-              </div>
-              <ReservationButton label="Reserve this route" href={reservationHref} className="home-primary-cta min-h-12 px-5 sm:ml-auto" />
+      <PageHero
+        eyebrow={category === "PILGRIMAGE" ? "Pilgrimage tour" : "Signature tour"}
+        title={displayTour.title}
+        description={displayTour.seoDescription || displayTour.excerpt || displayTour.highlights}
+        image={heroImage}
+        imageAlt={`${displayTour.title} route in Nepal`}
+        width="wide"
+        priority
+        meta={
+          <dl className="flex flex-wrap gap-x-10 gap-y-4">
+            <div>
+              <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Duration</dt>
+              <dd className="mt-1.5 font-display text-sm font-semibold text-navy">{displayTour.duration}</dd>
             </div>
-          </div>
-        </div>
-      </section>
+            <div>
+              <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Departure</dt>
+              <dd className="mt-1.5 font-display text-sm font-semibold text-navy">{displayTour.departureCity || "Confirmed with quote"}</dd>
+            </div>
+            {price.label ? (
+              <div>
+                <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Fare</dt>
+                <dd className="mt-1.5 font-display text-sm font-semibold text-navy">{price.label}</dd>
+              </div>
+            ) : null}
+          </dl>
+        }
+        actions={<ReservationButton label="Reserve this route" href={reservationHref} />}
+        secondaryAction={{ label: "All heli tours", href: "/tours" }}
+      />
       <TourDetail
         title={displayTour.title}
         duration={displayTour.duration}

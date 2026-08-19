@@ -14,3 +14,6 @@ prisma/*.db
 prisma/*.db-journal
 *.tsbuildinfo
 public/uploads
+
+# temp files staged for manual deletion
+_to_delete/

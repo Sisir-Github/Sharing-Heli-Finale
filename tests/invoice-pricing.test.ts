@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { computeItems, computeTotals } from "@/lib/invoice/utils";
 import { invoiceSchema } from "@/lib/invoice/validation";
-import { getTourPricePresentation, isPriceDateActive } from "@/lib/tours/pricing";
+import { getTourComparisonRates, getTourPricePresentation, isPriceDateActive } from "@/lib/tours/pricing";
 
 const invoicePayload = {
   issueDate: "2026-08-13",
@@ -73,4 +73,26 @@ test("tour price validity uses the Nepal calendar date", () => {
 
   assert.equal(isPriceDateActive("2026-08-14", "from", lateUtcOnAugust13), true);
   assert.equal(isPriceDateActive("2026-08-13", "until", lateUtcOnAugust13), false);
+});
+
+test("tour comparison exposes current shared and private rates together", () => {
+  const rates = getTourComparisonRates({
+    currency: "USD",
+    sharedPriceFrom: 500,
+    privateCharterPrice: 1900,
+    lastVerifiedAt: "2026-08-18",
+    priceValidUntil: "2999-12-31"
+  });
+  const expired = getTourComparisonRates({
+    currency: "USD",
+    sharedPriceFrom: 500,
+    privateCharterPrice: 1900,
+    lastVerifiedAt: "2020-01-01",
+    priceValidUntil: "2020-01-02"
+  });
+
+  assert.equal(rates.shared, "$500");
+  assert.equal(rates.privateCharter, "$1,900");
+  assert.equal(expired.shared, null);
+  assert.equal(expired.privateCharter, null);
 });

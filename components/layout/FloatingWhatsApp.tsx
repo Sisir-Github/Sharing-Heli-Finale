@@ -11,7 +11,7 @@ export function FloatingWhatsApp({ whatsappNumber }: { whatsappNumber: string })
       target="_blank"
       rel="noreferrer"
       onClick={() => trackEvent("whatsapp_click", { placement: "floating_button" })}
-      className="floating-whatsapp fixed bottom-5 right-5 z-50 hidden h-14 w-14 items-center justify-center rounded-lg bg-aurora text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-[#159bd0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aurora focus-visible:ring-offset-2 md:inline-flex"
+      className="floating-whatsapp fixed bottom-6 right-6 z-50 hidden h-14 w-14 items-center justify-center shadow-luxe transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 md:inline-flex"
       aria-label={`Chat on WhatsApp ${whatsappNumber}`}
       title={`WhatsApp ${whatsappNumber}`}
     >

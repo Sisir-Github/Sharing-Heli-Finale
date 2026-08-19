@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { notFound } from "next/navigation";
 
-import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
@@ -80,26 +79,28 @@ export default async function DestinationDetailPage({ params }: DestinationPageP
   return (
     <>
       <JsonLd data={[buildBreadcrumbSchema(breadcrumbs), buildFaqSchema(faqs)]} />
-      <Breadcrumbs items={breadcrumbs} />
 
-      <section className="section-space bg-canvas">
-        <div className="shell grid gap-8 lg:grid-cols-[1fr_0.85fr] lg:items-center">
+      <section className="band band-cream">
+        <div className="shell grid gap-10 lg:grid-cols-[1fr_0.85fr] lg:items-center lg:gap-16">
           <div>
-            <p className="eyebrow">{destination.region}</p>
-            <h1 className="mt-4 max-w-3xl font-display text-5xl font-semibold leading-tight tracking-normal text-ink sm:text-6xl">
+            <p className="eyebrow">
+              <span className="inline-block h-px w-7 bg-current align-middle" aria-hidden="true" />
+              {destination.region}
+            </p>
+            <h1 className="mt-5 max-w-3xl font-display text-[2.1rem] font-semibold leading-[1.08] tracking-[-0.01em] text-navy sm:text-[3rem]">
               {destination.title} Helicopter Flights
             </h1>
-            <p className="copy mt-5 max-w-2xl">{destination.description}</p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <p className="mt-6 max-w-2xl text-[15px] leading-[1.9] text-[var(--muted)]">{destination.description}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link href={destination.relatedHref} className="inquiry-button">
-                View related route <ArrowUpRight size={16} />
+                View related route <ArrowUpRight size={15} />
               </Link>
               <Link href="/check-availability" className="outline-button">
                 Reserve a flight
               </Link>
             </div>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-ink/10 bg-white">
+          <figure className="media-frame m-0 aspect-[4/3]">
             <Image
               src={destination.image}
               alt={`${destination.title} helicopter route in Nepal`}
@@ -108,38 +109,38 @@ export default async function DestinationDetailPage({ params }: DestinationPageP
               sizes="(max-width: 1024px) 100vw, 45vw"
               className="object-cover"
             />
-          </div>
+          </figure>
         </div>
       </section>
 
-      <section className="section-space bg-white pt-6">
+      <section className="band band-white">
         <div className="shell grid gap-5 lg:grid-cols-3">
-          <article className="surface-card p-6">
-            <h2 className="font-display text-2xl font-semibold tracking-normal text-ink">Common routes</h2>
-            <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-600">
+          <article className="surface-card p-7">
+            <h2 className="font-display text-lg font-semibold uppercase tracking-[0.08em] text-navy">Common routes</h2>
+            <ul className="mt-5 space-y-3 text-sm leading-[1.85] text-[var(--muted)]">
               {destination.routes.map((route) => (
                 <li key={route} className="flex gap-3">
-                  <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-copper" /> {route}
+                  <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-accent" /> {route}
                 </li>
               ))}
             </ul>
           </article>
-          <article className="surface-card p-6">
-            <h2 className="font-display text-2xl font-semibold tracking-normal text-ink">Best fit</h2>
-            <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-600">
+          <article className="surface-card p-7">
+            <h2 className="font-display text-lg font-semibold uppercase tracking-[0.08em] text-navy">Best fit</h2>
+            <ul className="mt-5 space-y-3 text-sm leading-[1.85] text-[var(--muted)]">
               {destination.bestFor.map((item) => (
                 <li key={item} className="flex gap-3">
-                  <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-copper" /> {item}
+                  <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-accent" /> {item}
                 </li>
               ))}
             </ul>
           </article>
-          <article className="surface-card p-6">
-            <h2 className="font-display text-2xl font-semibold tracking-normal text-ink">Operating notes</h2>
-            <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-600">
+          <article className="surface-card p-7">
+            <h2 className="font-display text-lg font-semibold uppercase tracking-[0.08em] text-navy">Operating notes</h2>
+            <ul className="mt-5 space-y-3 text-sm leading-[1.85] text-[var(--muted)]">
               {destination.operatingNotes.map((note) => (
                 <li key={note} className="flex gap-3">
-                  <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-copper" /> {note}
+                  <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-accent" /> {note}
                 </li>
               ))}
             </ul>
@@ -147,13 +148,16 @@ export default async function DestinationDetailPage({ params }: DestinationPageP
         </div>
       </section>
 
-      <section className="section-space bg-canvas pt-4">
+      <section className="band band-cream-deep">
         <div className="shell">
-          <p className="eyebrow">Destination planning</p>
-          <h2 className="mt-3 max-w-3xl font-display text-3xl font-semibold tracking-normal text-ink sm:text-4xl">
+          <p className="eyebrow">
+            <span className="inline-block h-px w-7 bg-current align-middle" aria-hidden="true" />
+            Destination planning
+          </p>
+          <h2 className="mt-5 max-w-3xl font-display text-[1.8rem] font-semibold leading-[1.12] tracking-[-0.01em] text-navy sm:text-[2.3rem]">
             What to understand before requesting the flight
           </h2>
-          <div className="mt-8 grid gap-x-10 gap-y-8 md:grid-cols-2">
+          <div className="mt-10 grid gap-x-14 gap-y-8 md:grid-cols-2">
             {[
               ["Flight experience", destination.flightExperience],
               ["Altitude", destination.altitudeNote],
@@ -161,14 +165,14 @@ export default async function DestinationDetailPage({ params }: DestinationPageP
               ["Weather", destination.weather],
               ["Photography", destination.photography]
             ].map(([title, copy]) => (
-              <article key={title} className="border-t border-ink/15 pt-5">
-                <h3 className="text-base font-semibold text-ink">{title}</h3>
-                <p className="copy mt-2 text-sm">{copy}</p>
+              <article key={title} className="border-t border-sand pt-6">
+                <h3 className="font-display text-sm font-semibold uppercase tracking-[0.12em] text-navy">{title}</h3>
+                <p className="mt-3 text-sm leading-[1.9] text-[var(--muted)]">{copy}</p>
               </article>
             ))}
-            <article className="border-t border-ink/15 pt-5">
-              <h3 className="text-base font-semibold text-ink">Nearby places</h3>
-              <ul className="mt-2 space-y-2 text-sm text-slate-600">
+            <article className="border-t border-sand pt-6">
+              <h3 className="font-display text-sm font-semibold uppercase tracking-[0.12em] text-navy">Nearby places</h3>
+              <ul className="mt-3 space-y-2 text-sm leading-[1.9] text-[var(--muted)]">
                 {destination.nearbyAttractions.map((place) => <li key={place}>{place}</li>)}
               </ul>
             </article>

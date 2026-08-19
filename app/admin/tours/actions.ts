@@ -6,7 +6,9 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/admin-auth";
 import { getCanonicalTourPath } from "@/lib/seo/canonical";
+import { TOUR_CATEGORIES } from "@/lib/tours/categories";
 import { PRICE_MODES } from "@/lib/tours/pricing";
+import { TOUR_REGIONS } from "@/lib/tours/regions";
 import { isSafeLocalImageSource, optionalLocalImageSourceSchema, optionalSafePublicHrefSchema } from "@/lib/safe-url";
 import { slugSchema } from "@/lib/admin-validation";
 
@@ -18,6 +20,11 @@ const optionalNumber = z.preprocess(
 const optionalDate = z.preprocess(
   (value) => (value === "" || value == null ? undefined : new Date(String(value))),
   z.date().optional()
+);
+
+const sortOrder = z.preprocess(
+  (value) => Number(value),
+  z.number().int().nonnegative()
 );
 
 function parseFaqs(value?: string) {
@@ -45,6 +52,9 @@ const localImageList = z.string().optional().refine(
 const tourSchema = z.object({
   title: z.string().min(1),
   slug: slugSchema,
+  region: z.enum(TOUR_REGIONS),
+  category: z.enum(TOUR_CATEGORIES),
+  sortOrder,
   duration: z.string().min(1),
   currency: z.string().min(1),
   priceMode: z.enum(PRICE_MODES),
@@ -104,6 +114,9 @@ export async function createTour(formData: FormData) {
     data: {
       title: parsed.data.title,
       slug: parsed.data.slug,
+      region: parsed.data.region,
+      category: parsed.data.category,
+      sortOrder: parsed.data.sortOrder,
       duration: parsed.data.duration,
       priceFrom: null,
       currency: parsed.data.currency,
@@ -165,6 +178,9 @@ export async function updateTour(formData: FormData) {
     data: {
       title: parsed.data.title,
       slug: parsed.data.slug,
+      region: parsed.data.region,
+      category: parsed.data.category,
+      sortOrder: parsed.data.sortOrder,
       duration: parsed.data.duration,
       priceFrom: null,
       currency: parsed.data.currency,
