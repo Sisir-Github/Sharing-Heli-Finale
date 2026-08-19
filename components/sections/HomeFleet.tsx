@@ -2,16 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 
 const specs = [
+  { label: "Aircraft", value: "Airbus H125" },
   { label: "Typical seating", value: "5 passengers" },
   { label: "Common routes", value: "Everest · Annapurna · Mustang" },
-  { label: "Cabin", value: "Large-window scenic cabin" },
-  { label: "Operating altitude", value: "High-altitude capable" }
+  { label: "Cabin", value: "Large-window scenic cabin" }
 ];
 
 /**
- * Aircraft feature split. Specification figures below are indicative of the
- * single-engine type most commonly used on Himalayan routes — the exact
- * aircraft and operator are confirmed in writing for each booking.
+ * Aircraft feature split for the Airbus Helicopters H125. Seating reflects the
+ * standard Nepal passenger configuration; the registration and the licensed
+ * operating carrier are still confirmed in writing for each booking.
  */
 export function HomeFleet() {
   return (
@@ -24,12 +24,13 @@ export function HomeFleet() {
               Check out the aircraft
             </p>
             <h2 className="mt-5 font-display text-[2rem] font-semibold leading-[1.08] tracking-[-0.01em] text-navy sm:text-[2.7rem]">
-              Airbus H125 &mdash; the Himalayan workhorse
+              Airbus Helicopters H125 &mdash; the Himalayan workhorse
             </h2>
             <p className="mt-5 text-[15px] leading-[1.85] text-[var(--muted)]">
-              Most scenic flights, mountain transfers and pilgrimage routes in Nepal are flown on the single-engine Airbus
-              H125 (AS350 B3e) class of helicopter. It is the type best suited to high-altitude landings, short mountain
-              strips and the changeable weather of the Himalaya.
+              The scenic flights, mountain transfers and pilgrimage routes we arrange are flown on the single-engine
+              Airbus Helicopters H125 (formerly the AS350 B3e). It is the type best suited to high-altitude landings,
+              short mountain strips and the changeable weather of the Himalaya &mdash; its AS350 B3 predecessor set the
+              world record for the highest helicopter landing, on the summit of Everest.
             </p>
             <p className="mt-4 text-[15px] leading-[1.85] text-[var(--muted)]">
               The aircraft assigned to your flight, and the licensed operating carrier, are identified in the written

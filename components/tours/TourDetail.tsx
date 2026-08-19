@@ -1,4 +1,4 @@
-import { CalendarRange, Clock3, Gauge, MapPin, Mountain, Users } from "lucide-react";
+import { CalendarRange, Clock3, Gauge, MapPin, Mountain, Plane, Users } from "lucide-react";
 
 import { TourBookingCard } from "@/components/tours/TourBookingCard";
 import { TourGallery } from "@/components/tours/TourGallery";
@@ -96,17 +96,26 @@ export function TourDetail(props: TourDetailProps) {
           ? "Private (per aircraft)"
           : "Shared or private";
 
+  // These CMS fields are free text and are often full sentences. A spec tile can
+  // only carry a short value, so anything long falls back to a concise label and
+  // the full wording is still shown in "Before you fly".
+  const short = (value: string | null | undefined, fallback: string) =>
+    value && value.trim().length <= 28 ? value.trim() : fallback;
+
   const specs = [
     { icon: Clock3, label: "Duration", value: duration },
     { icon: MapPin, label: "Departure", value: departureCity || "Confirmed with quote" },
-    { icon: Mountain, label: "Max altitude", value: props.altitude || "Route-dependent" },
-    { icon: CalendarRange, label: "Best season", value: props.bestTime || "Year-round, weather permitting" },
+    { icon: Mountain, label: "Max altitude", value: short(props.altitude, "Route-dependent") },
+    { icon: CalendarRange, label: "Best season", value: short(props.bestTime, "Weather dependent") },
     { icon: Users, label: "Booking type", value: bookingType },
+    { icon: Plane, label: "Aircraft", value: "Airbus H125" },
     { icon: Gauge, label: "Difficulty", value: "No trekking required" }
   ];
 
   const planningSections = [
     ["Route", props.route],
+    ["Altitude", props.altitude],
+    ["Best time to fly", props.bestTime],
     ["Weather", props.weatherNotes],
     ["Cancellation and rescheduling", props.cancellationPolicy],
     ["Passenger requirements", props.passengerRequirements],
