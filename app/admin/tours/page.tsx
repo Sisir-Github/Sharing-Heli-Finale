@@ -1,4 +1,5 @@
 import { createTour, deleteTour, updateTour } from "@/app/admin/tours/actions";
+import { ImagePicker, type LibraryImage } from "@/components/admin/ImagePicker";
 import { prisma } from "@/lib/prisma";
 import { asStringArray } from "@/lib/json-array";
 import { TOUR_CATEGORIES, TOUR_CATEGORY_LABELS } from "@/lib/tours/categories";
@@ -124,7 +125,15 @@ function ContentFields({
 }
 
 export default async function AdminToursPage() {
-  const tours = await prisma.tour.findMany({ orderBy: [{ region: "asc" }, { sortOrder: "asc" }, { updatedAt: "desc" }] });
+  const [tours, library] = await Promise.all([
+    prisma.tour.findMany({ orderBy: [{ region: "asc" }, { sortOrder: "asc" }, { updatedAt: "desc" }] }),
+    prisma.mediaAsset.findMany({
+      where: { type: { startsWith: "image/" } },
+      orderBy: { createdAt: "desc" },
+      take: 60,
+      select: { id: true, fileUrl: true, altText: true }
+    }) as Promise<LibraryImage[]>
+  ]);
 
   return (
     <div className="space-y-8">
@@ -146,7 +155,7 @@ export default async function AdminToursPage() {
           <textarea name="itinerary" placeholder="Itinerary" className="textarea md:col-span-2" required />
           <textarea name="inclusions" placeholder="Inclusions" className="textarea md:col-span-2" required />
           <textarea name="exclusions" placeholder="Exclusions" className="textarea md:col-span-2" required />
-          <input name="images" placeholder="Image URLs, comma separated" className="input md:col-span-2" />
+          <ImagePicker name="images" library={library} />
           <input name="ctaLabel" placeholder="CTA label" className="input" />
           <input name="ctaHref" placeholder="CTA href" className="input" />
           <input name="seoTitle" placeholder="SEO title" className="input" />
@@ -179,7 +188,7 @@ export default async function AdminToursPage() {
                 <textarea name="itinerary" defaultValue={tour.itinerary} className="textarea md:col-span-2" required />
                 <textarea name="inclusions" defaultValue={tour.inclusions} className="textarea md:col-span-2" required />
                 <textarea name="exclusions" defaultValue={tour.exclusions} className="textarea md:col-span-2" required />
-                <input name="images" defaultValue={asStringArray(tour.images).join(", ")} className="input md:col-span-2" />
+                <ImagePicker name="images" defaultValue={asStringArray(tour.images)} library={library} />
                 <input name="ctaLabel" defaultValue={tour.ctaLabel || ""} className="input" />
                 <input name="ctaHref" defaultValue={tour.ctaHref || ""} className="input" />
                 <input name="seoTitle" defaultValue={tour.seoTitle || ""} className="input" />
