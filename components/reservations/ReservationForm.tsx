@@ -165,7 +165,7 @@ export function ReservationForm({ tours, selectedTourSlug }: { tours: TourOption
       <input name="companyWebsite" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
       <div className="mt-7 flex flex-col gap-4 border-t border-ink/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-        <p className="max-w-xl text-xs leading-5 text-slate-500">No payment is taken here. A reservation becomes confirmed only after the operations desk approves the flight and you accept the written quote.</p>
+        <p className="max-w-xl text-xs leading-5 text-slate-500">Send your request and the flight desk will come back with the available aircraft, current fare and next steps.</p>
         <button type="submit" className="inquiry-button shrink-0" disabled={state === "submitting"}>
           {state === "submitting" ? <><Loader2 size={16} className="animate-spin" /> Submitting</> : <><CalendarDays size={16} /> Submit request <ArrowRight size={16} /></>}
         </button>

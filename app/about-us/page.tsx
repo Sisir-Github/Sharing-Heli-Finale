@@ -45,12 +45,12 @@ export default function AboutPage() {
             Who we are
           </p>
           <h2 className="mx-auto mt-6 max-w-4xl font-display text-[1.8rem] font-semibold leading-[1.25] tracking-[-0.01em] text-white sm:text-[2.4rem]">
-            {COMPANY.companyName} coordinates helicopter travel across Nepal. Flight operations are carried out by
-            licensed operating carriers, and the carrier for your booking is named in writing before payment.
+            {COMPANY.companyName} plans helicopter travel across Nepal &mdash; scenic flights, private charters,
+            mountain transfers and pilgrimage routes, arranged end to end.
           </h2>
           <p className="mx-auto mt-7 max-w-2xl text-[15px] leading-[1.9] text-white/62">
-            Our role is coordination, not aircraft operation. The written quotation for each booking identifies the
-            operating carrier, route basis, inclusions and the key flight conditions.
+            Every request is reviewed against the route, passenger and baggage details, weather and permissions, then
+            confirmed with a clear written quote covering the route basis, inclusions and flight conditions.
           </p>
         </div>
       </section>
