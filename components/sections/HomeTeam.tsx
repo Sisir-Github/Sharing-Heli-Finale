@@ -1,32 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 
-/**
- * Set `image` to a portrait path once real photos are available (4:5 crops work
- * best). Until then each card falls back to an initials monogram rather than a
- * stock photo, so nobody is represented by a picture that is not them.
- */
-const team: Array<{ id: string; name: string; title: string; role: string; image?: string }> = [
-  {
-    id: "desk-lead",
-    name: "Sisir Paudel",
-    title: "Flight Desk Lead",
-    role: "Route planning & confirmations"
-  },
-  {
-    id: "operations",
-    name: "Rishi Ram Paudel",
-    title: "Operations Coordinator",
-    role: "Weather windows & aircraft availability"
-  },
-  {
-    id: "guest-support",
-    name: "Srijana Paudel",
-    title: "Guest Support",
-    role: "Passenger details & ground arrangements"
-  }
-];
+export type TeamMemberItem = {
+  id: string;
+  name: string;
+  title: string;
+  role: string;
+  photo: string | null;
+};
 
+/** Falls back to an initials monogram so nobody is shown as a photo that is not them. */
 function initials(name: string) {
   return name
     .split(/\s+/)
@@ -36,7 +19,9 @@ function initials(name: string) {
     .join("");
 }
 
-export function HomeTeam() {
+export function HomeTeam({ members }: { members: TeamMemberItem[] }) {
+  if (!members.length) return null;
+
   return (
     <section className="band band-navy">
       <div className="shell">
@@ -51,12 +36,12 @@ export function HomeTeam() {
         </div>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {team.map((member) => (
+          {members.map((member) => (
             <article key={member.id} className="group text-center">
               <div className="media-frame aspect-[4/5] bg-white/5">
-                {member.image ? (
+                {member.photo ? (
                   <Image
-                    src={member.image}
+                    src={member.photo}
                     alt={`${member.name}, ${member.title}`}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

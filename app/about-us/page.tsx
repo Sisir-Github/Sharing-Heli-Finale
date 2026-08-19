@@ -5,6 +5,7 @@ import { HomeTeam } from "@/components/sections/HomeTeam";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PageHero } from "@/components/ui/PageHero";
 import { SplitFeature } from "@/components/ui/SplitFeature";
+import { getTeamMembers } from "@/lib/cms";
 import { COMPANY } from "@/lib/constants";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 import { buildBreadcrumbSchema } from "@/lib/seo/schema";
@@ -22,7 +23,8 @@ const operatorFacts = [
   { icon: Route, value: "Nepal", label: "Tailored route planning" }
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const teamMembers = await getTeamMembers();
   return (
     <>
       <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
@@ -172,7 +174,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <HomeTeam />
+      <HomeTeam members={teamMembers} />
     </>
   );
 }

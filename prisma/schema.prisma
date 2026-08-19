@@ -202,6 +202,36 @@ model Tour {
   @@index([published, category])
 }
 
+/// A member of the flight desk shown in the "Meet our flight desk" section.
+model TeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  title     String
+  role      String
+  photo     String?
+  order     Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([visible, order])
+}
+
+/// A passenger review shown in the testimonials section.
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  name      String
+  detail    String
+  photo     String?
+  order     Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([visible, order])
+}
+
 /// A scheduled shared-seat departure travellers can join on a set date.
 model FixedDeparture {
   id            String   @id @default(cuid())

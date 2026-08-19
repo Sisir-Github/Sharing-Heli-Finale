@@ -11,6 +11,8 @@ type ImagePickerProps = {
   name: string;
   defaultValue?: string[];
   library?: LibraryImage[];
+  /** false keeps a single image and submits a bare path instead of a list. */
+  multiple?: boolean;
 };
 
 /**
@@ -19,7 +21,7 @@ type ImagePickerProps = {
  * from the media library, reordered, and removed. The first image is the one
  * used as the card/hero image, which the UI states explicitly.
  */
-export function ImagePicker({ name, defaultValue = [], library = [] }: ImagePickerProps) {
+export function ImagePicker({ name, defaultValue = [], library = [], multiple = true }: ImagePickerProps) {
   const [images, setImages] = useState<string[]>(defaultValue);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -27,6 +29,10 @@ export function ImagePicker({ name, defaultValue = [], library = [] }: ImagePick
   const fileInput = useRef<HTMLInputElement>(null);
 
   function add(url: string) {
+    if (!multiple) {
+      setImages([url]);
+      return;
+    }
     setImages((current) => (current.includes(url) ? current : [...current, url]));
   }
 
@@ -50,7 +56,7 @@ export function ImagePicker({ name, defaultValue = [], library = [] }: ImagePick
     setError("");
 
     try {
-      for (const file of Array.from(files)) {
+      for (const file of Array.from(files).slice(0, multiple ? files.length : 1)) {
         const body = new FormData();
         body.append("file", file);
         body.append("altText", file.name.replace(/\.[^.]+$/, ""));
@@ -95,7 +101,13 @@ export function ImagePicker({ name, defaultValue = [], library = [] }: ImagePick
         ) : null}
 
         <span className="text-xs text-haze">
-          {images.length ? `${images.length} image${images.length > 1 ? "s" : ""} · first is the main photo` : "No images yet"}
+          {!images.length
+            ? multiple
+              ? "No images yet"
+              : "No photo yet"
+            : multiple
+              ? `${images.length} image${images.length > 1 ? "s" : ""} · first is the main photo`
+              : "1 photo"}
         </span>
       </div>
 
@@ -103,7 +115,7 @@ export function ImagePicker({ name, defaultValue = [], library = [] }: ImagePick
         ref={fileInput}
         type="file"
         accept="image/jpeg,image/png,image/webp,image/avif"
-        multiple
+        multiple={multiple}
         className="hidden"
         onChange={(event) => upload(event.target.files)}
       />
@@ -132,14 +144,14 @@ export function ImagePicker({ name, defaultValue = [], library = [] }: ImagePick
             <li key={`${url}-${index}`} className="relative overflow-hidden rounded-xl border border-white/10">
               <div className="relative aspect-[4/3] bg-black/30">
                 <Image src={url} alt="" fill sizes="160px" className="object-cover" />
-                {index === 0 ? (
+                {multiple && index === 0 ? (
                   <span className="absolute left-1.5 top-1.5 inline-flex items-center gap-1 rounded-md bg-gold px-1.5 py-0.5 text-[10px] font-semibold text-black">
                     <Star size={10} /> Main
                   </span>
                 ) : null}
               </div>
               <div className="flex items-center justify-between gap-1 p-1.5">
-                <div className="flex gap-1">
+                <div className={multiple ? "flex gap-1" : "hidden"}>
                   <button
                     type="button"
                     onClick={() => move(index, -1)}
@@ -173,8 +185,9 @@ export function ImagePicker({ name, defaultValue = [], library = [] }: ImagePick
         </ul>
       ) : null}
 
-      {/* The existing server action still receives a comma-separated string. */}
-      <input type="hidden" name={name} value={images.join(", ")} />
+      {/* Multi mode keeps the comma-separated contract the tour action expects;
+          single mode submits just the one path. */}
+      <input type="hidden" name={name} value={multiple ? images.join(", ") : images[0] || ""} />
     </div>
   );
 }

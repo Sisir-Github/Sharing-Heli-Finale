@@ -14,7 +14,15 @@ import { HomeTestimonials } from "@/components/sections/HomeTestimonials";
 import { SignatureTours } from "@/components/sections/SignatureTours";
 import { WhyChoose } from "@/components/sections/WhyChoose";
 import { Marquee } from "@/components/ui/Marquee";
-import { getDestinations, getFeaturedTours, getPublishedServices, getSiteSettings, getUpcomingFixedDepartures } from "@/lib/cms";
+import {
+  getDestinations,
+  getFeaturedTours,
+  getPublishedServices,
+  getSiteSettings,
+  getTeamMembers,
+  getTestimonials,
+  getUpcomingFixedDepartures
+} from "@/lib/cms";
 import { COMPANY, resolveContactSettings } from "@/lib/constants";
 import { FALLBACK_DESTINATIONS, FALLBACK_SERVICES, FALLBACK_TOURS } from "@/lib/home-fallbacks";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
@@ -24,12 +32,14 @@ export const metadata = buildPageMetadata("/");
 export const revalidate = 900;
 
 export default async function HomePage() {
-  const [settings, tours, destinations, services, fixedDepartures] = await Promise.all([
+  const [settings, tours, destinations, services, fixedDepartures, teamMembers, testimonials] = await Promise.all([
     getSiteSettings(),
     getFeaturedTours(),
     getDestinations(),
     getPublishedServices(),
-    getUpcomingFixedDepartures()
+    getUpcomingFixedDepartures(),
+    getTeamMembers(),
+    getTestimonials()
   ]);
   const contact = resolveContactSettings(settings);
   const resolvedTours = tours.length ? tours : FALLBACK_TOURS;
@@ -66,8 +76,8 @@ export default async function HomePage() {
       <HomeServiceStrip services={services.length ? services : FALLBACK_SERVICES} />
       <HomeIntroBand items={settings?.trustBadges || []} />
       <HomeFlightOptions tours={resolvedTours} />
-      <HomeTestimonials />
-      <HomeTeam />
+      <HomeTestimonials testimonials={testimonials} />
+      <HomeTeam members={teamMembers} />
       <HomeFleet />
       <Marquee words={["Book your Himalayan helicopter flight today", "Pokhara · Kathmandu departures"]} />
       <HomeExperienceCta />

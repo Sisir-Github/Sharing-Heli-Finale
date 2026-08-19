@@ -1,23 +1,15 @@
 import Link from "next/link";
 
-const testimonials = [
-  {
-    id: "everest",
-    quote:
-      "From the first enquiry, everything was explained clearly — the route, weather conditions, passenger limits and what to expect on the day. The views were unforgettable, but what impressed us most was how smoothly the whole trip was organised.",
-    name: "Daniel Thompson",
-    detail: "Everest region scenic flight"
-  },
-  {
-    id: "muktinath",
-    quote:
-      "We were travelling with elderly family members, so comfort and timing were very important to us. The team helped coordinate the journey carefully, kept us informed throughout, and made our visit to Muktinath feel simple and well managed.",
-    name: "Priya Sharma",
-    detail: "Muktinath pilgrimage flight"
-  }
-];
+export type TestimonialItem = {
+  id: string;
+  quote: string;
+  name: string;
+  detail: string;
+};
 
-export function HomeTestimonials() {
+export function HomeTestimonials({ testimonials }: { testimonials: TestimonialItem[] }) {
+  if (!testimonials.length) return null;
+
   return (
     <section className="band band-white">
       <div className="shell">

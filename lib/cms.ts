@@ -201,3 +201,19 @@ export async function getUpcomingFixedDepartures(limit = 4) {
     include: { tour: { select: { slug: true, title: true } } }
   });
 }
+
+export async function getTeamMembers() {
+  if (!hasDatabase) return [];
+  return prisma.teamMember.findMany({
+    where: { visible: true },
+    orderBy: [{ order: "asc" }, { createdAt: "asc" }]
+  });
+}
+
+export async function getTestimonials() {
+  if (!hasDatabase) return [];
+  return prisma.testimonial.findMany({
+    where: { visible: true },
+    orderBy: [{ order: "asc" }, { createdAt: "asc" }]
+  });
+}
