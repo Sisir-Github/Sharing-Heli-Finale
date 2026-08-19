@@ -10,8 +10,7 @@ const specs = [
 
 /**
  * Aircraft feature split for the Airbus Helicopters H125. Seating reflects the
- * standard Nepal passenger configuration; the registration and the licensed
- * operating carrier are still confirmed in writing for each booking.
+ * standard Nepal passenger configuration.
  */
 export function HomeFleet() {
   return (
@@ -32,11 +31,6 @@ export function HomeFleet() {
               short mountain strips and the changeable weather of the Himalaya &mdash; its AS350 B3 predecessor set the
               world record for the highest helicopter landing, on the summit of Everest.
             </p>
-            <p className="mt-4 text-[15px] leading-[1.85] text-[var(--muted)]">
-              The aircraft assigned to your flight, and the licensed operating carrier, are identified in the written
-              quotation before any deposit is taken.
-            </p>
-
             <dl className="mt-9 grid gap-px border-y border-sand sm:grid-cols-2">
               {specs.map((spec) => (
                 <div key={spec.label} className="border-b border-sand py-5 last:border-b-0 sm:border-b-0 sm:py-6 sm:odd:pr-6 sm:even:border-l sm:even:border-sand sm:even:pl-6">
