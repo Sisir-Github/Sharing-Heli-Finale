@@ -29,6 +29,9 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   agentRules: false,
+  images: {
+    qualities: [70, 75]
+  },
   experimental: {
     optimizePackageImports: ["lucide-react"]
   },
