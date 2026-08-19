@@ -54,7 +54,8 @@ function resolveFaqs(value: unknown) {
 
 export function TourLanding({
   tour,
-  path
+  path,
+  contactSettings
 }: {
   tour: Tour;
   path: string;
@@ -64,7 +65,6 @@ export function TourLanding({
   const displayTour = isEverestRegion
     ? {
         ...tour,
-        title: "Everest Region Helicopter Tour",
         highlights: "Everest region aerial views with routing selected for the day's weather, aircraft performance, and permissions.",
         itinerary: "Departure and return points are confirmed before the flight. Routing and any landing stop are determined by current conditions and the operating crew.",
         operationalNotice: "A landing at Everest Base Camp or Kala Patthar is not guaranteed. Landing options can change with weather, passenger weight, permissions, and the operating pilot's decision."
@@ -74,6 +74,10 @@ export function TourLanding({
   const faqs = resolveFaqs(displayTour.faqs);
   const slug = path.split("/").filter(Boolean).pop() || "";
   const heroImage = getTourImage(slug, displayTour.images?.[0]);
+  // De-duplicate so a tour with one configured photo does not show arrows.
+  const galleryImages = Array.from(
+    new Set([heroImage, ...(displayTour.images ?? []).map((image) => getTourImage(slug, image))])
+  );
   const category = normalizeTourCategory(displayTour.category, slug);
   const reservationHref = `/check-availability?tour=${encodeURIComponent(slug)}`;
   const schemaPrice =
@@ -114,22 +118,11 @@ export function TourLanding({
         width="wide"
         priority
         meta={
-          <dl className="flex flex-wrap gap-x-10 gap-y-4">
-            <div>
-              <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Duration</dt>
-              <dd className="mt-1.5 font-display text-sm font-semibold text-navy">{displayTour.duration}</dd>
-            </div>
-            <div>
-              <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Departure</dt>
-              <dd className="mt-1.5 font-display text-sm font-semibold text-navy">{displayTour.departureCity || "Confirmed with quote"}</dd>
-            </div>
-            {price.label ? (
-              <div>
-                <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Fare</dt>
-                <dd className="mt-1.5 font-display text-sm font-semibold text-navy">{price.label}</dd>
-              </div>
-            ) : null}
-          </dl>
+          price.label ? (
+            <p className="font-display text-lg font-semibold tracking-[-0.01em] text-navy sm:text-xl">
+              {price.label}
+            </p>
+          ) : null
         }
         actions={<ReservationButton label="Reserve this route" href={reservationHref} />}
         secondaryAction={{ label: "All heli tours", href: "/tours" }}
@@ -162,8 +155,17 @@ export function TourLanding({
         inclusions={displayTour.inclusions}
         exclusions={displayTour.exclusions}
         operationalNotice={displayTour.operationalNotice}
+        images={galleryImages}
+        reservationHref={reservationHref}
+        phone={contactSettings.primaryPhone}
+        whatsapp={contactSettings.whatsappNumber}
+        hasFaqs={faqs.length > 0}
       />
-      {faqs.length ? <FaqSection items={faqs} /> : null}
+      {faqs.length ? (
+        <div id="faqs" className="scroll-mt-40">
+          <FaqSection items={faqs} />
+        </div>
+      ) : null}
     </>
   );
 }
