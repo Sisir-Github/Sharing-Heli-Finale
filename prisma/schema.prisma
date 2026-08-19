@@ -192,13 +192,34 @@ model Tour {
   noindex               Boolean       @default(false)
   published             Boolean       @default(true)
   featured              Boolean       @default(false)
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
   reservations          Reservation[]
+  fixedDepartures       FixedDeparture[]
 
   @@index([published, featured])
   @@index([published, region, sortOrder])
   @@index([published, category])
+}
+
+/// A scheduled shared-seat departure travellers can join on a set date.
+model FixedDeparture {
+  id            String   @id @default(cuid())
+  tourId        String?
+  tour          Tour?    @relation(fields: [tourId], references: [id], onDelete: SetNull)
+  routeName     String
+  departureDate DateTime
+  departureTime String?
+  seatsTotal    Int      @default(5)
+  seatsBooked   Int      @default(0)
+  pricePerSeat  Float?
+  currency      String   @default("USD")
+  note          String?
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([published, departureDate])
 }
 
 model Reservation {

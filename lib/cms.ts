@@ -181,3 +181,23 @@ export async function getMediaAssets() {
   if (!hasDatabase) return [];
   return prisma.mediaAsset.findMany({ orderBy: { createdAt: "desc" } });
 }
+
+/**
+ * Published departures from today onwards, soonest first. Past dates are
+ * excluded so an unmaintained list never advertises a flight that has gone.
+ */
+export async function getUpcomingFixedDepartures(limit = 4) {
+  if (!hasDatabase) return [];
+
+  // Departure dates are stored as UTC midnight, so the cutoff is UTC midnight
+  // too — otherwise a host behind UTC drops today's departure early.
+  const now = new Date();
+  const startOfToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
+  return prisma.fixedDeparture.findMany({
+    where: { published: true, departureDate: { gte: startOfToday } },
+    orderBy: { departureDate: "asc" },
+    take: limit,
+    include: { tour: { select: { slug: true, title: true } } }
+  });
+}

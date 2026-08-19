@@ -6,8 +6,14 @@ import { getTourPricePresentation } from "@/lib/tours/pricing";
 
 export const metadata = buildPageMetadata("/check-availability");
 
-export default async function CheckAvailabilityPage({ searchParams }: { searchParams: Promise<{ tour?: string }> }) {
-  const [{ tour }, publishedTours] = await Promise.all([searchParams, getPublishedTours()]);
+export default async function CheckAvailabilityPage({
+  searchParams
+}: {
+  searchParams: Promise<{ tour?: string; date?: string }>;
+}) {
+  const [{ tour, date }, publishedTours] = await Promise.all([searchParams, getPublishedTours()]);
+  // Only accept a plain YYYY-MM-DD so the value can be trusted as a date input.
+  const selectedDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : undefined;
   const tours = publishedTours.map((item) => ({
     id: item.id,
     slug: item.slug,
@@ -32,7 +38,7 @@ export default async function CheckAvailabilityPage({ searchParams }: { searchPa
       <section className="band band-cream">
         <div className="shell max-w-4xl">
           <div className="availability-panel p-5 sm:p-8 lg:p-10">
-            <ReservationForm tours={tours} selectedTourSlug={tour} />
+            <ReservationForm tours={tours} selectedTourSlug={tour} selectedDate={selectedDate} />
           </div>
           <p className="mt-6 text-center text-xs leading-6 text-[var(--muted)]">
             Submitting this form starts a request. A booking exists only once availability, route, operating details and

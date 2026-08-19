@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, CalendarCheck, FileText, Gauge, Images, Map, Menu, Navigation, Plane, ReceiptText, Settings2, Tags } from "lucide-react";
+import { BookOpen, CalendarCheck, CalendarRange, FileText, Gauge, Images, Map, Menu, Navigation, Plane, ReceiptText, Settings2, Tags } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -24,6 +24,7 @@ const groups = [
     label: "What we sell",
     items: [
       { label: "Tours", href: "/admin/tours", icon: Plane },
+      { label: "Fixed departures", href: "/admin/departures", icon: CalendarRange },
       { label: "Pricing", href: "/admin/pricing", icon: Tags },
       { label: "Services", href: "/admin/services", icon: Map }
     ]

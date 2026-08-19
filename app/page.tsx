@@ -2,6 +2,7 @@ import { Destinations } from "@/components/sections/Destinations";
 import { Hero } from "@/components/sections/Hero";
 import { HomeExperienceCta } from "@/components/sections/HomeExperienceCta";
 import { HomeFinalCta } from "@/components/sections/HomeFinalCta";
+import { HomeFixedDepartures } from "@/components/sections/HomeFixedDepartures";
 import { HomeFleet } from "@/components/sections/HomeFleet";
 import { HomeFlightOptions } from "@/components/sections/HomeFlightOptions";
 import { HomeIntroBand } from "@/components/sections/HomeIntroBand";
@@ -13,7 +14,7 @@ import { HomeTestimonials } from "@/components/sections/HomeTestimonials";
 import { SignatureTours } from "@/components/sections/SignatureTours";
 import { WhyChoose } from "@/components/sections/WhyChoose";
 import { Marquee } from "@/components/ui/Marquee";
-import { getDestinations, getFeaturedTours, getPublishedServices, getSiteSettings } from "@/lib/cms";
+import { getDestinations, getFeaturedTours, getPublishedServices, getSiteSettings, getUpcomingFixedDepartures } from "@/lib/cms";
 import { COMPANY, resolveContactSettings } from "@/lib/constants";
 import { FALLBACK_DESTINATIONS, FALLBACK_SERVICES, FALLBACK_TOURS } from "@/lib/home-fallbacks";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
@@ -23,11 +24,12 @@ export const metadata = buildPageMetadata("/");
 export const revalidate = 900;
 
 export default async function HomePage() {
-  const [settings, tours, destinations, services] = await Promise.all([
+  const [settings, tours, destinations, services, fixedDepartures] = await Promise.all([
     getSiteSettings(),
     getFeaturedTours(),
     getDestinations(),
-    getPublishedServices()
+    getPublishedServices(),
+    getUpcomingFixedDepartures()
   ]);
   const contact = resolveContactSettings(settings);
   const resolvedTours = tours.length ? tours : FALLBACK_TOURS;
@@ -60,6 +62,7 @@ export default async function HomePage() {
   return (
     <>
       <Hero settings={heroSettings} />
+      <HomeFixedDepartures departures={fixedDepartures} />
       <HomeServiceStrip services={services.length ? services : FALLBACK_SERVICES} />
       <HomeIntroBand items={settings?.trustBadges || []} />
       <HomeFlightOptions tours={resolvedTours} />

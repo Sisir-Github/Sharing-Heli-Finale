@@ -18,7 +18,15 @@ type TourOption = {
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
-export function ReservationForm({ tours, selectedTourSlug }: { tours: TourOption[]; selectedTourSlug?: string }) {
+export function ReservationForm({
+  tours,
+  selectedTourSlug,
+  selectedDate
+}: {
+  tours: TourOption[];
+  selectedTourSlug?: string;
+  selectedDate?: string;
+}) {
   const initialTour = tours.find((tour) => tour.slug === selectedTourSlug)?.id || "";
   const [selectedTourId, setSelectedTourId] = useState(initialTour);
   const [state, setState] = useState<FormState>("idle");
@@ -105,7 +113,7 @@ export function ReservationForm({ tours, selectedTourSlug }: { tours: TourOption
           ) : null}
 
           <label className="field-label">Preferred date
-            <input name="preferredDate" type="date" min={minDate} className="input mt-2" required />
+            <input name="preferredDate" type="date" min={minDate} defaultValue={selectedDate} className="input mt-2" required />
           </label>
           <label className="field-label">Passengers
             <input name="passengers" type="number" min="1" max="20" className="input mt-2" placeholder="1" required />
