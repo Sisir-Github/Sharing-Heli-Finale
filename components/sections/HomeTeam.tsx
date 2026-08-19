@@ -2,29 +2,39 @@ import Image from "next/image";
 import Link from "next/link";
 
 /**
- * PLACEHOLDER CONTENT — replace names, roles and portraits with the real
- * Pokhara desk team. Portraits should be square-ish (4:5 works best).
+ * Set `image` to a portrait path once real photos are available (4:5 crops work
+ * best). Until then each card falls back to an initials monogram rather than a
+ * stock photo, so nobody is represented by a picture that is not them.
  */
-const team = [
+const team: Array<{ id: string; name: string; title: string; role: string; image?: string }> = [
   {
     id: "desk-lead",
-    name: "Flight desk lead",
-    role: "Route planning & confirmations",
-    image: "/images/campaign/annapurna-helicopter.jpg"
+    name: "Sisir Paudel",
+    title: "Flight Desk Lead",
+    role: "Route planning & confirmations"
   },
   {
     id: "operations",
-    name: "Operations coordinator",
-    role: "Weather windows & aircraft availability",
-    image: "/images/campaign/everest-helicopter.jpg"
+    name: "Rishi Ram Paudel",
+    title: "Operations Coordinator",
+    role: "Weather windows & aircraft availability"
   },
   {
     id: "guest-support",
-    name: "Guest support",
-    role: "Passenger details & ground arrangements",
-    image: "/images/campaign/muktinath-helicopter.jpg"
+    name: "Srijana Paudel",
+    title: "Guest Support",
+    role: "Passenger details & ground arrangements"
   }
 ];
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+}
 
 export function HomeTeam() {
   return (
@@ -44,15 +54,24 @@ export function HomeTeam() {
           {team.map((member) => (
             <article key={member.id} className="group text-center">
               <div className="media-frame aspect-[4/5] bg-white/5">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                {member.image ? (
+                  <Image
+                    src={member.image}
+                    alt={`${member.name}, ${member.title}`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="grid h-full w-full place-items-center bg-white/[0.07]" aria-hidden="true">
+                    <span className="font-display text-5xl font-semibold tracking-[0.08em] text-white/70">
+                      {initials(member.name)}
+                    </span>
+                  </div>
+                )}
               </div>
               <h3 className="mt-5 font-display text-base font-semibold uppercase tracking-[0.16em] text-white">{member.name}</h3>
+              <p className="mt-2 font-display text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">{member.title}</p>
               <p className="mt-2 text-xs leading-5 text-white/55">{member.role}</p>
             </article>
           ))}

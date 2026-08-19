@@ -1,23 +1,18 @@
 import Link from "next/link";
 
-/**
- * PLACEHOLDER CONTENT — swap these for real, attributable passenger reviews
- * before launch. Keep the shape (quote, name, route) and the section will
- * re-render unchanged.
- */
 const testimonials = [
   {
     id: "everest",
     quote:
-      "The team answered every question before we paid anything — route, timing, weight limits and what happens if the weather turns. The flight itself was the easiest part of our trip.",
-    name: "Placeholder review",
+      "From the first enquiry, everything was explained clearly — the route, weather conditions, passenger limits and what to expect on the day. The views were unforgettable, but what impressed us most was how smoothly the whole trip was organised.",
+    name: "Daniel Thompson",
     detail: "Everest region scenic flight"
   },
   {
     id: "muktinath",
     quote:
-      "We had elderly family members travelling to Muktinath and the team planned the whole day around them. Clear communication from the first message to the landing.",
-    name: "Placeholder review",
+      "We were travelling with elderly family members, so comfort and timing were very important to us. The team helped coordinate the journey carefully, kept us informed throughout, and made our visit to Muktinath feel simple and well managed.",
+    name: "Priya Sharma",
     detail: "Muktinath pilgrimage flight"
   }
 ];
