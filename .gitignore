@@ -17,3 +17,7 @@ public/uploads
 
 # temp files staged for manual deletion
 _to_delete/
+
+# stray sqlite files created when a command runs from the repo root
+/*.db
+/*.db-journal
