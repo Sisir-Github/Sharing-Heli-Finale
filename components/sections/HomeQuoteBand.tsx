@@ -20,7 +20,7 @@ export function HomeQuoteBand() {
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,42,60,0.75),rgba(10,42,60,0.92))]" aria-hidden="true" />
 
       <div className="relative z-10">
-        <Marquee words={["See the Himalaya", "The best way to fly", "Pokhara departures"]} tone="navy" className="bg-transparent" />
+        <Marquee words={["See the Himalaya", "The best way to fly", "Daily departures"]} tone="navy" className="bg-transparent" />
 
         <div className="shell pb-16 pt-10 sm:pb-24 sm:pt-14">
           <figure className="frame-panel mx-auto m-0 max-w-2xl p-8 text-center sm:p-11">

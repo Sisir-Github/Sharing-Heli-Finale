@@ -91,7 +91,7 @@ export function HomeLocationBand({ contact }: { contact: ContactDetails }) {
 
         <div className="mt-11 text-center">
           <Link href="/contact" className="light-button">
-            Contact the Pokhara desk
+            Contact the flight desk
           </Link>
         </div>
       </div>

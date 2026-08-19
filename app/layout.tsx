@@ -9,6 +9,7 @@ import { Footer } from "@/components/layout/Footer";
 import { HeaderShell } from "@/components/layout/HeaderShell";
 import { MobileConversionBar } from "@/components/layout/MobileConversionBar";
 import { PublicSiteChrome } from "@/components/layout/PublicSiteChrome";
+import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getSiteSettings } from "@/lib/cms";
 import { COMPANY, IS_PRODUCTION_SITE, SITE_URL } from "@/lib/constants";
@@ -90,8 +91,8 @@ export default async function RootLayout({
   const settings = await getSiteSettings();
   const whatsappNumber = settings?.whatsappNumber || COMPANY.whatsappNumber;
   return (
-    <html lang="en-NP">
-      <body className="antialiased">
+    <html lang="en-NP" suppressHydrationWarning>
+      <body className="antialiased" suppressHydrationWarning>
         <JsonLd
           data={[
             buildOrganizationSchema(settings || undefined),
@@ -99,6 +100,7 @@ export default async function RootLayout({
             buildWebSiteSchema(settings || undefined)
           ]}
         />
+        <ScrollToTop />
         <PublicSiteChrome>
           <HeaderShell />
         </PublicSiteChrome>

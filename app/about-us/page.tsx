@@ -166,7 +166,7 @@ export default function AboutPage() {
 
           <div className="mt-11 text-center">
             <Link href="/contact" className="inquiry-button">
-              Contact the Pokhara team
+              Contact the team
             </Link>
           </div>
         </div>

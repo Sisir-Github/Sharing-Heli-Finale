@@ -50,7 +50,7 @@ async function main() {
         ogImage: "/images/campaign/sharing-heli-hero.jpg",
         heroHeadline: "Helicopter tours and charters in Nepal.",
         heroSubheadline:
-          "Shared helicopter flights and private charters coordinated from Pokhara, with clear planning around weather, routing, and passenger needs.",
+          "Shared helicopter flights and private charters with clear planning around weather, routing, and passenger needs.",
         heroBackgroundMode: "image",
         heroBackgroundImage: null,
         heroBackgroundVideo: "",
@@ -76,7 +76,7 @@ async function main() {
       data: [
         {
           settingsId: settings.id,
-          title: "Pokhara-Based Coordination",
+          title: "Local Coordination",
           description: "Direct support from our Lakeside team before and after your flight.",
           order: 1,
           visible: true
@@ -117,7 +117,7 @@ async function main() {
         {
           settingsId: settings.id,
           title: "Local Expertise",
-          description: "Pokhara-based operations for fast coordination and on-ground support.",
+          description: "Locally based operations for fast coordination and on-ground support.",
           order: 3,
           visible: true
         }
@@ -214,7 +214,7 @@ async function main() {
     await prisma.tour.createMany({
       data: [
         {
-          title: "Everest Region Helicopter Tour",
+          title: "Everest Base Camp Helicopter Tour",
           slug: "everest-base-camp-helicopter-tour-nepal",
           duration: "4.5 Hours",
           priceFrom: null,

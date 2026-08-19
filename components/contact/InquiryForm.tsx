@@ -3,6 +3,7 @@
 import { FormEvent, useMemo, useState } from "react";
 import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 
+import { PhoneField } from "@/components/ui/PhoneField";
 import { Reveal } from "@/components/ui/Reveal";
 import { trackEvent } from "@/lib/analytics";
 import { COMPANY } from "@/lib/constants";
@@ -64,6 +65,9 @@ export function InquiryForm({
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Bumped after a successful submit so PhoneField remounts and clears its own
+  // internal dial-code/local-number state along with the rest of the form.
+  const [formKey, setFormKey] = useState(0);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -108,6 +112,7 @@ export function InquiryForm({
         message: "",
         companyWebsite: ""
       }));
+      setFormKey((key) => key + 1);
     } catch {
       setStatus({
         type: "error",
@@ -124,7 +129,7 @@ export function InquiryForm({
         <aside className="space-y-5">
           <article className="surface-card p-6 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rhododendron">Direct coordination</p>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-normal text-ink">Pokhara operations desk</h2>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-normal text-ink">Operations desk</h2>
               <p className="copy mt-3">
                 Speak with our team for charter planning, tour availability, urgent coordination, and custom flight requests.
               </p>
@@ -229,18 +234,14 @@ export function InquiryForm({
                 />
               </label>
 
-              <label className="grid gap-2 text-sm font-medium text-slate-600">
-                Phone
-                <input
-                  required
-                  type="tel"
-                  autoComplete="tel"
-                  value={formData.phone}
-                  onChange={(event) => setFormData((prev) => ({ ...prev, phone: event.target.value }))}
-                  className="input"
-                  placeholder="+977-98XXXXXXXX"
-                />
-              </label>
+              <PhoneField
+                key={formKey}
+                name="phone"
+                label="Phone"
+                required
+                defaultValue={formData.phone}
+                onChange={(value) => setFormData((prev) => ({ ...prev, phone: value }))}
+              />
             </div>
 
             <label className="grid gap-2 text-sm font-medium text-slate-600">

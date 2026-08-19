@@ -38,9 +38,7 @@ export function Hero({ settings }: { settings: HeroSettings }) {
       <div className="shell relative z-10 flex min-h-[640px] flex-col items-center justify-end pb-14 pt-24 sm:min-h-[720px] sm:pb-20 lg:min-h-[780px]">
         <p className="mb-6 inline-flex items-center gap-3 border border-white/30 bg-white/10 px-4 py-2 font-display text-[10px] font-semibold uppercase tracking-[0.24em] text-white backdrop-blur-sm">
           <MapPin size={12} className="text-accent" />
-          Pokhara, Nepal
-          <span className="hidden h-3 w-px bg-white/30 sm:block" aria-hidden="true" />
-          <span className="hidden sm:inline">{settings.tagline}</span>
+          {settings.tagline}
         </p>
 
         {/* Boxed statement panel, as in the reference hero */}

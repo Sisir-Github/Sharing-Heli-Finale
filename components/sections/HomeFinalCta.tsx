@@ -47,7 +47,7 @@ export function HomeFinalCta() {
             Ready to fly?
           </h2>
           <p className="mt-5 max-w-xl text-[15px] leading-[1.85] text-[var(--muted)]">
-            Send us the route, date and passenger details. The Pokhara team will confirm the suitable flight format,
+            Send us the route, date and passenger details. Our team will confirm the suitable flight format,
             current fare and next steps.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">

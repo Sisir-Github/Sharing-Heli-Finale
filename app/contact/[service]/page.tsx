@@ -44,7 +44,7 @@ export default async function InquiryServicePage({ params }: InquiryServicePageP
       <PageIntro
         eyebrow="Service Inquiry"
         title={`${serviceName} Inquiry`}
-        description="Share your route, preferred date, passenger details, and timing so the Pokhara team can review the current options."
+        description="Share your route, preferred date, passenger details, and timing so our team can review the current options."
         headingLevel={1}
       />
       <InquiryForm

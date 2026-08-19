@@ -30,7 +30,7 @@ export default async function ContactPage() {
       <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
       <PageHero
         eyebrow="Contact"
-        title="Talk to the Pokhara flight desk"
+        title="Talk to the flight desk"
         description="Send your travel plans or mission details for current availability, route feasibility and planning support."
         image="/images/campaign/muktinath-helicopter.jpg"
         imageAlt="Helicopter landing in the Nepal Himalayas"

@@ -14,6 +14,10 @@
   --navy: #103b53;
   --navy-deep: #0a2a3c;
   --navy-soft: #17506c;
+
+  --ink: #103b53;
+  --ink-deep: #0a2a3c;
+
   --cream: #f6f1e7;
   --cream-deep: #ece3d3;
   --sand: #ddd1bc;
@@ -55,8 +59,15 @@
   box-sizing: border-box;
 }
 
+/* Smooth scrolling is opt-in per anchor target: setting it globally on <html>
+   makes Next.js route changes animate from the old scroll position instead of
+   landing at the top of the new page. */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
+}
+
+:target {
+  scroll-margin-top: 6rem;
 }
 
 body {
@@ -75,8 +86,8 @@ a {
 }
 
 ::selection {
-  background: var(--navy);
-  color: #ffffff;
+  background: var(--accent);
+  color: var(--ink-deep);
 }
 
 @layer components {
@@ -149,7 +160,7 @@ a {
 
   .band-navy .eyebrow,
   .band-navy-deep .eyebrow {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--accent);
   }
 
   /* ---------- typography ---------- */
@@ -166,12 +177,12 @@ a {
   .headline {
     @apply font-display font-semibold leading-[1.06] tracking-[-0.01em];
     font-size: 2.4rem;
-    color: var(--navy);
+    color: var(--ink);
   }
 
   .headline-sm {
     @apply font-display text-3xl font-semibold leading-tight tracking-[-0.01em] sm:text-4xl;
-    color: var(--navy);
+    color: var(--ink);
   }
 
   .copy {
@@ -224,13 +235,13 @@ a {
     border-radius: var(--radius);
     border: 1px solid var(--outline-border);
     background: transparent;
-    color: var(--navy);
+    color: var(--ink);
   }
 
   .outline-button:hover {
-    background: var(--navy);
-    border-color: var(--navy);
-    color: #ffffff;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ink-deep);
   }
 
   .light-button {
@@ -239,13 +250,13 @@ a {
     border-radius: var(--radius);
     border: 1px solid #ffffff;
     background: #ffffff;
-    color: var(--navy);
+    color: var(--ink);
   }
 
   .light-button:hover {
     background: var(--cream-deep);
     border-color: var(--cream-deep);
-    color: var(--navy);
+    color: var(--ink);
   }
 
   .accent-button {
@@ -275,12 +286,12 @@ a {
   .on-dark .outline-button:hover {
     background: #ffffff;
     border-color: #ffffff;
-    color: var(--navy);
+    color: var(--ink);
   }
 
   .text-button {
     @apply inline-flex items-center gap-2 font-display text-[11px] font-semibold uppercase leading-none tracking-[0.2em] transition-colors;
-    color: var(--navy);
+    color: var(--ink);
     border-bottom: 1px solid var(--accent);
     padding-bottom: 0.4rem;
   }
@@ -292,7 +303,7 @@ a {
   .editorial-link,
   .editorial-link-dark {
     @apply inline-flex items-center gap-2 font-display text-[11px] font-semibold uppercase leading-none tracking-[0.2em] transition-all;
-    color: var(--navy);
+    color: var(--ink);
     border-bottom: 1px solid var(--accent);
     padding-bottom: 0.4rem;
   }
@@ -486,10 +497,6 @@ a {
   }
 
   /* ---------- footer ---------- */
-  .bg-footer {
-    background: var(--navy-deep);
-  }
-
   .footer-heading {
     @apply font-display text-[11px] font-semibold uppercase leading-none tracking-[0.24em];
     color: rgba(255, 255, 255, 0.55);
@@ -512,7 +519,7 @@ a {
     border-radius: var(--radius);
     border: 1px solid var(--card-border);
     background: #ffffff;
-    color: var(--navy);
+    color: var(--ink);
   }
 
   .tour-mode {
@@ -565,7 +572,7 @@ a {
 
   .mobile-reservation-action {
     background: var(--accent);
-    color: var(--navy-deep);
+    color: var(--ink-deep);
     border-radius: var(--radius);
   }
 
@@ -684,7 +691,7 @@ a {
   font-family: var(--font-display);
   font-size: 1.9rem;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--ink);
   margin-top: 2.4rem;
 }
 
@@ -692,7 +699,7 @@ a {
   font-family: var(--font-display);
   font-size: 1.4rem;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--ink);
   margin-top: 1.9rem;
 }
 
@@ -721,7 +728,7 @@ a {
   border-left: 3px solid var(--accent);
   padding-left: 1.1rem;
   font-style: italic;
-  color: var(--navy);
+  color: var(--ink);
 }
 
 @keyframes reveal-in {

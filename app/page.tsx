@@ -48,7 +48,7 @@ export default async function HomePage() {
         tagline: COMPANY.tagline,
         heroHeadline: "Helicopter tours and charters in Nepal.",
         heroSubheadline:
-          "Shared helicopter flights and private charters coordinated from Pokhara, with clear planning around weather, routing and passenger needs.",
+          "Shared helicopter flights and private charters with clear planning around weather, routing and passenger needs.",
         heroBackgroundMode: "image",
         heroBackgroundImage: null,
         heroCtaPrimaryLabel: "Reserve a flight",

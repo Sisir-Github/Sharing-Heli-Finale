@@ -16,7 +16,7 @@ const testimonials = [
   {
     id: "muktinath",
     quote:
-      "We had elderly family members travelling to Muktinath and the Pokhara desk planned the whole day around them. Clear communication from the first message to the landing.",
+      "We had elderly family members travelling to Muktinath and the team planned the whole day around them. Clear communication from the first message to the landing.",
     name: "Placeholder review",
     detail: "Muktinath pilgrimage flight"
   }

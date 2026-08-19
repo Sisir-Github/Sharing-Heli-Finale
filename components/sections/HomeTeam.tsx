@@ -36,7 +36,7 @@ export function HomeTeam() {
             The people behind the flight
           </p>
           <h2 className="mt-5 font-display text-[2rem] font-semibold leading-[1.08] tracking-[-0.01em] text-white sm:text-[2.7rem]">
-            Meet Our Pokhara Flight Desk
+            Meet Our Flight Desk
           </h2>
         </div>
 

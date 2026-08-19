@@ -23,7 +23,7 @@ export function HomeExperienceCta() {
             <li>&middot; Weather &amp; reschedule policy</li>
           </ul>
           <p className="mt-6 font-display text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">
-            No cost to ask &middot; Reply from the Pokhara desk
+            No cost to ask &middot; Reply from the flight desk
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <ReservationButton variant="accent" label="Plan my flight" />

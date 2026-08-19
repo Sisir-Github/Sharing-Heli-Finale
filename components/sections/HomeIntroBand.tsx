@@ -13,7 +13,7 @@ type TrustItem = {
 const defaults = [
   {
     id: "local",
-    title: "Pokhara-based coordination",
+    title: "Local coordination",
     description: "Direct support from our Lakeside team before and after your flight.",
     visible: true
   },
@@ -46,8 +46,8 @@ export function HomeIntroBand({ items }: { items: TrustItem[] }) {
           About us
         </p>
         <h2 className="mx-auto mt-6 max-w-4xl font-display text-[1.9rem] font-semibold leading-[1.22] tracking-[-0.01em] text-white sm:text-[2.6rem]">
-          Based in Lakeside, Pokhara, {COMPANY.companyName} is a locally operated flight desk coordinating shared
-          helicopter flights, private charters and pilgrimage routes across Nepal.
+          {COMPANY.companyName} is a locally operated flight desk coordinating shared helicopter flights, private
+          charters and pilgrimage routes across Nepal.
         </h2>
         <p className="mx-auto mt-7 max-w-2xl text-[15px] leading-[1.9] text-white/62">
           Operated by{" "}

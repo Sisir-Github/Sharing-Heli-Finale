@@ -21,7 +21,7 @@ const defaultItems = [
   },
   {
     id: "local",
-    title: "A real Pokhara operations desk",
+    title: "A real operations desk",
     description: "Discuss your trip directly with our Lakeside team by phone or WhatsApp."
   }
 ];
@@ -43,7 +43,7 @@ export function WhyChoose({ items }: { items: WhyChooseItem[] }) {
           What good helicopter planning should give you
         </h2>
         <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-[1.85] text-[var(--muted)]">
-          Clear answers are more useful than generic promises. These are the standards our Pokhara desk applies to every
+          Clear answers are more useful than generic promises. These are the standards our operations desk applies to every
           request.
         </p>
 
