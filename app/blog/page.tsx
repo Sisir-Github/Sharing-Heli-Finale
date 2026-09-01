@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { PageSchema } from "@/components/seo/PageSchema";
 import Link from "next/link";
 
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -20,6 +21,7 @@ export default async function BlogPage() {
 
   return (
     <>
+      <PageSchema path="/blog" />
       <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
       <PageHero
         eyebrow="Flight planning articles"

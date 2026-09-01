@@ -1,4 +1,5 @@
 import { PageIntro } from "@/components/layout/PageIntro";
+import { PageSchema } from "@/components/seo/PageSchema";
 import { ContentSections } from "@/components/seo/ContentSections";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
 
@@ -8,6 +9,7 @@ export const revalidate = 86400;
 export default function TermsAndConditionsPage() {
   return (
     <>
+      <PageSchema path="/terms-and-conditions" />
       <PageIntro
         eyebrow="Terms"
         title="Terms And Conditions"

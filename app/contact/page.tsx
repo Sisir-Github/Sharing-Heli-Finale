@@ -1,4 +1,5 @@
 import { JsonLd } from "@/components/seo/JsonLd";
+import { PageSchema } from "@/components/seo/PageSchema";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { InquiryForm } from "@/components/contact/InquiryForm";
 import { PageHero } from "@/components/ui/PageHero";
@@ -27,6 +28,7 @@ export default async function ContactPage() {
 
   return (
     <>
+      <PageSchema path="/contact" />
       <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
       <PageHero
         eyebrow="Contact"

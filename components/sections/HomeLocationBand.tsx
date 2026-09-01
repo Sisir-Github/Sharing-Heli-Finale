@@ -52,7 +52,7 @@ export function HomeLocationBand({ contact }: { contact: ContactDetails }) {
           <div className="border-b border-white/12 py-6 lg:border-b-0 lg:px-6 lg:first:pl-0">
             <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Office</dt>
             <dd className="mt-2 text-sm leading-6 text-white/75">
-              <a href={COMPANY.googleMapsUrl} target="_blank" rel="noreferrer" className="inline-flex gap-2 hover:text-white">
+              <a href={COMPANY.googleMapsUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-[28px] gap-2 hover:text-white">
                 <MapPin size={15} className="mt-0.5 shrink-0 text-accent" />
                 <span>
                   {contact.addressLine1}, {contact.addressLine2}
@@ -65,7 +65,7 @@ export function HomeLocationBand({ contact }: { contact: ContactDetails }) {
           <div className="border-b border-white/12 py-6 lg:border-b-0 lg:px-6">
             <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Phone</dt>
             <dd className="mt-2 text-sm text-white/75">
-              <a href={`tel:${contact.primaryPhone}`} className="inline-flex items-center gap-2 hover:text-white">
+              <a href={`tel:${contact.primaryPhone}`} className="inline-flex min-h-[28px] items-center gap-2 hover:text-white">
                 <Phone size={15} className="text-accent" />
                 {contact.primaryPhone}
               </a>
@@ -74,7 +74,7 @@ export function HomeLocationBand({ contact }: { contact: ContactDetails }) {
           <div className="border-b border-white/12 py-6 sm:border-b-0 lg:px-6">
             <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Email</dt>
             <dd className="mt-2 break-all text-sm text-white/75">
-              <a href={`mailto:${contact.email}`} className="inline-flex items-center gap-2 hover:text-white">
+              <a href={`mailto:${contact.email}`} className="inline-flex min-h-[28px] items-center gap-2 hover:text-white">
                 <Mail size={15} className="shrink-0 text-accent" />
                 {contact.email}
               </a>

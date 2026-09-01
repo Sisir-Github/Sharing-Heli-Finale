@@ -1,4 +1,5 @@
 import { PageEngagementTracker } from "@/components/analytics/PageEngagementTracker";
+import { PageSchema } from "@/components/seo/PageSchema";
 import { PageIntro } from "@/components/layout/PageIntro";
 import { ContentSections } from "@/components/seo/ContentSections";
 import { FaqSection } from "@/components/seo/FaqSection";
@@ -90,6 +91,7 @@ export default function EverestSafetyGuidePage() {
 
   return (
     <>
+      <PageSchema path="/guides/is-everest-base-camp-helicopter-tour-safe" />
       <PageEngagementTracker trackGuideScroll />
       <JsonLd data={[buildBreadcrumbSchema(breadcrumbs), buildFaqSchema(faqs)]} />
       <PageIntro

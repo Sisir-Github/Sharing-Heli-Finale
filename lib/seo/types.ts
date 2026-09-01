@@ -9,6 +9,8 @@ export type FaqItem = {
 };
 
 export type SeoPageConfig = {
+  /** Page-specific social share image. Falls back to the site hero. */
+  ogImage?: string;
   path: string;
   canonicalPath?: string;
   title: string;

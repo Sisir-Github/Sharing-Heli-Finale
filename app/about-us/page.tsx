@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageSchema } from "@/components/seo/PageSchema";
 import { Building2, CalendarRange, MapPin, MessagesSquare, Route } from "lucide-react";
 
 import { HomeTeam } from "@/components/sections/HomeTeam";
@@ -27,6 +28,7 @@ export default async function AboutPage() {
   const teamMembers = await getTeamMembers();
   return (
     <>
+      <PageSchema path="/about-us" />
       <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
 
       <PageHero

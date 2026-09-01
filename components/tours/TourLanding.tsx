@@ -1,9 +1,12 @@
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FaqSection } from "@/components/seo/FaqSection";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { TourDetail } from "@/components/tours/TourDetail";
 import { PageHero } from "@/components/ui/PageHero";
 import { ReservationButton } from "@/components/ui/ReservationButton";
-import { buildBreadcrumbSchema, buildFaqSchema, buildProductSchema } from "@/lib/seo/schema";
+import { buildBreadcrumbSchema, buildFaqSchema, buildProductSchema, buildTouristTripSchema, buildWebPageSchema } from "@/lib/seo/schema";
+import { getContextualLinks } from "@/lib/seo/internal-links";
 import { normalizeTourCategory } from "@/lib/tours/categories";
 import { getTourImage } from "@/lib/tours/images";
 import { getTourPricePresentation, type TourPricing } from "@/lib/tours/pricing";
@@ -106,9 +109,31 @@ export function TourLanding({
             priceValidUntil: tour.priceValidUntil,
             duration: tour.duration
           }),
+          buildTouristTripSchema({
+            name: displayTour.title,
+            description: displayTour.seoDescription || displayTour.excerpt || displayTour.highlights,
+            path,
+            image: heroImage,
+            duration: displayTour.duration,
+            departureCity: displayTour.departureCity,
+            region: "route" in displayTour && typeof displayTour.route === "string" ? displayTour.route : null,
+            price: schemaPrice ?? null,
+            currency: tour.currency,
+            priceValidUntil: tour.priceValidUntil
+          }),
+          buildWebPageSchema({
+            name: displayTour.title,
+            description: displayTour.seoDescription || displayTour.highlights,
+            path,
+            primaryImage: heroImage,
+            about: ["Nepal", "Helicopter tour", displayTour.title],
+            dateModified: new Date()
+          }),
           ...(faqs.length ? [buildFaqSchema(faqs)] : [])
         ]}
       />
+
+      <Breadcrumbs items={breadcrumbs} />
       <PageHero
         eyebrow={category === "PILGRIMAGE" ? "Pilgrimage tour" : "Signature tour"}
         title={displayTour.title}
@@ -166,6 +191,7 @@ export function TourLanding({
           <FaqSection items={faqs} />
         </div>
       ) : null}
+      <RelatedLinks heading="Plan this flight properly" items={getContextualLinks(`${slug} ${displayTour.title}`)} />
     </>
   );
 }

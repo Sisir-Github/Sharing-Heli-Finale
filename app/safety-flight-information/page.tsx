@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageSchema } from "@/components/seo/PageSchema";
 
 import { FaqSection } from "@/components/seo/FaqSection";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -76,6 +77,7 @@ const topics = [
 export default function SafetyFlightInformationPage() {
   return (
     <>
+      <PageSchema path="/safety-flight-information" />
       <JsonLd data={[buildBreadcrumbSchema(breadcrumbs), buildFaqSchema(faqs)]} />
 
       <PageHero

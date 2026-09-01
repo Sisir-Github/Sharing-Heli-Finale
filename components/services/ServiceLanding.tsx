@@ -1,9 +1,12 @@
 
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { ServiceDetail } from "@/components/services/ServiceDetail";
 import { PageHero } from "@/components/ui/PageHero";
 import { ReservationButton } from "@/components/ui/ReservationButton";
-import { buildBreadcrumbSchema } from "@/lib/seo/schema";
+import { buildBreadcrumbSchema, buildServiceSchema, buildWebPageSchema } from "@/lib/seo/schema";
+import { getContextualLinks } from "@/lib/seo/internal-links";
 import { safeLocalImageSource } from "@/lib/safe-url";
 
 type ContactSettings = {
@@ -63,7 +66,27 @@ export function ServiceLanding({
 
   return (
     <>
-      <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
+      <JsonLd
+        data={[
+          buildBreadcrumbSchema(breadcrumbs),
+          buildServiceSchema({
+            name: displayService.title,
+            description: displayService.seoDescription || displayService.shortDescription,
+            path,
+            image: heroImage
+          }),
+          buildWebPageSchema({
+            name: displayService.title,
+            description: displayService.seoDescription || displayService.shortDescription,
+            path,
+            primaryImage: heroImage,
+            about: ["Nepal", "Helicopter service", displayService.title],
+            dateModified: new Date()
+          })
+        ]}
+      />
+
+      <Breadcrumbs items={breadcrumbs} />
       <PageHero
         eyebrow="Helicopter service"
         title={displayService.title}
@@ -77,6 +100,7 @@ export function ServiceLanding({
       <ServiceDetail
         longDescription={displayService.longDescription}
       />
+      <RelatedLinks heading="Plan this flight properly" items={getContextualLinks(`${path} ${displayService.title}`, path)} />
     </>
   );
 }

@@ -1,9 +1,11 @@
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { TourCatalog, type TourCatalogItem } from "@/components/tours/TourCatalog";
 import { PageHero } from "@/components/ui/PageHero";
 import { getPublishedTours } from "@/lib/cms";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
-import { buildBreadcrumbSchema } from "@/lib/seo/schema";
+import { getCanonicalTourPath } from "@/lib/seo/canonical";
+import { buildBreadcrumbSchema, buildItemListSchema, buildWebPageSchema } from "@/lib/seo/schema";
 import { normalizeTourCategory } from "@/lib/tours/categories";
 import { normalizeTourRegion } from "@/lib/tours/regions";
 
@@ -52,7 +54,30 @@ export default async function ToursPage() {
 
   return (
     <>
-      <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
+      <JsonLd
+        data={[
+          buildBreadcrumbSchema(breadcrumbs),
+          buildItemListSchema({
+            name: "Nepal helicopter tours",
+            path: "/tours",
+            items: catalogTours.map((tour) => ({
+              name: tour.title,
+              path: getCanonicalTourPath(tour.slug),
+              description: tour.excerpt || undefined
+            }))
+          }),
+          buildWebPageSchema({
+            name: "Nepal helicopter tours",
+            description:
+              "Every published helicopter route in Nepal by region, departure point and fare type.",
+            path: "/tours",
+            about: ["Nepal", "Helicopter tour", "Everest", "Annapurna", "Muktinath"],
+            dateModified: new Date()
+          })
+        ]}
+      />
+
+      <Breadcrumbs items={breadcrumbs} />
       <PageHero
         eyebrow={`${catalogTours.length} routes across Nepal`}
         title="Heli Tours"

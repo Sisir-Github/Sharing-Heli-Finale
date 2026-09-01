@@ -19,6 +19,8 @@
     "test:smoke": "node scripts/smoke-test.mjs",
     "test:responsive": "node scripts/responsive-audit.mjs",
     "test:crawl": "node scripts/crawl-audit.mjs",
+    "seo:score": "node scripts/seo-score.mjs",
+    "release": "bash scripts/make-release.sh",
     "check:env": "node scripts/validate-env.mjs",
     "check:env:seed": "node scripts/validate-env.mjs --include-seed",
     "check:smtp": "node scripts/verify-smtp.mjs",

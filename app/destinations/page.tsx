@@ -1,11 +1,13 @@
 import Image from "next/image";
+import { PageSchema } from "@/components/seo/PageSchema";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PageHero } from "@/components/ui/PageHero";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
-import { buildBreadcrumbSchema } from "@/lib/seo/schema";
+import { buildBreadcrumbSchema, buildItemListSchema, buildTouristDestinationSchema } from "@/lib/seo/schema";
 import { DESTINATION_GUIDES } from "@/lib/destinations";
 
 export const metadata = buildPageMetadata("/destinations");
@@ -19,7 +21,32 @@ const breadcrumbs = [
 export default function DestinationsPage() {
   return (
     <>
-      <JsonLd data={buildBreadcrumbSchema(breadcrumbs)} />
+      <PageSchema path="/destinations" />
+      <JsonLd
+        data={[
+          buildBreadcrumbSchema(breadcrumbs),
+          buildItemListSchema({
+            name: "Helicopter flight regions in Nepal",
+            path: "/destinations",
+            items: DESTINATION_GUIDES.map((destination) => ({
+              name: destination.title,
+              path: `/destinations/${destination.slug}`,
+              description: destination.description,
+              image: destination.image
+            }))
+          }),
+          ...DESTINATION_GUIDES.map((destination) =>
+            buildTouristDestinationSchema({
+              name: destination.title,
+              description: destination.description,
+              path: `/destinations/${destination.slug}`,
+              image: destination.image
+            })
+          )
+        ]}
+      />
+
+      <Breadcrumbs items={breadcrumbs} />
       <PageHero
         eyebrow="Destinations"
         title="Helicopter flight regions in Nepal"

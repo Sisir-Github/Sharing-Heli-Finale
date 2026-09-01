@@ -1,4 +1,5 @@
 import { CalendarClock, CircleDollarSign, UsersRound } from "lucide-react";
+import { PageSchema } from "@/components/seo/PageSchema";
 
 import { FaqSection } from "@/components/seo/FaqSection";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -34,6 +35,7 @@ export default async function SharedHelicopterFlightsPage() {
 
   return (
     <>
+      <PageSchema path="/helicopter-tours/shared-helicopter-flights" />
       <JsonLd data={[buildBreadcrumbSchema(breadcrumbs), buildFaqSchema(faqs)]} />
       <PageHero
         eyebrow="Shared helicopter flights Nepal"

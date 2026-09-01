@@ -4,11 +4,12 @@ import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { FaqSection } from "@/components/seo/FaqSection";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { SITE_URL } from "@/lib/constants";
 import { DESTINATION_GUIDES, getDestinationBySlug } from "@/lib/destinations";
-import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/seo/schema";
+import { buildBreadcrumbSchema, buildFaqSchema, buildTouristDestinationSchema, buildWebPageSchema } from "@/lib/seo/schema";
 
 export const revalidate = 900;
 
@@ -78,8 +79,28 @@ export default async function DestinationDetailPage({ params }: DestinationPageP
 
   return (
     <>
-      <JsonLd data={[buildBreadcrumbSchema(breadcrumbs), buildFaqSchema(faqs)]} />
+      <JsonLd
+        data={[
+          buildBreadcrumbSchema(breadcrumbs),
+          buildFaqSchema(faqs),
+          buildTouristDestinationSchema({
+            name: destination.title,
+            description: destination.description,
+            path: `/destinations/${destination.slug}`,
+            image: destination.image
+          }),
+          buildWebPageSchema({
+            name: `${destination.title} Helicopter Flights`,
+            description: destination.description,
+            path: `/destinations/${destination.slug}`,
+            primaryImage: destination.image,
+            about: ["Nepal", "Helicopter tour", destination.title],
+            dateModified: new Date()
+          })
+        ]}
+      />
 
+      <Breadcrumbs items={breadcrumbs} />
       <section className="band band-cream">
         <div className="shell grid gap-10 lg:grid-cols-[1fr_0.85fr] lg:items-center lg:gap-16">
           <div>

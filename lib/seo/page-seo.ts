@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
-import { COMPANY, IS_PRODUCTION_SITE, SITE_URL } from "@/lib/constants";
+import { buildLanguageAlternates, COMPANY, IS_PRODUCTION_SITE, SITE_URL } from "@/lib/constants";
+import { LANDING_META, LANDING_PAGES, LANDING_PATHS } from "@/lib/seo/landing";
 import type { SeoPageConfig } from "@/lib/seo/types";
 
 const seoPages: Record<string, SeoPageConfig> = {
@@ -323,6 +324,16 @@ function normalizePath(pathname: string) {
   return pathname;
 }
 
+// High-intent landing pages register their metadata here so sitemap, hreflang
+// and metadata generation all pick them up from one place.
+for (const path of LANDING_PATHS) {
+  const meta = LANDING_META[path];
+  const landing = LANDING_PAGES[path];
+  if (meta) {
+    seoPages[path] = { path, ...meta, ...(landing?.heroImage ? { ogImage: landing.heroImage } : {}) };
+  }
+}
+
 export function getPageSeo(pathname: string) {
   return seoPages[normalizePath(pathname)] || fallbackSeo;
 }
@@ -345,7 +356,9 @@ export function buildPageMetadata(pathname: string): Metadata {
         googleBot: {
           index: false,
           follow: true,
-          "max-image-preview": "large" as const
+          "max-image-preview": "large" as const,
+          "max-snippet": -1,
+          "max-video-preview": -1
         }
       }
     : {
@@ -354,19 +367,19 @@ export function buildPageMetadata(pathname: string): Metadata {
         googleBot: {
           index: true,
           follow: true,
-          "max-image-preview": "large" as const
+          "max-image-preview": "large" as const,
+          "max-snippet": -1,
+          "max-video-preview": -1
         }
       };
 
   return {
     title: config.title,
     description: config.description,
+    keywords: config.keywords,
     alternates: {
       canonical: canonicalUrl,
-      languages: {
-        "en-NP": canonicalUrl,
-        "x-default": canonicalUrl
-      }
+      languages: buildLanguageAlternates(config.path, CHINESE_PAGE_PATHS.has(config.path))
     },
     openGraph: {
       type: "website",
@@ -377,10 +390,10 @@ export function buildPageMetadata(pathname: string): Metadata {
       url: canonicalUrl,
       images: [
         {
-          url: "/images/campaign/sharing-heli-hero.jpg",
+          url: config.ogImage || "/images/campaign/sharing-heli-hero.jpg",
           width: 1200,
           height: 630,
-          alt: "Sharing Heli Nepal helicopter flight planning"
+          alt: config.title
         }
       ]
     },
@@ -388,11 +401,31 @@ export function buildPageMetadata(pathname: string): Metadata {
       card: "summary_large_image",
       title: config.title,
       description: config.description,
-      images: ["/images/campaign/sharing-heli-hero.jpg"]
+      images: [config.ogImage || "/images/campaign/sharing-heli-hero.jpg"]
     },
     robots
   };
 }
+
+/**
+ * Paths that also exist under /zh. Used to emit correct hreflang pairs — never
+ * list a path here until the Chinese page actually ships, or Google will drop
+ * the annotation for the whole cluster.
+ */
+export const CHINESE_PAGE_PATHS = new Set<string>([
+  "/",
+  "/tours",
+  "/services",
+  "/about-us",
+  "/contact",
+  "/faq",
+  "/everest-base-camp-helicopter-tour-nepal",
+  "/annapurna-base-camp-helicopter-tour-nepal",
+  "/muktinath-helicopter-tour-nepal"
+]);
+
+/** Full SEO page registry, exposed for sitemap, llms.txt and internal linking. */
+export const SEO_PAGES = seoPages;
 
 export const INDEXABLE_PATHS = Object.values(seoPages)
   .filter((page) => !page.noindex)

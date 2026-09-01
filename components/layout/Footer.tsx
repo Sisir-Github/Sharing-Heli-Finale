@@ -19,6 +19,19 @@ const socialIcons = {
   youtube: Youtube
 };
 
+/** High-intent guides that must be reachable from every page. */
+const planningLinks = [
+  { label: "Nepal helicopter tour packages", href: "/nepal-helicopter-tour-packages" },
+  { label: "Everest helicopter tour cost", href: "/everest-helicopter-tour-cost" },
+  { label: "Annapurna helicopter tour cost", href: "/annapurna-helicopter-tour-cost" },
+  { label: "Private charter cost", href: "/private-helicopter-charter-cost-nepal" },
+  { label: "Helicopter tours from Kathmandu", href: "/kathmandu-helicopter-tours" },
+  { label: "Pokhara to Muktinath", href: "/pokhara-to-muktinath-helicopter" },
+  { label: "Langtang & Gosaikunda", href: "/langtang-gosaikunda-helicopter-tour" },
+  { label: "How to book a helicopter", href: "/how-to-book-a-helicopter-in-nepal" },
+  { label: "Weight & baggage limits", href: "/helicopter-weight-baggage-limits-nepal" }
+];
+
 export async function Footer() {
   const settings = await getSiteSettings();
   const resolved = {
@@ -89,7 +102,7 @@ export async function Footer() {
             <ul className="mt-6 space-y-3.5 text-sm text-white/55">
               {NAV_LINKS.filter((link) => isSafePublicHref(link.href)).map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="inline-flex items-center gap-1.5 transition-colors hover:text-white">
+                  <Link href={link.href} className="inline-flex min-h-[28px] items-center gap-1.5 transition-colors hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -113,7 +126,7 @@ export async function Footer() {
                   {addressCity}
                 </span>
               </a>
-              <a href={`tel:${resolved.primaryPhone}`} className="flex items-center gap-3 transition-colors hover:text-white">
+              <a href={`tel:${resolved.primaryPhone}`} className="flex min-h-[28px] items-center gap-3 transition-colors hover:text-white">
                 <Phone size={16} className="text-accent" />
                 {resolved.primaryPhone}
               </a>
@@ -121,12 +134,12 @@ export async function Footer() {
                 href={whatsappHref}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-3 transition-colors hover:text-white"
+                className="flex min-h-[28px] items-center gap-3 transition-colors hover:text-white"
               >
                 <MessageCircleMore size={16} className="text-accent" />
                 {resolved.whatsappNumber}
               </a>
-              <a href={`mailto:${resolved.email}`} className="flex items-center gap-3 break-all transition-colors hover:text-white">
+              <a href={`mailto:${resolved.email}`} className="flex min-h-[28px] items-center gap-3 break-all transition-colors hover:text-white">
                 <Mail size={16} className="text-accent" />
                 {resolved.email}
               </a>
@@ -142,13 +155,41 @@ export async function Footer() {
             <ul className="mt-6 space-y-3.5 text-sm text-white/55">
               {utilityLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="inline-flex items-center gap-1.5 transition-colors hover:text-white">
+                  <Link href={link.href} className="inline-flex min-h-[28px] items-center gap-1.5 transition-colors hover:text-white">
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
+        </div>
+
+        {/* Planning guides. These pages answer the highest-intent searches, so
+            they need real internal links rather than sitemap-only discovery. */}
+        <nav aria-label="Costs and planning guides" className="border-b border-white/10 py-10">
+          <p className="footer-heading">Costs &amp; planning</p>
+          <ul className="mt-6 grid gap-x-8 gap-y-3 text-sm text-white/55 sm:grid-cols-2 lg:grid-cols-3">
+            {planningLinks.map((link) => (
+              <li key={link.href}>
+                <Link href={link.href} className="inline-flex min-h-[28px] items-center transition-colors hover:text-white">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Language. Baidu ignores hreflang entirely, so the Chinese section
+            needs a crawlable link from the English site to be discovered. */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-white/10 py-6">
+          <span className="footer-heading">Language</span>
+          <Link href="/" hrefLang="en" className="inline-flex min-h-[28px] items-center text-sm text-white/55 transition-colors hover:text-white">
+            English
+          </Link>
+          <span className="text-white/25" aria-hidden="true">/</span>
+          <Link href="/zh" hrefLang="zh-Hans" lang="zh-Hans" className="inline-flex min-h-[28px] items-center text-sm text-white/55 transition-colors hover:text-white">
+            简体中文
+          </Link>
         </div>
 
         {/* Action strip, mirroring the reference footer buttons */}

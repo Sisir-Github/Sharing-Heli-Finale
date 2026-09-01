@@ -92,6 +92,15 @@ export function Header({
               <Phone size={12} /> {COMPANY.primaryPhone}
             </a>
             <span className="h-3 w-px bg-white/20" aria-hidden="true" />
+            <Link
+              href="/zh"
+              hrefLang="zh-Hans"
+              lang="zh-Hans"
+              className="font-display text-[11px] font-semibold tracking-[0.08em] transition-colors hover:text-white"
+            >
+              简体中文
+            </Link>
+            <span className="h-3 w-px bg-white/20" aria-hidden="true" />
             <div className="flex items-center gap-3">
               {COMPANY.socialLinks.map((link) => {
                 const Icon = socialIcons[link.label.toLowerCase() as keyof typeof socialIcons];
@@ -323,6 +332,15 @@ export function Header({
           )}
 
           <div className="mt-3 grid gap-2 border-t border-white/10 pt-4">
+            <Link
+              href="/zh"
+              hrefLang="zh-Hans"
+              lang="zh-Hans"
+              onClick={closeMenu}
+              className="rounded-btn px-3 py-3 text-sm text-white/70 hover:bg-white/5"
+            >
+              简体中文 / Chinese site
+            </Link>
             <ReservationButton variant="accent" className="w-full" label="Reserve a flight" />
             <a href={`tel:${COMPANY.primaryPhone}`} className="outline-button w-full">
               Call the flight desk

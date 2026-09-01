@@ -1,4 +1,5 @@
 import { PageEngagementTracker } from "@/components/analytics/PageEngagementTracker";
+import { PageSchema } from "@/components/seo/PageSchema";
 import { PageIntro } from "@/components/layout/PageIntro";
 import { ContentSections } from "@/components/seo/ContentSections";
 import { FaqSection } from "@/components/seo/FaqSection";
@@ -90,6 +91,7 @@ export default function BestTimeGuidePage() {
 
   return (
     <>
+      <PageSchema path="/guides/best-time-helicopter-tours-nepal" />
       <PageEngagementTracker trackGuideScroll />
       <JsonLd data={[buildBreadcrumbSchema(breadcrumbs), buildFaqSchema(faqs)]} />
       <PageIntro

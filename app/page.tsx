@@ -1,6 +1,7 @@
 import { Destinations } from "@/components/sections/Destinations";
 import { Hero } from "@/components/sections/Hero";
 import { HomeExperienceCta } from "@/components/sections/HomeExperienceCta";
+import { HomeFaq } from "@/components/sections/HomeFaq";
 import { HomeFinalCta } from "@/components/sections/HomeFinalCta";
 import { HomeFixedDepartures } from "@/components/sections/HomeFixedDepartures";
 import { HomeFleet } from "@/components/sections/HomeFleet";
@@ -13,6 +14,7 @@ import { HomeTeam } from "@/components/sections/HomeTeam";
 import { HomeTestimonials } from "@/components/sections/HomeTestimonials";
 import { SignatureTours } from "@/components/sections/SignatureTours";
 import { WhyChoose } from "@/components/sections/WhyChoose";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Marquee } from "@/components/ui/Marquee";
 import {
   getDestinations,
@@ -25,7 +27,9 @@ import {
 } from "@/lib/cms";
 import { COMPANY, resolveContactSettings } from "@/lib/constants";
 import { FALLBACK_DESTINATIONS, FALLBACK_SERVICES, FALLBACK_TOURS } from "@/lib/home-fallbacks";
+import { getCanonicalTourPath } from "@/lib/seo/canonical";
 import { buildPageMetadata } from "@/lib/seo/page-seo";
+import { buildItemListSchema, buildWebPageSchema } from "@/lib/seo/schema";
 
 export const metadata = buildPageMetadata("/");
 
@@ -71,6 +75,28 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd
+        data={[
+          buildWebPageSchema({
+            name: "Helicopter tours and charter in Nepal",
+            description:
+              "Shared helicopter flights, private charters and pilgrimage routes across Nepal, coordinated from Pokhara.",
+            path: "/",
+            primaryImage: "/images/campaign/sharing-heli-hero.jpg",
+            about: ["Nepal", "Helicopter tour", "Helicopter charter", "Everest", "Annapurna", "Muktinath", "Pokhara"],
+            dateModified: new Date()
+          }),
+          buildItemListSchema({
+            name: "Featured Nepal helicopter tours",
+            path: "/tours",
+            items: resolvedTours.slice(0, 10).map((tour) => ({
+              name: tour.title,
+              path: getCanonicalTourPath(tour.slug)
+            }))
+          })
+        ]}
+      />
+
       <Hero settings={heroSettings} />
       <HomeFixedDepartures departures={fixedDepartures} />
       <HomeServiceStrip services={services.length ? services : FALLBACK_SERVICES} />
@@ -84,6 +110,7 @@ export default async function HomePage() {
       <SignatureTours tours={resolvedTours} />
       <HomeQuoteBand />
       <WhyChoose items={settings?.whyChooseItems || []} />
+      <HomeFaq />
       <Destinations destinations={destinations.length ? destinations : FALLBACK_DESTINATIONS} />
       <HomeLocationBand
         contact={{

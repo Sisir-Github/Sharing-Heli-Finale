@@ -218,16 +218,24 @@ model TeamMember {
 }
 
 /// A passenger review shown in the testimonials section.
+/// rating/source/sourceUrl feed Review + AggregateRating structured data.
+/// Only fill them in for reviews you can evidence - invented ratings risk a
+/// Google manual action.
 model Testimonial {
-  id        String   @id @default(cuid())
-  quote     String
-  name      String
-  detail    String
-  photo     String?
-  order     Int      @default(0)
-  visible   Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String    @id @default(cuid())
+  quote       String
+  name        String
+  detail      String
+  photo       String?
+  rating      Int?
+  source      String?
+  sourceUrl   String?
+  reviewedOn  DateTime?
+  tourSlug    String?
+  order       Int       @default(0)
+  visible     Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@index([visible, order])
 }

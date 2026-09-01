@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { getBlogPostBySlug } from "@/lib/cms";
@@ -85,6 +86,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           })
         ]}
       />
+      <Breadcrumbs items={breadcrumbs} />
       <article className="band band-cream">
         <header className="shell max-w-4xl">
           <p className="eyebrow">

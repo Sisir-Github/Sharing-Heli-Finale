@@ -290,7 +290,7 @@ a {
   }
 
   .text-button {
-    @apply inline-flex items-center gap-2 font-display text-[11px] font-semibold uppercase leading-none tracking-[0.2em] transition-colors;
+    @apply inline-flex min-h-[26px] items-center gap-2 font-display text-[11px] font-semibold uppercase leading-none tracking-[0.2em] transition-colors;
     color: var(--ink);
     border-bottom: 1px solid var(--accent);
     padding-bottom: 0.4rem;
@@ -302,7 +302,7 @@ a {
 
   .editorial-link,
   .editorial-link-dark {
-    @apply inline-flex items-center gap-2 font-display text-[11px] font-semibold uppercase leading-none tracking-[0.2em] transition-all;
+    @apply inline-flex min-h-[26px] items-center gap-2 font-display text-[11px] font-semibold uppercase leading-none tracking-[0.2em] transition-all;
     color: var(--ink);
     border-bottom: 1px solid var(--accent);
     padding-bottom: 0.4rem;

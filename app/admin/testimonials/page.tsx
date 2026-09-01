@@ -9,6 +9,11 @@ type Review = {
   quote: string;
   name: string;
   detail: string;
+  rating: number | null;
+  source: string | null;
+  sourceUrl: string | null;
+  reviewedOn: Date | null;
+  tourSlug: string | null;
   order: number;
   visible: boolean;
 };
@@ -32,6 +37,29 @@ function ReviewFields({ review }: { review?: Review }) {
         className="input"
         required
       />
+      <select name="rating" defaultValue={review?.rating ? String(review.rating) : ""} className="input" aria-label="Star rating">
+        <option value="">No star rating (quote only)</option>
+        <option value="5">5 stars</option>
+        <option value="4">4 stars</option>
+        <option value="3">3 stars</option>
+        <option value="2">2 stars</option>
+        <option value="1">1 star</option>
+      </select>
+      <select name="source" defaultValue={review?.source ?? ""} className="input" aria-label="Review source">
+        <option value="">Source not recorded</option>
+        <option value="Google">Google</option>
+        <option value="Tripadvisor">Tripadvisor</option>
+        <option value="Facebook">Facebook</option>
+        <option value="Direct">Sent to us directly</option>
+      </select>
+      <input name="sourceUrl" defaultValue={review?.sourceUrl ?? ""} placeholder="Link to the original review (optional)" className="input" />
+      <input
+        name="reviewedOn"
+        type="date"
+        defaultValue={review?.reviewedOn ? new Date(review.reviewedOn).toISOString().slice(0, 10) : ""}
+        className="input"
+        aria-label="Date the review was written"
+      />
       <input name="order" type="number" min="0" defaultValue={review?.order ?? 0} placeholder="Display order" className="input" required />
       <label className="flex items-center gap-2 text-sm text-haze">
         <input type="checkbox" name="visible" defaultChecked={review?.visible ?? true} /> Show on the website
@@ -41,16 +69,20 @@ function ReviewFields({ review }: { review?: Review }) {
 }
 
 export default async function AdminTestimonialsPage() {
+  // The cast stays until `prisma generate` runs against the migration that adds
+  // rating/source/sourceUrl/reviewedOn/tourSlug (npm run db:migrate).
   const reviews = (await prisma.testimonial.findMany({
     orderBy: [{ order: "asc" }, { createdAt: "asc" }]
-  })) as Review[];
+  })) as unknown as Review[];
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="font-display text-3xl text-white">Testimonials</h1>
         <p className="mt-2 text-sm text-haze">
-          Passenger reviews shown on the homepage. Publish only real, attributable reviews.
+          Passenger reviews shown on the homepage. Publish only real, attributable reviews. A star rating plus a source
+          also publishes Review and AggregateRating structured data, which is what puts stars in Google results — so
+          never set a rating for a review you cannot evidence.
         </p>
       </div>
 
